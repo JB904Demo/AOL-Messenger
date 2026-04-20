@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=390, initial-scale=1.0">
+<title>AIM Simulator</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Tahoma:wght@400;700&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #008080;
+    width: 390px; height: 844px;
+    overflow: hidden;
+    font-family: 'Tahoma', 'MS Sans Serif', Arial, sans-serif;
+    font-size: 13px;
+    position: relative;
+  }
+  .screen { display: none; width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
+  .screen.active { display: block; }
+  .win {
+    background: #d4d0c8;
+    border: 2px solid;
+    border-color: #ffffff #808080 #808080 #ffffff;
+    box-shadow: 1px 1px 0 #000;
+    position: absolute;
+  }
+  .titlebar {
+    background: linear-gradient(to right, #000080, #1084d0);
+    color: white; font-size: 13px; font-weight: bold;
+    padding: 3px 5px; display: flex; align-items: center;
+    justify-content: space-between; height: 24px; user-select: none;
+  }
+  .tl { display: flex; align-items: center; gap: 4px; }
+  .wbtns { display: flex; gap: 2px; }
+  .wbtn {
+    width: 18px; height: 16px; background: #d4d0c8;
+    border: 1px solid; border-color: #fff #808080 #808080 #fff;
+    font-size: 10px; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: #000; font-weight: bold;
+  }
+  .btn98 {
+    background: #d4d0c8; border: 2px solid;
+    border-color: #fff #808080 #808080 #fff;
+    padding: 5px 20px; font-family: 'Tahoma', Arial;
+    font-size: 14px; cursor: pointer; min-width: 90px;
+    text-align: center; color: #000;
+  }
+  .btn98:disabled { color: #808080; cursor: default; }
+  .btn98:active { border-color: #808080 #fff #fff #808080; }
+
+  /* ====== SIGN IN ====== */
+  #signin-win { width: 370px; top: 24px; left: 10px; }
+  .aim-banner {
+    background: #2244aa; height: 180px;
+    display: flex; align-items: center; justify-content: center;
+    gap: 20px; padding: 0 24px;
+  }
+  .banner-text { color: white; font-size: 26px; font-weight: bold; font-style: italic; font-family: Arial; line-height: 1.3; }
+  .banner-sub { color: #aad4ff; font-size: 14px; font-style: normal; font-weight: normal; }
+  .sform { padding: 20px 22px; background: #d4d0c8; }
+  .flabel { font-size: 13px; color: #000; display: flex; align-items: center; gap: 4px; margin-bottom: 4px; font-weight: bold; }
+  .fselect, .finput {
+    width: 100%; height: 30px;
+    border: 2px solid; border-color: #808080 #fff #fff #808080;
+    background: #ffffff; font-family: 'Tahoma', Arial;
+    font-size: 13px; padding: 0 4px; outline: none; display: block; color: #000;
+  }
+  .alink { color: #0000cc; font-size: 12px; text-decoration: underline; cursor: pointer; display: block; margin: 4px 0 0; }
+  .frow { margin-bottom: 18px; }
+  .cbrow { display: flex; align-items: center; gap: 28px; margin: 10px 0 18px; font-size: 13px; color: #000; }
+  .cbrow label { display: flex; align-items: center; gap: 5px; cursor: pointer; }
+  .sfooter { display: flex; align-items: center; justify-content: space-between; padding: 4px 0 2px; }
+  .ficons { display: flex; gap: 20px; }
+  .fibtn { display: flex; flex-direction: column; align-items: center; font-size: 11px; color: #000; cursor: pointer; gap: 2px; }
+  .fibtn span:first-child { font-size: 24px; }
+  .ver { font-size: 11px; color: #808080; text-align: center; margin-top: 8px; }
+
+  /* ====== BUDDY LIST ====== */
+  #bl-win { width: 220px; top: 30px; left: 85px; }
+  .bmbar { display: flex; background: #d4d0c8; padding: 1px 3px; border-bottom: 1px solid #808080; }
+  .bmi { font-size: 12px; padding: 2px 6px; cursor: pointer; color: #000; }
+  .bmi:hover { background: #000080; color: white; }
+  .bbanner { background: #2244aa; height: 60px; display: flex; align-items: center; justify-content: center; padding: 4px; }
+  .btabs { display: flex; border-bottom: 2px solid #808080; background: #d4d0c8; padding-top: 3px; }
+  .btab { padding: 2px 12px; font-size: 12px; border: 1px solid #808080; border-bottom: none; cursor: pointer; background: #d4d0c8; margin-right: 2px; margin-left: 3px; color: #000; }
+  .btab.active { background: white; font-weight: bold; border-bottom: 2px solid white; margin-bottom: -2px; position: relative; z-index: 1; }
+  .blist { background: white; border: 2px solid; border-color: #808080 #fff #fff #808080; margin: 4px; min-height: 340px; overflow-y: auto; }
+  .bgh { background: #d4d0c8; padding: 2px 4px; font-size: 12px; font-weight: bold; display: flex; align-items: center; gap: 3px; border-bottom: 1px solid #808080; color: #000; }
+  .bhl { background: #ffff00; padding: 0 2px; color: #000; }
+  .bi { padding: 2px 4px 2px 18px; font-size: 12px; cursor: pointer; color: #000; white-space: nowrap; background: white; }
+  .bi:hover, .bi.sel { background: #000080; color: white; }
+  .bi.off { color: #808080; }
+  .bi.off:hover { background: #000080; color: white; }
+
+  /* ====== IM WINDOW ====== */
+  #im-win { width: 360px; top: 20px; left: 15px; }
+  .immbar { display: flex; background: #d4d0c8; padding: 1px 3px; border-bottom: 1px solid #808080; justify-content: space-between; align-items: center; }
+  .immi { font-size: 12px; padding: 1px 5px; cursor: pointer; color: #000; text-decoration: underline; }
+  .imwarn { font-size: 10px; color: #000; padding-right: 4px; }
+  .imchat {
+    background: white; border: 2px solid; border-color: #808080 #fff #fff #808080;
+    margin: 4px 4px 2px; height: 200px; overflow-y: auto;
+    padding: 4px; font-size: 12px; line-height: 1.7; color: #000;
+  }
+  .mu { color: #cc0000; font-weight: bold; }
+  .mb { color: #0000cc; font-weight: bold; }
+  .mt { color: #000; font-weight: normal; }
+  .imtb { background: #d4d0c8; border-top: 1px solid #fff; border-bottom: 1px solid #808080; padding: 2px 4px; display: flex; align-items: center; gap: 6px; }
+  .imfb { font-size: 12px; font-weight: bold; cursor: pointer; padding: 0 3px; border: 1px solid transparent; color: #000; background: none; font-family: 'Tahoma', Arial; }
+  .imfb:hover { border-color: #808080; background: #d4d0c8; }
+  .imsep { width: 1px; height: 14px; background: #808080; }
+  .imlb { color: #0000cc; font-size: 12px; text-decoration: underline; cursor: pointer; background: none; border: none; font-family: 'Tahoma', Arial; }
+  .iminput {
+    background: white; border: 2px solid; border-color: #808080 #fff #fff #808080;
+    margin: 2px 4px; height: 56px; padding: 4px;
+    font-family: 'Tahoma', Arial; font-size: 12px;
+    resize: none; width: calc(100% - 8px); outline: none; color: #000; display: block;
+  }
+  .imbb { display: flex; align-items: center; justify-content: space-between; padding: 4px 5px; background: #d4d0c8; }
+  .imbis { display: flex; gap: 4px; align-items: flex-end; }
+  .imib { display: flex; flex-direction: column; align-items: center; font-size: 9px; gap: 1px; cursor: pointer; color: #000; min-width: 32px; }
+  .imib span:first-child { font-size: 20px; }
+  .imsend { background: #d4d0c8; border: 2px solid; border-color: #fff #808080 #808080 #fff; padding: 3px 10px; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 3px; font-family: 'Tahoma', Arial; color: #000; }
+  .imsend:active { border-color: #808080 #fff #fff #808080; }
+  .imsbar { height: 10px; background: #d4d0c8; border-top: 1px solid #808080; display: flex; align-items: center; justify-content: flex-end; padding-right: 4px; gap: 1px; }
+  .sl { width: 8px; height: 6px; display: inline-block; }
+  .typing { color: #808080; font-style: italic; font-size: 11px; padding: 1px 0; }
+  .backbtn {
+    position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+    background: #d4d0c8; border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    padding: 4px 16px; font-family: 'Tahoma', Arial; font-size: 11px; cursor: pointer; color: #000;
+  }
+</style>
+</head>
+<body>
+
+  <!-- SIGN IN -->
+  <div class="screen active" id="screen-signin">
+    <div class="win" id="signin-win">
+      <div class="titlebar">
+        <div class="tl">
+          <svg width="16" height="16" viewBox="0 0 13 13"><circle cx="6.5" cy="5" r="3" fill="#ffcc00"/><line x1="6.5" y1="8" x2="5" y2="11" stroke="#ffcc00" stroke-width="1.5"/><line x1="6.5" y1="8" x2="8" y2="11" stroke="#ffcc00" stroke-width="1.5"/><line x1="5" y1="7" x2="3" y2="9" stroke="#ffcc00" stroke-width="1.5"/><line x1="8" y1="7" x2="10" y2="9" stroke="#ffcc00" stroke-width="1.5"/></svg>
+          Sign On
+        </div>
+        <div class="wbtns"><div class="wbtn">_</div><div class="wbtn">□</div><div class="wbtn">✕</div></div>
+      </div>
+      <div class="aim-banner">
+        <svg width="80" height="126" viewBox="0 0 38 60">
+          <circle cx="19" cy="8" r="7" fill="#ffcc00"/>
+          <line x1="19" y1="15" x2="19" y2="35" stroke="#ffcc00" stroke-width="3"/>
+          <line x1="19" y1="20" x2="8" y2="28" stroke="#ffcc00" stroke-width="2.5"/>
+          <line x1="19" y1="20" x2="30" y2="26" stroke="#ffcc00" stroke-width="2.5"/>
+          <line x1="19" y1="35" x2="10" y2="50" stroke="#ffcc00" stroke-width="2.5"/>
+          <line x1="19" y1="35" x2="28" y2="50" stroke="#ffcc00" stroke-width="2.5"/>
+        </svg>
+        <div><div class="banner-text">AOL Instant<br>Messenger<span class="banner-sub">™</span></div></div>
+      </div>
+      <div class="sform">
+        <div class="frow">
+          <div class="flabel">ScreenName 🔑</div>
+          <select class="fselect" id="sn-select">
+            <option value="VANILA242">VANILA242</option>
+            <option value="Yukon242">Yukon242</option>
+          </select>
+          <a class="alink">Get a Screen Name</a>
+        </div>
+        <div class="frow">
+          <div class="flabel">Password</div>
+          <input type="password" id="pw-input" class="finput" autocomplete="current-password" oninput="onPwInput()" onkeydown="onPwKey(event)"/>
+          <a class="alink">Forgot Password?</a>
+        </div>
+        <div class="cbrow">
+          <label><input type="checkbox"> Save password</label>
+          <label><input type="checkbox"> Auto-login</label>
+        </div>
+        <hr style="border:none;border-top:1px solid #808080;border-bottom:1px solid #fff;margin:0 0 18px;">
+        <div class="sfooter">
+          <div class="ficons">
+            <div class="fibtn"><span>❓</span><span>Help</span></div>
+            <div class="fibtn"><span>🔧</span><span>Setup</span></div>
+          </div>
+          <button class="btn98" id="signon-btn" disabled onclick="doSignOn()">Sign On</button>
+        </div>
+        <div class="ver">Version: 5.9.6089</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUDDY LIST -->
+  <div class="screen" id="screen-buddylist">
+    <div class="win" id="bl-win">
+      <div class="titlebar">
+        <div class="tl">
+          <svg width="13" height="13" viewBox="0 0 13 13"><circle cx="6.5" cy="4" r="3" fill="#ffcc00"/><line x1="6.5" y1="7" x2="5" y2="11" stroke="#ffcc00" stroke-width="1.5"/><line x1="6.5" y1="7" x2="8" y2="11" stroke="#ffcc00" stroke-width="1.5"/><line x1="5" y1="8.5" x2="3" y2="10" stroke="#ffcc00" stroke-width="1.5"/><line x1="8" y1="8.5" x2="10" y2="10" stroke="#ffcc00" stroke-width="1.5"/></svg>
+          <span id="bl-title">VANILA242's Buddy List ...</span>
+        </div>
+        <div class="wbtns"><div class="wbtn">_</div><div class="wbtn">□</div><div class="wbtn" onclick="goSignin()">✕</div></div>
+      </div>
+      <div class="bmbar"><span class="bmi"><u>M</u>y AIM</span><span class="bmi">People</span><span class="bmi">Help</span></div>
+      <div class="bbanner">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <svg width="32" height="50" viewBox="0 0 30 46"><circle cx="15" cy="6" r="5.5" fill="#ffcc00"/><line x1="15" y1="11.5" x2="15" y2="28" stroke="#ffcc00" stroke-width="2.5"/><line x1="15" y1="17" x2="5" y2="23" stroke="#ffcc00" stroke-width="2"/><line x1="15" y1="17" x2="25" y2="22" stroke="#ffcc00" stroke-width="2"/><line x1="15" y1="28" x2="8" y2="40" stroke="#ffcc00" stroke-width="2"/><line x1="15" y1="28" x2="22" y2="40" stroke="#ffcc00" stroke-width="2"/></svg>
+          <div style="text-align:center;"><div style="color:#fff;font-weight:bold;font-style:italic;font-size:13px;font-family:Arial;">AOL</div><div style="color:#aad4ff;font-size:11px;font-style:italic;font-family:Arial;">Instant<br>Messenger™</div></div>
+        </div>
+      </div>
+      <div class="btabs"><div class="btab active">Online</div><div class="btab">List Setup</div></div>
+      <div class="blist" id="buddy-list-area"></div>
+    </div>
+  </div>
+
+  <!-- IM WINDOW -->
+  <div class="screen" id="screen-im">
+    <div class="win" id="im-win">
+      <div class="titlebar">
+        <div class="tl">
+          <svg width="13" height="13" viewBox="0 0 13 13"><circle cx="6.5" cy="4" r="3" fill="#ffcc00"/><line x1="6.5" y1="7" x2="5" y2="11" stroke="#ffcc00" stroke-width="1.5"/><line x1="6.5" y1="7" x2="8" y2="11" stroke="#ffcc00" stroke-width="1.5"/><line x1="5" y1="8.5" x2="3" y2="10" stroke="#ffcc00" stroke-width="1.5"/><line x1="8" y1="8.5" x2="10" y2="10" stroke="#ffcc00" stroke-width="1.5"/></svg>
+          <span id="im-title">buddy – Instant Message</span>
+        </div>
+        <div class="wbtns"><div class="wbtn">_</div><div class="wbtn">□</div><div class="wbtn" onclick="closeIM()">✕</div></div>
+      </div>
+      <div class="immbar">
+        <div style="display:flex;"><span class="immi">File</span><span class="immi">Edit</span><span class="immi">View</span><span class="immi">People</span></div>
+        <div class="imwarn" id="im-warning-label">buddy's Warning Level: 0%</div>
+      </div>
+      <div class="imchat" id="im-chat-area"></div>
+      <div class="imtb">
+        <button class="imfb" style="font-size:15px;">A</button>
+        <button class="imfb" style="font-size:15px;background:#000;color:#fff;padding:0 3px;">A</button>
+        <div class="imsep"></div>
+        <button class="imfb" style="font-size:10px;">A▼</button>
+        <button class="imfb">A</button>
+        <button class="imfb" style="font-size:11px;">ᴬA</button>
+        <div class="imsep"></div>
+        <button class="imfb" style="font-weight:bold;">B</button>
+        <button class="imfb" style="font-style:italic;">I</button>
+        <button class="imfb" style="text-decoration:underline;">U</button>
+        <div class="imsep"></div>
+        <button class="imlb">link</button>
+      </div>
+      <textarea id="im-input" class="iminput" onkeydown="imKeydown(event)"></textarea>
+      <div class="imbb">
+        <div class="imbis">
+          <div style="font-size:30px;line-height:1;">🐕</div>
+          <div class="imib"><span>⚡</span><span>Warn</span></div>
+          <div class="imib"><span>🚫</span><span>Block</span></div>
+          <div style="width:16px;"></div>
+          <div class="imib"><span>➕</span><span>Add Buddy</span></div>
+          <div class="imib"><span>ℹ️</span><span>Info</span></div>
+        </div>
+        <button class="imsend" onclick="sendMessage()"><span style="font-size:18px;">📨</span> Send</button>
+      </div>
+      <div class="imsbar">
+        <span class="sl" style="background:#00cc00;"></span>
+        <span class="sl" style="background:#00cc00;"></span>
+        <span class="sl" style="background:#00cc00;"></span>
+        <span class="sl" style="background:#cccccc;"></span>
+      </div>
+    </div>
+    <button class="backbtn" onclick="closeIM()">← Back to Buddy List</button>
+  </div>
+
+<script>
+  var currentUser='VANILA242', selectedBuddy=null, currentBuddy=null;
+  var buddyData=[
+    {group:'Buddies',members:[{name:'DiscipleWade',online:true},{name:'Buckles242',online:false},{name:'ScaryBVHS',online:true},{name:'Chloecat99',online:false}]},
+    {group:'Family',members:[]},{group:'Co-Workers',members:[]}
+  ];
+  function onPwInput(){document.getElementById('signon-btn').disabled=(document.getElementById('pw-input').value!=='vikings');}
+  function onPwKey(e){if(e.key==='Enter'){e.preventDefault();doSignOn();}}
+  function doSignOn(){if(document.getElementById('pw-input').value!=='vikings')return;currentUser=document.getElementById('sn-select').value;document.getElementById('bl-title').textContent=currentUser+"'s Buddy List ...";renderBuddyList();showScreen('screen-buddylist');}
+  function goSignin(){document.getElementById('pw-input').value='';document.getElementById('signon-btn').disabled=true;selectedBuddy=null;showScreen('screen-signin');setTimeout(function(){document.getElementById('pw-input').focus();},100);}
+  function showScreen(id){document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});document.getElementById(id).classList.add('active');}
+  function renderBuddyList(){var area=document.getElementById('buddy-list-area');area.innerHTML='';buddyData.forEach(function(g){var on=g.members.filter(function(m){return m.online;}).length;var h=document.createElement('div');h.className='bgh';h.innerHTML='<span>▼</span><span class="bhl">'+g.group+' ('+on+'/'+g.members.length+')</span>';area.appendChild(h);g.members.forEach(function(m){var item=document.createElement('div');item.className='bi'+(m.online?'':' off');item.textContent=m.name;item.addEventListener('click',function(){handleBuddyClick(item,m.name);});area.appendChild(item);});});}
+  function handleBuddyClick(el,name){if(selectedBuddy===name){selectedBuddy=null;openIM(name);return;}document.querySelectorAll('.bi').forEach(function(i){i.classList.remove('sel');});el.classList.add('sel');selectedBuddy=name;}
+  function openIM(name){currentBuddy=name;document.getElementById('im-title').textContent=name+' – Instant Message';document.getElementById('im-warning-label').textContent=name+"'s Warning Level: 0%";var chat=document.getElementById('im-chat-area');chat.innerHTML='';addTyping(name);document.getElementById('im-input').value='';showScreen('screen-im');setTimeout(function(){document.getElementById('im-input').focus();},150);setTimeout(removeTyping,2200);}
+  function addTyping(name){var chat=document.getElementById('im-chat-area');var ti=document.createElement('div');ti.className='typing';ti.id='ti';ti.textContent=(name||currentBuddy)+': ...';chat.appendChild(ti);chat.scrollTop=chat.scrollHeight;}
+  function removeTyping(){var ti=document.getElementById('ti');if(ti)ti.remove();}
+  function closeIM(){selectedBuddy=null;document.querySelectorAll('.bi').forEach(function(i){i.classList.remove('sel');});showScreen('screen-buddylist');}
+  function imKeydown(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}}
+  function sendMessage(){var input=document.getElementById('im-input');var text=input.value.trim();if(!text)return;var chat=document.getElementById('im-chat-area');removeTyping();var msg=document.createElement('div');msg.innerHTML='<span class="mu">'+esc(currentUser)+':</span> <span class="mt">'+esc(text)+'</span>';chat.appendChild(msg);input.value='';chat.scrollTop=chat.scrollHeight;input.focus();setTimeout(function(){addTyping(currentBuddy);setTimeout(removeTyping,2000);},600);}
+  function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  document.getElementById('pw-input').focus();
+</script>
+</body>
+</html>
