@@ -12,7 +12,7 @@
     display: flex; align-items: center; justify-content: center;
     min-height: 100vh;
     font-family: 'Tahoma', 'MS Sans Serif', Arial, sans-serif;
-    font-size: 13px; color-scheme: light;
+    font-size: 13px;
   }
   .aim-root { width: 390px; height: 844px; background: #008080; position: relative; overflow: hidden; }
   .win-window {
@@ -30,39 +30,69 @@
   .win-btns { display: flex; gap: 2px; }
   .win-btn {
     width: 16px; height: 14px; background: #d4d0c8; border: 1px solid;
-    border-color: #ffffff #808080 #808080 #ffffff; font-size: 9px;
-    display: flex; align-items: center; justify-content: center;
+    border-color: #ffffff #808080 #808080 #ffffff;
+    font-size: 9px; display: flex; align-items: center; justify-content: center;
     cursor: pointer; color: #000; line-height: 1; font-weight: bold;
   }
   .screen { display: none; }
   .screen.active { display: block; }
 
   /* SIGN IN */
-  #signin-window { width: 350px; top: 50px; left: 20px; }
-  .aim-banner { width: 100%; display: block; height: 180px; object-fit: cover; background: #1a1aaa; }
-  .aim-banner-fallback {
-    width: 100%; height: 180px; background: #1a1aaa;
-    display: flex; align-items: flex-end; padding: 10px 14px;
+  #signin-window { width: 350px; top: 30px; left: 20px; }
+
+  .aim-banner {
+    width: 100%; display: block; height: 220px;
+    object-fit: cover; object-position: top;
+    background: #1a1aaa;
   }
-  .banner-logo-text { display: flex; align-items: baseline; gap: 5px; }
+  .aim-banner-fallback {
+    width: 100%; height: 220px; background: #1a1aaa;
+    display: none; align-items: flex-end; padding: 10px 14px;
+  }
   .banner-aol { color: white; font-family: Arial; font-size: 22px; font-weight: 900; font-style: italic; }
   .banner-aim { color: white; font-family: Arial; font-size: 16px; font-style: italic; }
-  .banner-tm  { color: white; font-size: 10px; vertical-align: super; }
+
   .signin-form { padding: 10px 12px 8px; background: #d4d0c8; }
   .sn-label {
     font-size: 13px; font-weight: bold; font-style: italic; color: #000080;
     display: flex; align-items: center; gap: 4px; margin-bottom: 3px;
   }
   .pw-label { font-size: 13px; font-weight: bold; color: #000; margin-bottom: 3px; display: block; }
-  .form-select, .form-input {
-    width: 100%; height: 24px; border: none;
+
+  .form-input {
+    width: 100%; height: 24px;
     border-top: 2px solid #808080; border-left: 2px solid #808080;
     border-right: 2px solid #ffffff; border-bottom: 2px solid #ffffff;
     border-radius: 0; background: #ffffff;
     font-family: 'Tahoma', Arial; font-size: 12px; padding: 0 4px;
     outline: none; display: block; color: #000;
-    appearance: auto; -webkit-appearance: auto;
   }
+
+  /* Win98 native-look dropdown */
+  .sn-dropdown-wrap { position: relative; width: 100%; }
+  .sn-dropdown-wrap select {
+    width: 100%; height: 24px;
+    border-top: 2px solid #808080; border-left: 2px solid #808080;
+    border-right: 2px solid #ffffff; border-bottom: 2px solid #ffffff;
+    border-radius: 0; background: #ffffff;
+    font-family: 'Tahoma', Arial; font-size: 12px;
+    padding: 0 26px 0 4px; outline: none; color: #000;
+    appearance: none; -webkit-appearance: none; cursor: pointer;
+  }
+  .sn-dropdown-arrow {
+    position: absolute; right: 0; top: 0; width: 22px; height: 100%;
+    background: #d4d0c8;
+    border-top: 2px solid #ffffff; border-left: 2px solid #ffffff;
+    border-right: 2px solid #808080; border-bottom: 2px solid #808080;
+    display: flex; align-items: center; justify-content: center;
+    pointer-events: none;
+  }
+  .sn-dropdown-arrow::after {
+    content: ''; width: 0; height: 0;
+    border-left: 4px solid transparent; border-right: 4px solid transparent;
+    border-top: 5px solid #808080;
+  }
+
   .aim-link { color: #0000cc; font-size: 12px; font-style: italic; text-decoration: underline; cursor: pointer; display: block; margin: 3px 0 8px; font-family: Arial; }
   .form-row { margin-bottom: 4px; }
   .checkbox-row { display: flex; align-items: center; justify-content: space-between; margin: 6px 0; font-size: 11px; color: #808080; }
@@ -72,14 +102,20 @@
   .footer-icons { display: flex; gap: 16px; align-items: flex-end; }
   .footer-icon-btn { display: flex; flex-direction: column; align-items: center; font-size: 10px; color: #000; cursor: pointer; gap: 1px; }
   .footer-icon-btn .icon-img { font-size: 22px; line-height: 1; }
+
+  /* Sign On button — icon stacked above text, classic Win98 raised */
   .signon-btn {
-    background: #d4d0c8; border: 2px solid; border-color: #ffffff #808080 #808080 #ffffff;
-    border-radius: 0; padding: 4px 10px; font-family: 'Tahoma', Arial;
-    font-size: 13px; font-weight: bold; cursor: pointer; color: #000;
-    display: flex; align-items: center; gap: 6px;
+    background: #d4d0c8;
+    border: 2px solid; border-color: #ffffff #808080 #808080 #ffffff;
+    border-radius: 0; padding: 5px 14px;
+    font-family: 'Tahoma', Arial; font-size: 12px; font-weight: bold;
+    cursor: pointer; color: #000;
+    display: flex; flex-direction: column; align-items: center; gap: 1px;
+    min-width: 80px;
   }
   .signon-btn:active { border-color: #808080 #ffffff #ffffff #808080; }
   .signon-btn:disabled { color: #808080; cursor: default; }
+
   .version-text { font-size: 10px; color: #808080; text-align: center; margin-top: 6px; }
 
   /* BUDDY LIST */
@@ -87,7 +123,7 @@
   .buddy-menubar { display: flex; background: #d4d0c8; padding: 1px 3px; border-bottom: 1px solid #808080; }
   .buddy-menu-item { font-size: 11px; padding: 1px 5px; cursor: pointer; color: #000; }
   .buddy-menu-item:hover { background: #000080; color: white; }
-  .buddy-banner { background: #1a1aaa; height: 55px; display: flex; align-items: center; justify-content: center; padding: 4px; }
+  .buddy-banner-sm { background: #1a1aaa; height: 55px; display: flex; align-items: center; justify-content: center; padding: 4px; }
   .buddy-banner-inner { display: flex; align-items: center; gap: 6px; }
   .buddy-tabs { display: flex; border-bottom: 2px solid #808080; background: #d4d0c8; padding-top: 3px; }
   .buddy-tab { padding: 2px 10px; font-size: 11px; border: 1px solid #808080; border-bottom: none; cursor: pointer; background: #d4d0c8; margin-right: 2px; margin-left: 3px; color: #000; }
@@ -108,7 +144,7 @@
   .im-menu-item { font-size: 11px; padding: 1px 5px; cursor: pointer; color: #000; text-decoration: underline; }
   .im-warning { font-size: 9px; color: #000; padding-right: 4px; }
   .im-chat-area {
-    background: #ffffff; border: none;
+    background: #ffffff;
     border-top: 2px solid #808080; border-left: 2px solid #808080;
     border-right: 2px solid #ffffff; border-bottom: 2px solid #ffffff;
     margin: 4px 4px 2px 4px; height: 180px; overflow-y: auto; padding: 4px; font-size: 11px; line-height: 1.6;
@@ -122,7 +158,7 @@
   .im-font-sep { width: 1px; height: 14px; background: #808080; }
   .im-link-btn { color: #0000cc; font-size: 11px; text-decoration: underline; cursor: pointer; background: none; border: none; font-family: 'Tahoma', Arial; }
   #im-input {
-    background: #ffffff; border: none;
+    background: #ffffff;
     border-top: 2px solid #808080; border-left: 2px solid #808080;
     border-right: 2px solid #ffffff; border-bottom: 2px solid #ffffff;
     border-radius: 0; margin: 2px 4px; height: 60px; padding: 4px;
@@ -138,7 +174,7 @@
   .im-status-bar { height: 10px; background: #d4d0c8; border-top: 1px solid #808080; display: flex; align-items: center; justify-content: flex-end; padding-right: 4px; }
   .status-light { width: 8px; height: 6px; display: inline-block; }
   .typing-indicator { color: #808080; font-style: italic; font-size: 10px; padding: 1px 0; }
-  .back-btn { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); background: #d4d0c8; border: 2px solid; border-color: #ffffff #808080 #808080 #ffffff; border-radius: 0; padding: 3px 12px; font-family: 'Tahoma', Arial; font-size: 11px; cursor: pointer; color: #000; white-space: nowrap; }
+  .back-btn { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: #d4d0c8; border: 2px solid; border-color: #ffffff #808080 #808080 #ffffff; border-radius: 0; padding: 3px 12px; font-family: 'Tahoma', Arial; font-size: 11px; cursor: pointer; color: #000; white-space: nowrap; }
 </style>
 </head>
 <body>
@@ -160,17 +196,17 @@
           Sign On
         </div>
         <div class="win-btns">
-          <div class="win-btn">_</div><div class="win-btn">&#9633;</div><div class="win-btn">&#10005;</div>
+          <div class="win-btn">_</div>
+          <div class="win-btn">&#9633;</div>
+          <div class="win-btn">&#10005;</div>
         </div>
       </div>
 
       <img src="aim_banner.png" class="aim-banner" alt="AOL Instant Messenger"
            onerror="this.style.display='none';document.getElementById('banner-fallback').style.display='flex';">
-      <div class="aim-banner-fallback" id="banner-fallback" style="display:none;">
-        <div class="banner-logo-text">
-          <span class="banner-aol">AOL</span>
-          <span class="banner-aim">Instant Messenger<span class="banner-tm">TM</span></span>
-        </div>
+      <div class="aim-banner-fallback" id="banner-fallback">
+        <span class="banner-aol">AOL</span>
+        <span class="banner-aim">Instant Messenger</span>
       </div>
 
       <div class="signin-form">
@@ -184,12 +220,16 @@
               <line x1="26" y1="7" x2="26" y2="11" stroke="#c8960c" stroke-width="2"/>
             </svg>
           </div>
-          <select class="form-select" id="sn-select">
-            <option value="VANILA242">VANILA242</option>
-            <option value="Yukon242">Yukon242</option>
-          </select>
+          <div class="sn-dropdown-wrap">
+            <select id="sn-select">
+              <option value="VANILA242">VANILA242</option>
+              <option value="Yukon242">Yukon242</option>
+            </select>
+            <div class="sn-dropdown-arrow"></div>
+          </div>
           <a class="aim-link">Get a Screen Name</a>
         </div>
+
         <div class="form-row">
           <span class="pw-label">Password</span>
           <input type="password" id="pw-input" class="form-input"
@@ -197,28 +237,34 @@
             oninput="onPwInput()" onkeydown="onPwKey(event)">
           <a class="aim-link">Forgot Password?</a>
         </div>
+
         <div class="checkbox-row">
           <label><input type="checkbox" style="width:12px;height:12px;" disabled> Save password</label>
           <label><input type="checkbox" style="width:12px;height:12px;" disabled> Auto-login</label>
         </div>
+
         <hr class="signin-divider">
+
         <div class="signin-footer">
           <div class="footer-icons">
             <div class="footer-icon-btn"><span class="icon-img">&#10067;</span><span>Help</span></div>
             <div class="footer-icon-btn"><span class="icon-img">&#128295;</span><span>Setup</span></div>
           </div>
+
           <button class="signon-btn" id="signon-btn" disabled onclick="doSignOn()">
-            <svg id="runner-svg" width="22" height="28" viewBox="0 0 20 26">
-              <circle cx="10" cy="3" r="3" fill="#808080"/>
-              <line x1="10" y1="6" x2="10" y2="16" stroke="#808080" stroke-width="2.5"/>
-              <line x1="10" y1="10" x2="3" y2="14" stroke="#808080" stroke-width="2"/>
-              <line x1="10" y1="10" x2="17" y2="13" stroke="#808080" stroke-width="2"/>
-              <line x1="10" y1="16" x2="5" y2="24" stroke="#808080" stroke-width="2"/>
-              <line x1="10" y1="16" x2="15" y2="24" stroke="#808080" stroke-width="2"/>
+            <!-- Running man icon, greyed until password correct, turns green on activation -->
+            <svg id="runner-svg" width="28" height="32" viewBox="0 0 24 28">
+              <circle cx="15" cy="3" r="3" fill="#808080"/>
+              <line x1="15" y1="6"  x2="11" y2="15" stroke="#808080" stroke-width="2.2"/>
+              <line x1="13" y1="10" x2="5"  y2="9"  stroke="#808080" stroke-width="2"/>
+              <line x1="13" y1="10" x2="19" y2="7"  stroke="#808080" stroke-width="2"/>
+              <line x1="11" y1="15" x2="7"  y2="24" stroke="#808080" stroke-width="2"/>
+              <line x1="11" y1="15" x2="16" y2="23" stroke="#808080" stroke-width="2"/>
             </svg>
-            Sign On
+            <span style="font-size:12px;font-weight:bold;line-height:1;">Sign On</span>
           </button>
         </div>
+
         <div class="version-text">Version: 5.9.3690</div>
       </div>
     </div>
@@ -240,7 +286,9 @@
           <span id="bl-title">VANILA242's Buddy List ...</span>
         </div>
         <div class="win-btns">
-          <div class="win-btn">_</div><div class="win-btn">&#9633;</div><div class="win-btn" onclick="goSignin()">&#10005;</div>
+          <div class="win-btn">_</div>
+          <div class="win-btn">&#9633;</div>
+          <div class="win-btn" onclick="goSignin()">&#10005;</div>
         </div>
       </div>
       <div class="buddy-menubar">
@@ -248,7 +296,7 @@
         <span class="buddy-menu-item">People</span>
         <span class="buddy-menu-item">Help</span>
       </div>
-      <div class="buddy-banner">
+      <div class="buddy-banner-sm">
         <div class="buddy-banner-inner">
           <svg width="28" height="36" viewBox="0 0 20 26">
             <circle cx="10" cy="3" r="3" fill="#ffcc00"/>
@@ -288,7 +336,9 @@
           <span id="im-title">buddy - Instant Message</span>
         </div>
         <div class="win-btns">
-          <div class="win-btn">_</div><div class="win-btn">&#9633;</div><div class="win-btn" onclick="closeIM()">&#10005;</div>
+          <div class="win-btn">_</div>
+          <div class="win-btn">&#9633;</div>
+          <div class="win-btn" onclick="closeIM()">&#10005;</div>
         </div>
       </div>
       <div class="im-menubar">
@@ -364,7 +414,7 @@
     var btn = document.getElementById('signon-btn');
     var ok  = (val === 'vikings');
     btn.disabled = !ok;
-    var col = ok ? '#000000' : '#808080';
+    var col = ok ? '#3a7a2a' : '#808080';
     document.querySelectorAll('#runner-svg circle, #runner-svg line').forEach(function(el){
       if (el.tagName === 'circle') el.setAttribute('fill', col);
       else el.setAttribute('stroke', col);
