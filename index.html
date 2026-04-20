@@ -2,284 +2,485 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=390, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>AIM Simulator</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Tahoma:wght@400;700&display=swap');
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     background: #008080;
-    width: 390px; height: 844px;
-    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    min-height: 100vh;
     font-family: 'Tahoma', 'MS Sans Serif', Arial, sans-serif;
-    font-size: 13px;
-    position: relative;
+    font-size: 13px; color-scheme: light;
   }
-  .screen { display: none; width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
-  .screen.active { display: block; }
-  .win {
-    background: #d4d0c8;
-    border: 2px solid;
+  .aim-root { width: 390px; height: 844px; background: #008080; position: relative; overflow: hidden; }
+  .win-window {
+    background: #d4d0c8; border: 2px solid;
     border-color: #ffffff #808080 #808080 #ffffff;
-    box-shadow: 1px 1px 0 #000;
-    position: absolute;
+    box-shadow: 2px 2px 0 #000; position: absolute;
   }
-  .titlebar {
+  .win-titlebar {
     background: linear-gradient(to right, #000080, #1084d0);
     color: white; font-size: 13px; font-weight: bold;
     padding: 3px 5px; display: flex; align-items: center;
-    justify-content: space-between; height: 24px; user-select: none;
+    justify-content: space-between; height: 22px; user-select: none;
   }
-  .tl { display: flex; align-items: center; gap: 4px; }
-  .wbtns { display: flex; gap: 2px; }
-  .wbtn {
-    width: 18px; height: 16px; background: #d4d0c8;
-    border: 1px solid; border-color: #fff #808080 #808080 #fff;
-    font-size: 10px; display: flex; align-items: center; justify-content: center;
-    cursor: pointer; color: #000; font-weight: bold;
-  }
-  .btn98 {
-    background: #d4d0c8; border: 2px solid;
-    border-color: #fff #808080 #808080 #fff;
-    padding: 5px 20px; font-family: 'Tahoma', Arial;
-    font-size: 14px; cursor: pointer; min-width: 90px;
-    text-align: center; color: #000;
-  }
-  .btn98:disabled { color: #808080; cursor: default; }
-  .btn98:active { border-color: #808080 #fff #fff #808080; }
-
-  /* ====== SIGN IN ====== */
-  #signin-win { width: 370px; top: 24px; left: 10px; }
-  .aim-banner {
-    background: #2244aa; height: 180px;
+  .win-titlebar-left { display: flex; align-items: center; gap: 4px; }
+  .win-btns { display: flex; gap: 2px; }
+  .win-btn {
+    width: 16px; height: 14px; background: #d4d0c8; border: 1px solid;
+    border-color: #ffffff #808080 #808080 #ffffff; font-size: 9px;
     display: flex; align-items: center; justify-content: center;
-    gap: 20px; padding: 0 24px;
+    cursor: pointer; color: #000; line-height: 1; font-weight: bold;
   }
-  .banner-text { color: white; font-size: 26px; font-weight: bold; font-style: italic; font-family: Arial; line-height: 1.3; }
-  .banner-sub { color: #aad4ff; font-size: 14px; font-style: normal; font-weight: normal; }
-  .sform { padding: 20px 22px; background: #d4d0c8; }
-  .flabel { font-size: 13px; color: #000; display: flex; align-items: center; gap: 4px; margin-bottom: 4px; font-weight: bold; }
-  .fselect, .finput {
-    width: 100%; height: 30px;
-    border: 2px solid; border-color: #808080 #fff #fff #808080;
-    background: #ffffff; font-family: 'Tahoma', Arial;
-    font-size: 13px; padding: 0 4px; outline: none; display: block; color: #000;
-  }
-  .alink { color: #0000cc; font-size: 12px; text-decoration: underline; cursor: pointer; display: block; margin: 4px 0 0; }
-  .frow { margin-bottom: 18px; }
-  .cbrow { display: flex; align-items: center; gap: 28px; margin: 10px 0 18px; font-size: 13px; color: #000; }
-  .cbrow label { display: flex; align-items: center; gap: 5px; cursor: pointer; }
-  .sfooter { display: flex; align-items: center; justify-content: space-between; padding: 4px 0 2px; }
-  .ficons { display: flex; gap: 20px; }
-  .fibtn { display: flex; flex-direction: column; align-items: center; font-size: 11px; color: #000; cursor: pointer; gap: 2px; }
-  .fibtn span:first-child { font-size: 24px; }
-  .ver { font-size: 11px; color: #808080; text-align: center; margin-top: 8px; }
+  .screen { display: none; }
+  .screen.active { display: block; }
 
-  /* ====== BUDDY LIST ====== */
-  #bl-win { width: 220px; top: 30px; left: 85px; }
-  .bmbar { display: flex; background: #d4d0c8; padding: 1px 3px; border-bottom: 1px solid #808080; }
-  .bmi { font-size: 12px; padding: 2px 6px; cursor: pointer; color: #000; }
-  .bmi:hover { background: #000080; color: white; }
-  .bbanner { background: #2244aa; height: 60px; display: flex; align-items: center; justify-content: center; padding: 4px; }
-  .btabs { display: flex; border-bottom: 2px solid #808080; background: #d4d0c8; padding-top: 3px; }
-  .btab { padding: 2px 12px; font-size: 12px; border: 1px solid #808080; border-bottom: none; cursor: pointer; background: #d4d0c8; margin-right: 2px; margin-left: 3px; color: #000; }
-  .btab.active { background: white; font-weight: bold; border-bottom: 2px solid white; margin-bottom: -2px; position: relative; z-index: 1; }
-  .blist { background: white; border: 2px solid; border-color: #808080 #fff #fff #808080; margin: 4px; min-height: 340px; overflow-y: auto; }
-  .bgh { background: #d4d0c8; padding: 2px 4px; font-size: 12px; font-weight: bold; display: flex; align-items: center; gap: 3px; border-bottom: 1px solid #808080; color: #000; }
-  .bhl { background: #ffff00; padding: 0 2px; color: #000; }
-  .bi { padding: 2px 4px 2px 18px; font-size: 12px; cursor: pointer; color: #000; white-space: nowrap; background: white; }
-  .bi:hover, .bi.sel { background: #000080; color: white; }
-  .bi.off { color: #808080; }
-  .bi.off:hover { background: #000080; color: white; }
+  /* SIGN IN */
+  #signin-window { width: 350px; top: 50px; left: 20px; }
+  .aim-banner { width: 100%; display: block; height: 180px; object-fit: cover; background: #1a1aaa; }
+  .aim-banner-fallback {
+    width: 100%; height: 180px; background: #1a1aaa;
+    display: flex; align-items: flex-end; padding: 10px 14px;
+  }
+  .banner-logo-text { display: flex; align-items: baseline; gap: 5px; }
+  .banner-aol { color: white; font-family: Arial; font-size: 22px; font-weight: 900; font-style: italic; }
+  .banner-aim { color: white; font-family: Arial; font-size: 16px; font-style: italic; }
+  .banner-tm  { color: white; font-size: 10px; vertical-align: super; }
+  .signin-form { padding: 10px 12px 8px; background: #d4d0c8; }
+  .sn-label {
+    font-size: 13px; font-weight: bold; font-style: italic; color: #000080;
+    display: flex; align-items: center; gap: 4px; margin-bottom: 3px;
+  }
+  .pw-label { font-size: 13px; font-weight: bold; color: #000; margin-bottom: 3px; display: block; }
+  .form-select, .form-input {
+    width: 100%; height: 24px; border: none;
+    border-top: 2px solid #808080; border-left: 2px solid #808080;
+    border-right: 2px solid #ffffff; border-bottom: 2px solid #ffffff;
+    border-radius: 0; background: #ffffff;
+    font-family: 'Tahoma', Arial; font-size: 12px; padding: 0 4px;
+    outline: none; display: block; color: #000;
+    appearance: auto; -webkit-appearance: auto;
+  }
+  .aim-link { color: #0000cc; font-size: 12px; font-style: italic; text-decoration: underline; cursor: pointer; display: block; margin: 3px 0 8px; font-family: Arial; }
+  .form-row { margin-bottom: 4px; }
+  .checkbox-row { display: flex; align-items: center; justify-content: space-between; margin: 6px 0; font-size: 11px; color: #808080; }
+  .checkbox-row label { display: flex; align-items: center; gap: 3px; cursor: default; color: #808080; }
+  .signin-divider { border: none; border-top: 1px solid #808080; border-bottom: 1px solid #ffffff; margin: 8px 0; }
+  .signin-footer { display: flex; align-items: center; justify-content: space-between; padding: 2px 0; }
+  .footer-icons { display: flex; gap: 16px; align-items: flex-end; }
+  .footer-icon-btn { display: flex; flex-direction: column; align-items: center; font-size: 10px; color: #000; cursor: pointer; gap: 1px; }
+  .footer-icon-btn .icon-img { font-size: 22px; line-height: 1; }
+  .signon-btn {
+    background: #d4d0c8; border: 2px solid; border-color: #ffffff #808080 #808080 #ffffff;
+    border-radius: 0; padding: 4px 10px; font-family: 'Tahoma', Arial;
+    font-size: 13px; font-weight: bold; cursor: pointer; color: #000;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .signon-btn:active { border-color: #808080 #ffffff #ffffff #808080; }
+  .signon-btn:disabled { color: #808080; cursor: default; }
+  .version-text { font-size: 10px; color: #808080; text-align: center; margin-top: 6px; }
 
-  /* ====== IM WINDOW ====== */
-  #im-win { width: 360px; top: 20px; left: 15px; }
-  .immbar { display: flex; background: #d4d0c8; padding: 1px 3px; border-bottom: 1px solid #808080; justify-content: space-between; align-items: center; }
-  .immi { font-size: 12px; padding: 1px 5px; cursor: pointer; color: #000; text-decoration: underline; }
-  .imwarn { font-size: 10px; color: #000; padding-right: 4px; }
-  .imchat {
-    background: white; border: 2px solid; border-color: #808080 #fff #fff #808080;
-    margin: 4px 4px 2px; height: 200px; overflow-y: auto;
-    padding: 4px; font-size: 12px; line-height: 1.7; color: #000;
+  /* BUDDY LIST */
+  #buddylist-window { width: 195px; top: 40px; left: 98px; }
+  .buddy-menubar { display: flex; background: #d4d0c8; padding: 1px 3px; border-bottom: 1px solid #808080; }
+  .buddy-menu-item { font-size: 11px; padding: 1px 5px; cursor: pointer; color: #000; }
+  .buddy-menu-item:hover { background: #000080; color: white; }
+  .buddy-banner { background: #1a1aaa; height: 55px; display: flex; align-items: center; justify-content: center; padding: 4px; }
+  .buddy-banner-inner { display: flex; align-items: center; gap: 6px; }
+  .buddy-tabs { display: flex; border-bottom: 2px solid #808080; background: #d4d0c8; padding-top: 3px; }
+  .buddy-tab { padding: 2px 10px; font-size: 11px; border: 1px solid #808080; border-bottom: none; cursor: pointer; background: #d4d0c8; margin-right: 2px; margin-left: 3px; color: #000; }
+  .buddy-tab.active { background: white; font-weight: bold; border-bottom: 2px solid white; margin-bottom: -2px; position: relative; z-index: 1; }
+  .buddy-list-area { background: white; border: 2px solid; border-color: #808080 #ffffff #ffffff #808080; margin: 4px; min-height: 340px; overflow-y: auto; }
+  .buddy-group-header { background: #d4d0c8; padding: 1px 3px; font-size: 11px; font-weight: bold; display: flex; align-items: center; gap: 3px; cursor: pointer; border-bottom: 1px solid #808080; color: #000; }
+  .buddy-group-highlight { background: #ffff00; padding: 0 2px; color: #000; }
+  .buddy-item { padding: 1px 4px 1px 16px; font-size: 11px; cursor: pointer; color: #000; white-space: nowrap; background: white; }
+  .buddy-item:hover { background: #000080; color: white; }
+  .buddy-item.selected { background: #000080; color: white; }
+  .buddy-item.offline { color: #808080; }
+  .buddy-item.offline:hover { background: #000080; color: white; }
+
+  /* IM WINDOW */
+  #im-window { width: 350px; top: 20px; left: 20px; }
+  .im-menubar { display: flex; background: #d4d0c8; padding: 1px 3px; border-bottom: 1px solid #808080; justify-content: space-between; align-items: center; }
+  .im-menu-left { display: flex; }
+  .im-menu-item { font-size: 11px; padding: 1px 5px; cursor: pointer; color: #000; text-decoration: underline; }
+  .im-warning { font-size: 9px; color: #000; padding-right: 4px; }
+  .im-chat-area {
+    background: #ffffff; border: none;
+    border-top: 2px solid #808080; border-left: 2px solid #808080;
+    border-right: 2px solid #ffffff; border-bottom: 2px solid #ffffff;
+    margin: 4px 4px 2px 4px; height: 180px; overflow-y: auto; padding: 4px; font-size: 11px; line-height: 1.6;
   }
-  .mu { color: #cc0000; font-weight: bold; }
-  .mb { color: #0000cc; font-weight: bold; }
-  .mt { color: #000; font-weight: normal; }
-  .imtb { background: #d4d0c8; border-top: 1px solid #fff; border-bottom: 1px solid #808080; padding: 2px 4px; display: flex; align-items: center; gap: 6px; }
-  .imfb { font-size: 12px; font-weight: bold; cursor: pointer; padding: 0 3px; border: 1px solid transparent; color: #000; background: none; font-family: 'Tahoma', Arial; }
-  .imfb:hover { border-color: #808080; background: #d4d0c8; }
-  .imsep { width: 1px; height: 14px; background: #808080; }
-  .imlb { color: #0000cc; font-size: 12px; text-decoration: underline; cursor: pointer; background: none; border: none; font-family: 'Tahoma', Arial; }
-  .iminput {
-    background: white; border: 2px solid; border-color: #808080 #fff #fff #808080;
-    margin: 2px 4px; height: 56px; padding: 4px;
-    font-family: 'Tahoma', Arial; font-size: 12px;
-    resize: none; width: calc(100% - 8px); outline: none; color: #000; display: block;
+  .im-msg-buddy { color: #0000cc; font-weight: bold; }
+  .im-msg-user  { color: #cc0000; font-weight: bold; }
+  .im-msg-text  { color: #000; font-weight: normal; }
+  .im-toolbar { background: #d4d0c8; border-top: 1px solid #ffffff; border-bottom: 1px solid #808080; padding: 2px 4px; display: flex; align-items: center; gap: 6px; }
+  .im-font-btn { font-size: 11px; font-weight: bold; cursor: pointer; padding: 0 2px; border: 1px solid transparent; color: #000; background: none; font-family: 'Tahoma', Arial; border-radius: 0; }
+  .im-font-btn:hover { border-color: #808080; background: #d4d0c8; }
+  .im-font-sep { width: 1px; height: 14px; background: #808080; }
+  .im-link-btn { color: #0000cc; font-size: 11px; text-decoration: underline; cursor: pointer; background: none; border: none; font-family: 'Tahoma', Arial; }
+  #im-input {
+    background: #ffffff; border: none;
+    border-top: 2px solid #808080; border-left: 2px solid #808080;
+    border-right: 2px solid #ffffff; border-bottom: 2px solid #ffffff;
+    border-radius: 0; margin: 2px 4px; height: 60px; padding: 4px;
+    font-family: 'Tahoma', Arial; font-size: 11px; resize: none;
+    width: calc(100% - 8px); outline: none; color: #000; display: block;
   }
-  .imbb { display: flex; align-items: center; justify-content: space-between; padding: 4px 5px; background: #d4d0c8; }
-  .imbis { display: flex; gap: 4px; align-items: flex-end; }
-  .imib { display: flex; flex-direction: column; align-items: center; font-size: 9px; gap: 1px; cursor: pointer; color: #000; min-width: 32px; }
-  .imib span:first-child { font-size: 20px; }
-  .imsend { background: #d4d0c8; border: 2px solid; border-color: #fff #808080 #808080 #fff; padding: 3px 10px; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 3px; font-family: 'Tahoma', Arial; color: #000; }
-  .imsend:active { border-color: #808080 #fff #fff #808080; }
-  .imsbar { height: 10px; background: #d4d0c8; border-top: 1px solid #808080; display: flex; align-items: center; justify-content: flex-end; padding-right: 4px; gap: 1px; }
-  .sl { width: 8px; height: 6px; display: inline-block; }
-  .typing { color: #808080; font-style: italic; font-size: 11px; padding: 1px 0; }
-  .backbtn {
-    position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
-    background: #d4d0c8; border: 2px solid; border-color: #fff #808080 #808080 #fff;
-    padding: 4px 16px; font-family: 'Tahoma', Arial; font-size: 11px; cursor: pointer; color: #000;
-  }
+  .im-bottom-bar { display: flex; align-items: center; justify-content: space-between; padding: 3px 4px; background: #d4d0c8; }
+  .im-bottom-icons { display: flex; gap: 4px; align-items: flex-end; }
+  .im-bottom-icon-btn { display: flex; flex-direction: column; align-items: center; font-size: 8px; gap: 1px; cursor: pointer; color: #000; min-width: 34px; }
+  .im-bottom-icon-btn span:first-child { font-size: 18px; }
+  .im-send-btn { background: #d4d0c8; border: 2px solid; border-color: #ffffff #808080 #808080 #ffffff; border-radius: 0; padding: 3px 10px; font-size: 11px; cursor: pointer; display: flex; align-items: center; gap: 3px; font-family: 'Tahoma', Arial; color: #000; }
+  .im-send-btn:active { border-color: #808080 #ffffff #ffffff #808080; }
+  .im-status-bar { height: 10px; background: #d4d0c8; border-top: 1px solid #808080; display: flex; align-items: center; justify-content: flex-end; padding-right: 4px; }
+  .status-light { width: 8px; height: 6px; display: inline-block; }
+  .typing-indicator { color: #808080; font-style: italic; font-size: 10px; padding: 1px 0; }
+  .back-btn { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); background: #d4d0c8; border: 2px solid; border-color: #ffffff #808080 #808080 #ffffff; border-radius: 0; padding: 3px 12px; font-family: 'Tahoma', Arial; font-size: 11px; cursor: pointer; color: #000; white-space: nowrap; }
 </style>
 </head>
 <body>
+<div class="aim-root" id="root">
 
   <!-- SIGN IN -->
   <div class="screen active" id="screen-signin">
-    <div class="win" id="signin-win">
-      <div class="titlebar">
-        <div class="tl">
-          <svg width="16" height="16" viewBox="0 0 13 13"><circle cx="6.5" cy="5" r="3" fill="#ffcc00"/><line x1="6.5" y1="8" x2="5" y2="11" stroke="#ffcc00" stroke-width="1.5"/><line x1="6.5" y1="8" x2="8" y2="11" stroke="#ffcc00" stroke-width="1.5"/><line x1="5" y1="7" x2="3" y2="9" stroke="#ffcc00" stroke-width="1.5"/><line x1="8" y1="7" x2="10" y2="9" stroke="#ffcc00" stroke-width="1.5"/></svg>
+    <div class="win-window" id="signin-window">
+      <div class="win-titlebar">
+        <div class="win-titlebar-left">
+          <svg width="14" height="14" viewBox="0 0 20 26">
+            <circle cx="10" cy="3" r="3" fill="#ffcc00"/>
+            <line x1="10" y1="6" x2="10" y2="16" stroke="#ffcc00" stroke-width="2.5"/>
+            <line x1="10" y1="10" x2="3" y2="14" stroke="#ffcc00" stroke-width="2"/>
+            <line x1="10" y1="10" x2="17" y2="13" stroke="#ffcc00" stroke-width="2"/>
+            <line x1="10" y1="16" x2="5" y2="24" stroke="#ffcc00" stroke-width="2"/>
+            <line x1="10" y1="16" x2="15" y2="24" stroke="#ffcc00" stroke-width="2"/>
+          </svg>
           Sign On
         </div>
-        <div class="wbtns"><div class="wbtn">_</div><div class="wbtn">□</div><div class="wbtn">✕</div></div>
+        <div class="win-btns">
+          <div class="win-btn">_</div><div class="win-btn">&#9633;</div><div class="win-btn">&#10005;</div>
+        </div>
       </div>
-      <div class="aim-banner">
-        <svg width="80" height="126" viewBox="0 0 38 60">
-          <circle cx="19" cy="8" r="7" fill="#ffcc00"/>
-          <line x1="19" y1="15" x2="19" y2="35" stroke="#ffcc00" stroke-width="3"/>
-          <line x1="19" y1="20" x2="8" y2="28" stroke="#ffcc00" stroke-width="2.5"/>
-          <line x1="19" y1="20" x2="30" y2="26" stroke="#ffcc00" stroke-width="2.5"/>
-          <line x1="19" y1="35" x2="10" y2="50" stroke="#ffcc00" stroke-width="2.5"/>
-          <line x1="19" y1="35" x2="28" y2="50" stroke="#ffcc00" stroke-width="2.5"/>
-        </svg>
-        <div><div class="banner-text">AOL Instant<br>Messenger<span class="banner-sub">™</span></div></div>
+
+      <img src="aim_banner.png" class="aim-banner" alt="AOL Instant Messenger"
+           onerror="this.style.display='none';document.getElementById('banner-fallback').style.display='flex';">
+      <div class="aim-banner-fallback" id="banner-fallback" style="display:none;">
+        <div class="banner-logo-text">
+          <span class="banner-aol">AOL</span>
+          <span class="banner-aim">Instant Messenger<span class="banner-tm">TM</span></span>
+        </div>
       </div>
-      <div class="sform">
-        <div class="frow">
-          <div class="flabel">ScreenName 🔑</div>
-          <select class="fselect" id="sn-select">
+
+      <div class="signin-form">
+        <div class="form-row">
+          <div class="sn-label">
+            ScreenName
+            <svg width="20" height="12" viewBox="0 0 30 14">
+              <circle cx="6" cy="7" r="5" fill="none" stroke="#c8960c" stroke-width="2"/>
+              <line x1="10" y1="7" x2="26" y2="7" stroke="#c8960c" stroke-width="2"/>
+              <line x1="22" y1="7" x2="22" y2="11" stroke="#c8960c" stroke-width="2"/>
+              <line x1="26" y1="7" x2="26" y2="11" stroke="#c8960c" stroke-width="2"/>
+            </svg>
+          </div>
+          <select class="form-select" id="sn-select">
             <option value="VANILA242">VANILA242</option>
             <option value="Yukon242">Yukon242</option>
           </select>
-          <a class="alink">Get a Screen Name</a>
+          <a class="aim-link">Get a Screen Name</a>
         </div>
-        <div class="frow">
-          <div class="flabel">Password</div>
-          <input type="password" id="pw-input" class="finput" autocomplete="current-password" oninput="onPwInput()" onkeydown="onPwKey(event)"/>
-          <a class="alink">Forgot Password?</a>
+        <div class="form-row">
+          <span class="pw-label">Password</span>
+          <input type="password" id="pw-input" class="form-input"
+            autocomplete="current-password"
+            oninput="onPwInput()" onkeydown="onPwKey(event)">
+          <a class="aim-link">Forgot Password?</a>
         </div>
-        <div class="cbrow">
-          <label><input type="checkbox"> Save password</label>
-          <label><input type="checkbox"> Auto-login</label>
+        <div class="checkbox-row">
+          <label><input type="checkbox" style="width:12px;height:12px;" disabled> Save password</label>
+          <label><input type="checkbox" style="width:12px;height:12px;" disabled> Auto-login</label>
         </div>
-        <hr style="border:none;border-top:1px solid #808080;border-bottom:1px solid #fff;margin:0 0 18px;">
-        <div class="sfooter">
-          <div class="ficons">
-            <div class="fibtn"><span>❓</span><span>Help</span></div>
-            <div class="fibtn"><span>🔧</span><span>Setup</span></div>
+        <hr class="signin-divider">
+        <div class="signin-footer">
+          <div class="footer-icons">
+            <div class="footer-icon-btn"><span class="icon-img">&#10067;</span><span>Help</span></div>
+            <div class="footer-icon-btn"><span class="icon-img">&#128295;</span><span>Setup</span></div>
           </div>
-          <button class="btn98" id="signon-btn" disabled onclick="doSignOn()">Sign On</button>
+          <button class="signon-btn" id="signon-btn" disabled onclick="doSignOn()">
+            <svg id="runner-svg" width="22" height="28" viewBox="0 0 20 26">
+              <circle cx="10" cy="3" r="3" fill="#808080"/>
+              <line x1="10" y1="6" x2="10" y2="16" stroke="#808080" stroke-width="2.5"/>
+              <line x1="10" y1="10" x2="3" y2="14" stroke="#808080" stroke-width="2"/>
+              <line x1="10" y1="10" x2="17" y2="13" stroke="#808080" stroke-width="2"/>
+              <line x1="10" y1="16" x2="5" y2="24" stroke="#808080" stroke-width="2"/>
+              <line x1="10" y1="16" x2="15" y2="24" stroke="#808080" stroke-width="2"/>
+            </svg>
+            Sign On
+          </button>
         </div>
-        <div class="ver">Version: 5.9.6089</div>
+        <div class="version-text">Version: 5.9.3690</div>
       </div>
     </div>
   </div>
 
   <!-- BUDDY LIST -->
   <div class="screen" id="screen-buddylist">
-    <div class="win" id="bl-win">
-      <div class="titlebar">
-        <div class="tl">
-          <svg width="13" height="13" viewBox="0 0 13 13"><circle cx="6.5" cy="4" r="3" fill="#ffcc00"/><line x1="6.5" y1="7" x2="5" y2="11" stroke="#ffcc00" stroke-width="1.5"/><line x1="6.5" y1="7" x2="8" y2="11" stroke="#ffcc00" stroke-width="1.5"/><line x1="5" y1="8.5" x2="3" y2="10" stroke="#ffcc00" stroke-width="1.5"/><line x1="8" y1="8.5" x2="10" y2="10" stroke="#ffcc00" stroke-width="1.5"/></svg>
+    <div class="win-window" id="buddylist-window">
+      <div class="win-titlebar">
+        <div class="win-titlebar-left">
+          <svg width="13" height="13" viewBox="0 0 20 26">
+            <circle cx="10" cy="3" r="3" fill="#ffcc00"/>
+            <line x1="10" y1="6" x2="10" y2="16" stroke="#ffcc00" stroke-width="2.5"/>
+            <line x1="10" y1="10" x2="3" y2="14" stroke="#ffcc00" stroke-width="2"/>
+            <line x1="10" y1="10" x2="17" y2="13" stroke="#ffcc00" stroke-width="2"/>
+            <line x1="10" y1="16" x2="5" y2="24" stroke="#ffcc00" stroke-width="2"/>
+            <line x1="10" y1="16" x2="15" y2="24" stroke="#ffcc00" stroke-width="2"/>
+          </svg>
           <span id="bl-title">VANILA242's Buddy List ...</span>
         </div>
-        <div class="wbtns"><div class="wbtn">_</div><div class="wbtn">□</div><div class="wbtn" onclick="goSignin()">✕</div></div>
-      </div>
-      <div class="bmbar"><span class="bmi"><u>M</u>y AIM</span><span class="bmi">People</span><span class="bmi">Help</span></div>
-      <div class="bbanner">
-        <div style="display:flex;align-items:center;gap:8px;">
-          <svg width="32" height="50" viewBox="0 0 30 46"><circle cx="15" cy="6" r="5.5" fill="#ffcc00"/><line x1="15" y1="11.5" x2="15" y2="28" stroke="#ffcc00" stroke-width="2.5"/><line x1="15" y1="17" x2="5" y2="23" stroke="#ffcc00" stroke-width="2"/><line x1="15" y1="17" x2="25" y2="22" stroke="#ffcc00" stroke-width="2"/><line x1="15" y1="28" x2="8" y2="40" stroke="#ffcc00" stroke-width="2"/><line x1="15" y1="28" x2="22" y2="40" stroke="#ffcc00" stroke-width="2"/></svg>
-          <div style="text-align:center;"><div style="color:#fff;font-weight:bold;font-style:italic;font-size:13px;font-family:Arial;">AOL</div><div style="color:#aad4ff;font-size:11px;font-style:italic;font-family:Arial;">Instant<br>Messenger™</div></div>
+        <div class="win-btns">
+          <div class="win-btn">_</div><div class="win-btn">&#9633;</div><div class="win-btn" onclick="goSignin()">&#10005;</div>
         </div>
       </div>
-      <div class="btabs"><div class="btab active">Online</div><div class="btab">List Setup</div></div>
-      <div class="blist" id="buddy-list-area"></div>
+      <div class="buddy-menubar">
+        <span class="buddy-menu-item"><u>M</u>y AIM</span>
+        <span class="buddy-menu-item">People</span>
+        <span class="buddy-menu-item">Help</span>
+      </div>
+      <div class="buddy-banner">
+        <div class="buddy-banner-inner">
+          <svg width="28" height="36" viewBox="0 0 20 26">
+            <circle cx="10" cy="3" r="3" fill="#ffcc00"/>
+            <line x1="10" y1="6" x2="10" y2="16" stroke="#ffcc00" stroke-width="2.5"/>
+            <line x1="10" y1="10" x2="3" y2="14" stroke="#ffcc00" stroke-width="2"/>
+            <line x1="10" y1="10" x2="17" y2="13" stroke="#ffcc00" stroke-width="2"/>
+            <line x1="10" y1="16" x2="5" y2="24" stroke="#ffcc00" stroke-width="2"/>
+            <line x1="10" y1="16" x2="15" y2="24" stroke="#ffcc00" stroke-width="2"/>
+          </svg>
+          <div style="text-align:center;">
+            <div style="color:white;font-weight:bold;font-style:italic;font-size:13px;font-family:Arial;">AOL</div>
+            <div style="color:#aad4ff;font-size:10px;font-style:italic;font-family:Arial;">Instant<br>Messenger</div>
+          </div>
+        </div>
+      </div>
+      <div class="buddy-tabs">
+        <div class="buddy-tab active">Online</div>
+        <div class="buddy-tab">List Setup</div>
+      </div>
+      <div class="buddy-list-area" id="buddy-list-area"></div>
     </div>
   </div>
 
   <!-- IM WINDOW -->
   <div class="screen" id="screen-im">
-    <div class="win" id="im-win">
-      <div class="titlebar">
-        <div class="tl">
-          <svg width="13" height="13" viewBox="0 0 13 13"><circle cx="6.5" cy="4" r="3" fill="#ffcc00"/><line x1="6.5" y1="7" x2="5" y2="11" stroke="#ffcc00" stroke-width="1.5"/><line x1="6.5" y1="7" x2="8" y2="11" stroke="#ffcc00" stroke-width="1.5"/><line x1="5" y1="8.5" x2="3" y2="10" stroke="#ffcc00" stroke-width="1.5"/><line x1="8" y1="8.5" x2="10" y2="10" stroke="#ffcc00" stroke-width="1.5"/></svg>
-          <span id="im-title">buddy – Instant Message</span>
+    <div class="win-window" id="im-window">
+      <div class="win-titlebar">
+        <div class="win-titlebar-left">
+          <svg width="13" height="13" viewBox="0 0 20 26">
+            <circle cx="10" cy="3" r="3" fill="#ffcc00"/>
+            <line x1="10" y1="6" x2="10" y2="16" stroke="#ffcc00" stroke-width="2.5"/>
+            <line x1="10" y1="10" x2="3" y2="14" stroke="#ffcc00" stroke-width="2"/>
+            <line x1="10" y1="10" x2="17" y2="13" stroke="#ffcc00" stroke-width="2"/>
+            <line x1="10" y1="16" x2="5" y2="24" stroke="#ffcc00" stroke-width="2"/>
+            <line x1="10" y1="16" x2="15" y2="24" stroke="#ffcc00" stroke-width="2"/>
+          </svg>
+          <span id="im-title">buddy - Instant Message</span>
         </div>
-        <div class="wbtns"><div class="wbtn">_</div><div class="wbtn">□</div><div class="wbtn" onclick="closeIM()">✕</div></div>
+        <div class="win-btns">
+          <div class="win-btn">_</div><div class="win-btn">&#9633;</div><div class="win-btn" onclick="closeIM()">&#10005;</div>
+        </div>
       </div>
-      <div class="immbar">
-        <div style="display:flex;"><span class="immi">File</span><span class="immi">Edit</span><span class="immi">View</span><span class="immi">People</span></div>
-        <div class="imwarn" id="im-warning-label">buddy's Warning Level: 0%</div>
+      <div class="im-menubar">
+        <div class="im-menu-left">
+          <span class="im-menu-item">File</span>
+          <span class="im-menu-item">Edit</span>
+          <span class="im-menu-item">View</span>
+          <span class="im-menu-item">People</span>
+        </div>
+        <div class="im-warning" id="im-warning-label">buddy's Warning Level: 0%</div>
       </div>
-      <div class="imchat" id="im-chat-area"></div>
-      <div class="imtb">
-        <button class="imfb" style="font-size:15px;">A</button>
-        <button class="imfb" style="font-size:15px;background:#000;color:#fff;padding:0 3px;">A</button>
-        <div class="imsep"></div>
-        <button class="imfb" style="font-size:10px;">A▼</button>
-        <button class="imfb">A</button>
-        <button class="imfb" style="font-size:11px;">ᴬA</button>
-        <div class="imsep"></div>
-        <button class="imfb" style="font-weight:bold;">B</button>
-        <button class="imfb" style="font-style:italic;">I</button>
-        <button class="imfb" style="text-decoration:underline;">U</button>
-        <div class="imsep"></div>
-        <button class="imlb">link</button>
+      <div class="im-chat-area" id="im-chat-area"></div>
+      <div class="im-toolbar">
+        <button class="im-font-btn" style="font-size:14px;">A</button>
+        <button class="im-font-btn" style="font-size:14px;background:#000;color:#fff;padding:0 2px;">A</button>
+        <div class="im-font-sep"></div>
+        <button class="im-font-btn" style="font-size:9px;">A&#9660;</button>
+        <button class="im-font-btn">A</button>
+        <button class="im-font-btn" style="font-size:10px;">&#7424;A</button>
+        <div class="im-font-sep"></div>
+        <button class="im-font-btn" style="font-weight:bold;">B</button>
+        <button class="im-font-btn" style="font-style:italic;">I</button>
+        <button class="im-font-btn" style="text-decoration:underline;">U</button>
+        <div class="im-font-sep"></div>
+        <button class="im-link-btn">link</button>
       </div>
-      <textarea id="im-input" class="iminput" onkeydown="imKeydown(event)"></textarea>
-      <div class="imbb">
-        <div class="imbis">
-          <div style="font-size:30px;line-height:1;">🐕</div>
-          <div class="imib"><span>⚡</span><span>Warn</span></div>
-          <div class="imib"><span>🚫</span><span>Block</span></div>
+      <textarea id="im-input" onkeydown="imKeydown(event)"></textarea>
+      <div class="im-bottom-bar">
+        <div class="im-bottom-icons">
+          <div style="font-size:30px;line-height:1;margin-right:4px;">&#128021;</div>
+          <div class="im-bottom-icon-btn"><span>&#9889;</span><span>Warn</span></div>
+          <div class="im-bottom-icon-btn"><span>&#128683;</span><span>Block</span></div>
           <div style="width:16px;"></div>
-          <div class="imib"><span>➕</span><span>Add Buddy</span></div>
-          <div class="imib"><span>ℹ️</span><span>Info</span></div>
+          <div class="im-bottom-icon-btn"><span>&#10133;</span><span>Add Buddy</span></div>
+          <div class="im-bottom-icon-btn"><span>&#8505;</span><span>Info</span></div>
         </div>
-        <button class="imsend" onclick="sendMessage()"><span style="font-size:18px;">📨</span> Send</button>
+        <button class="im-send-btn" onclick="sendMessage()">
+          <span style="font-size:16px;">&#128232;</span> Send
+        </button>
       </div>
-      <div class="imsbar">
-        <span class="sl" style="background:#00cc00;"></span>
-        <span class="sl" style="background:#00cc00;"></span>
-        <span class="sl" style="background:#00cc00;"></span>
-        <span class="sl" style="background:#cccccc;"></span>
+      <div class="im-status-bar">
+        <div style="display:flex;gap:1px;align-items:center;">
+          <span class="status-light" style="background:#00cc00;"></span>
+          <span class="status-light" style="background:#00cc00;"></span>
+          <span class="status-light" style="background:#00cc00;"></span>
+          <span class="status-light" style="background:#cccccc;"></span>
+        </div>
       </div>
     </div>
-    <button class="backbtn" onclick="closeIM()">← Back to Buddy List</button>
+    <button class="back-btn" onclick="closeIM()">&#8592; Back to Buddy List</button>
   </div>
 
+</div>
+
 <script>
-  var currentUser='VANILA242', selectedBuddy=null, currentBuddy=null;
-  var buddyData=[
-    {group:'Buddies',members:[{name:'DiscipleWade',online:true},{name:'Buckles242',online:false},{name:'ScaryBVHS',online:true},{name:'Chloecat99',online:false}]},
-    {group:'Family',members:[]},{group:'Co-Workers',members:[]}
+  var currentUser   = 'VANILA242';
+  var selectedBuddy = null;
+  var currentBuddy  = null;
+
+  var buddyData = [
+    { group: 'Buddies', members: [
+      { name: 'DiscipleWade', online: true  },
+      { name: 'Buckles242',   online: false },
+      { name: 'ScaryBVHS',    online: true  },
+      { name: 'Chloecat99',   online: false }
+    ]},
+    { group: 'Family',     members: [] },
+    { group: 'Co-Workers', members: [] }
   ];
-  function onPwInput(){document.getElementById('signon-btn').disabled=(document.getElementById('pw-input').value!=='vikings');}
-  function onPwKey(e){if(e.key==='Enter'){e.preventDefault();doSignOn();}}
-  function doSignOn(){if(document.getElementById('pw-input').value!=='vikings')return;currentUser=document.getElementById('sn-select').value;document.getElementById('bl-title').textContent=currentUser+"'s Buddy List ...";renderBuddyList();showScreen('screen-buddylist');}
-  function goSignin(){document.getElementById('pw-input').value='';document.getElementById('signon-btn').disabled=true;selectedBuddy=null;showScreen('screen-signin');setTimeout(function(){document.getElementById('pw-input').focus();},100);}
-  function showScreen(id){document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});document.getElementById(id).classList.add('active');}
-  function renderBuddyList(){var area=document.getElementById('buddy-list-area');area.innerHTML='';buddyData.forEach(function(g){var on=g.members.filter(function(m){return m.online;}).length;var h=document.createElement('div');h.className='bgh';h.innerHTML='<span>▼</span><span class="bhl">'+g.group+' ('+on+'/'+g.members.length+')</span>';area.appendChild(h);g.members.forEach(function(m){var item=document.createElement('div');item.className='bi'+(m.online?'':' off');item.textContent=m.name;item.addEventListener('click',function(){handleBuddyClick(item,m.name);});area.appendChild(item);});});}
-  function handleBuddyClick(el,name){if(selectedBuddy===name){selectedBuddy=null;openIM(name);return;}document.querySelectorAll('.bi').forEach(function(i){i.classList.remove('sel');});el.classList.add('sel');selectedBuddy=name;}
-  function openIM(name){currentBuddy=name;document.getElementById('im-title').textContent=name+' – Instant Message';document.getElementById('im-warning-label').textContent=name+"'s Warning Level: 0%";var chat=document.getElementById('im-chat-area');chat.innerHTML='';addTyping(name);document.getElementById('im-input').value='';showScreen('screen-im');setTimeout(function(){document.getElementById('im-input').focus();},150);setTimeout(removeTyping,2200);}
-  function addTyping(name){var chat=document.getElementById('im-chat-area');var ti=document.createElement('div');ti.className='typing';ti.id='ti';ti.textContent=(name||currentBuddy)+': ...';chat.appendChild(ti);chat.scrollTop=chat.scrollHeight;}
-  function removeTyping(){var ti=document.getElementById('ti');if(ti)ti.remove();}
-  function closeIM(){selectedBuddy=null;document.querySelectorAll('.bi').forEach(function(i){i.classList.remove('sel');});showScreen('screen-buddylist');}
-  function imKeydown(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}}
-  function sendMessage(){var input=document.getElementById('im-input');var text=input.value.trim();if(!text)return;var chat=document.getElementById('im-chat-area');removeTyping();var msg=document.createElement('div');msg.innerHTML='<span class="mu">'+esc(currentUser)+':</span> <span class="mt">'+esc(text)+'</span>';chat.appendChild(msg);input.value='';chat.scrollTop=chat.scrollHeight;input.focus();setTimeout(function(){addTyping(currentBuddy);setTimeout(removeTyping,2000);},600);}
-  function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-  document.getElementById('pw-input').focus();
+
+  function onPwInput() {
+    var val = document.getElementById('pw-input').value;
+    var btn = document.getElementById('signon-btn');
+    var ok  = (val === 'vikings');
+    btn.disabled = !ok;
+    var col = ok ? '#000000' : '#808080';
+    document.querySelectorAll('#runner-svg circle, #runner-svg line').forEach(function(el){
+      if (el.tagName === 'circle') el.setAttribute('fill', col);
+      else el.setAttribute('stroke', col);
+    });
+  }
+
+  function onPwKey(e) {
+    if (e.key === 'Enter') { e.preventDefault(); doSignOn(); }
+  }
+
+  function doSignOn() {
+    if (document.getElementById('pw-input').value !== 'vikings') return;
+    currentUser = document.getElementById('sn-select').value;
+    document.getElementById('bl-title').textContent = currentUser + "'s Buddy List ...";
+    renderBuddyList();
+    showScreen('screen-buddylist');
+  }
+
+  function goSignin() {
+    document.getElementById('pw-input').value = '';
+    onPwInput();
+    selectedBuddy = null;
+    showScreen('screen-signin');
+    setTimeout(function(){ document.getElementById('pw-input').focus(); }, 100);
+  }
+
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
+    document.getElementById(id).classList.add('active');
+  }
+
+  function renderBuddyList() {
+    var area = document.getElementById('buddy-list-area');
+    area.innerHTML = '';
+    buddyData.forEach(function(group) {
+      var online = group.members.filter(function(m){ return m.online; }).length;
+      var hdr = document.createElement('div');
+      hdr.className = 'buddy-group-header';
+      hdr.innerHTML = '<span>&#9660;</span><span class="buddy-group-highlight">'
+        + group.group + ' (' + online + '/' + group.members.length + ')</span>';
+      area.appendChild(hdr);
+      group.members.forEach(function(m) {
+        var item = document.createElement('div');
+        item.className = 'buddy-item' + (m.online ? '' : ' offline');
+        item.textContent = m.name;
+        item.addEventListener('click', function(){ handleBuddyClick(item, m.name); });
+        area.appendChild(item);
+      });
+    });
+  }
+
+  function handleBuddyClick(el, name) {
+    if (selectedBuddy === name) { selectedBuddy = null; openIM(name); return; }
+    document.querySelectorAll('.buddy-item').forEach(function(i){ i.classList.remove('selected'); });
+    el.classList.add('selected');
+    selectedBuddy = name;
+  }
+
+  function openIM(name) {
+    currentBuddy = name;
+    document.getElementById('im-title').textContent = name + ' - Instant Message';
+    document.getElementById('im-warning-label').textContent = name + "'s Warning Level: 0%";
+    var chat = document.getElementById('im-chat-area');
+    chat.innerHTML = '';
+    addTypingIndicator(name);
+    document.getElementById('im-input').value = '';
+    showScreen('screen-im');
+    setTimeout(function(){ document.getElementById('im-input').focus(); }, 150);
+    setTimeout(removeTypingIndicator, 2200);
+  }
+
+  function addTypingIndicator(name) {
+    var chat = document.getElementById('im-chat-area');
+    var ti = document.createElement('div');
+    ti.className = 'typing-indicator'; ti.id = 'typing-indicator';
+    ti.textContent = (name || currentBuddy) + ': ...';
+    chat.appendChild(ti); chat.scrollTop = chat.scrollHeight;
+  }
+
+  function removeTypingIndicator() {
+    var ti = document.getElementById('typing-indicator'); if (ti) ti.remove();
+  }
+
+  function closeIM() {
+    selectedBuddy = null;
+    document.querySelectorAll('.buddy-item').forEach(function(i){ i.classList.remove('selected'); });
+    showScreen('screen-buddylist');
+  }
+
+  function imKeydown(e) {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+  }
+
+  function sendMessage() {
+    var input = document.getElementById('im-input');
+    var text  = input.value.trim();
+    if (!text) return;
+    var chat = document.getElementById('im-chat-area');
+    removeTypingIndicator();
+    var msg = document.createElement('div');
+    msg.innerHTML = '<span class="im-msg-user">' + esc(currentUser) + ':</span> <span class="im-msg-text">' + esc(text) + '</span>';
+    chat.appendChild(msg);
+    input.value = ''; chat.scrollTop = chat.scrollHeight; input.focus();
+    setTimeout(function(){
+      addTypingIndicator(currentBuddy);
+      setTimeout(removeTypingIndicator, 2000);
+    }, 600);
+  }
+
+  function esc(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  window.addEventListener('load', function(){
+    document.getElementById('pw-input').focus();
+  });
 </script>
 </body>
 </html>
