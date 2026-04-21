@@ -402,7 +402,7 @@
   // Each sound is loaded once and reused. We reset currentTime before playing
   // so rapid triggers don't get swallowed.
   var sounds = {
-    gotMail : new Audio('yougotmail.mp3'),   // login accepted
+    gotMail : new Audio('yougotmail.mp3'),   // buddy list appears
     imTone  : new Audio('aol-im.mp3'),       // buddy replies to IM
     open    : new Audio('aol-open-1.mp3'),   // buddy signs on
     close   : new Audio('aol-close.mp3')     // buddy signs off
@@ -477,7 +477,7 @@
   function onPwInput() {
     var val = document.getElementById('pw-input').value;
     var btn = document.getElementById('signon-btn');
-    var ok  = (val === 'vikings');
+    var ok  = (val === '242');
     btn.disabled = !ok;
     var col = ok ? '#3a7a2a' : '#808080';
     document.querySelectorAll('#runner-svg circle, #runner-svg line').forEach(function(el){
@@ -488,7 +488,7 @@
   function onPwKey(e) { if (e.key === 'Enter') { e.preventDefault(); doSignOn(); } }
 
   function doSignOn() {
-    if (document.getElementById('pw-input').value !== 'vikings') return;
+    if (document.getElementById('pw-input').value !== '242') return;
     currentUser = document.getElementById('sn-select').value;
     document.getElementById('bl-title').textContent = currentUser + "'s Buddy List ...";
     renderBuddyList();
@@ -496,8 +496,13 @@
     document.getElementById('screen-signin').classList.remove('active');
     document.getElementById('screen-buddylist').style.display = 'block';
     document.getElementById('screen-buddylist').classList.add('active');
-    // ── SOUND: You've got mail — plays once buddy list is visible ──
-    setTimeout(function(){ playSound('gotMail'); }, 100);
+    // ── SOUND: You've got mail — triggered directly on the click gesture ──
+    // Play immediately, then retry at 1s and 2s as fallback
+    playSound('gotMail');
+    setTimeout(function(){ playSound('gotMail'); }, 1000);
+    var _mailPlayed = false;
+    sounds.gotMail.addEventListener('play', function(){ _mailPlayed = true; }, { once: true });
+    setTimeout(function(){ if (!_mailPlayed) playSound('gotMail'); }, 2000);
     startRotation();
   }
 
@@ -614,13 +619,24 @@
     }
   }
 
+  // ── Per-buddy text styling for their messages ──
+  var buddyTextStyles = {
+    'CEMac16':    'font-family: "Comic Sans MS", Comic Sans, cursive; font-weight: bold; color: #ff69b4;',
+    'Burrrrrr19': 'font-family: "Comic Sans MS", Comic Sans, cursive; font-weight: bold; color: #000080;'
+  };
+
   function appendMessage(senderName, text, isUser) {
     var chat = document.getElementById('im-chat-area');
     var div = document.createElement('div');
-    var nameSpan = isUser
-      ? '<span class="im-msg-user">' + esc(senderName) + ':</span> '
-      : '<span class="im-msg-buddy">' + esc(senderName) + ':</span> ';
-    div.innerHTML = nameSpan + '<span class="im-msg-text">' + esc(text) + '</span>';
+    var nameSpan, textStyle;
+    if (isUser) {
+      nameSpan  = '<span class="im-msg-user">' + esc(senderName) + ':</span> ';
+      textStyle = '';
+    } else {
+      nameSpan  = '<span class="im-msg-buddy">' + esc(senderName) + ':</span> ';
+      textStyle = buddyTextStyles[senderName] ? ' style="' + buddyTextStyles[senderName] + '"' : '';
+    }
+    div.innerHTML = nameSpan + '<span class="im-msg-text"' + textStyle + '>' + esc(text) + '</span>';
     chat.appendChild(div);
     chat.scrollTop = chat.scrollHeight;
   }
