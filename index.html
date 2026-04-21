@@ -48,26 +48,40 @@
   .screen { display: none; }
   .screen.active { display: block; }
 
+  /* ══════════════ API KEY DIALOG ══════════════ */
+  #apikey-window { width: 320px; top: 180px; left: 35px; }
+  .apikey-body { padding: 14px 14px 10px; background: #d4d0c8; }
+  .apikey-icon-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .apikey-icon { font-size: 28px; }
+  .apikey-msg { font-size: 12px; color: #000; line-height: 1.5; }
+  .apikey-msg strong { display: block; margin-bottom: 4px; font-size: 13px; }
+  .apikey-input {
+    width: 100%; height: 26px;
+    border-top: 2px solid #808080; border-left: 2px solid #808080;
+    border-right: 2px solid #ffffff; border-bottom: 2px solid #ffffff;
+    border-radius: 0; background: #ffffff;
+    font-family: 'Tahoma', Arial; font-size: 12px; padding: 0 6px;
+    outline: none; color: #000; margin-bottom: 10px;
+  }
+  .apikey-note { font-size: 10px; color: #808080; margin-bottom: 12px; line-height: 1.4; }
+  .apikey-divider { border: none; border-top: 1px solid #808080; border-bottom: 1px solid #ffffff; margin: 8px 0; }
+  .apikey-footer { display: flex; justify-content: flex-end; gap: 6px; }
+  .btn-98 {
+    background: #d4d0c8; border: 2px solid; border-color: #ffffff #808080 #808080 #ffffff;
+    border-radius: 0; padding: 3px 16px; font-family: 'Tahoma', Arial;
+    font-size: 12px; cursor: pointer; color: #000; min-width: 70px; text-align: center;
+  }
+  .btn-98:active { border-color: #808080 #ffffff #ffffff #808080; }
+  .btn-98.default { border: 3px solid #000; padding: 2px 15px; }
+
   /* ══════════════ SIGN IN ══════════════ */
   #signin-window { width: 350px; top: 30px; left: 20px; }
-
-  .aim-banner {
-    width: 100%; display: block; height: 220px;
-    object-fit: cover; object-position: top;
-    background: #1a1aaa;
-  }
-  .aim-banner-fallback {
-    width: 100%; height: 220px; background: #1a1aaa;
-    display: none; align-items: flex-end; padding: 10px 14px;
-  }
+  .aim-banner { width: 100%; display: block; height: 220px; object-fit: cover; object-position: top; background: #1a1aaa; }
+  .aim-banner-fallback { width: 100%; height: 220px; background: #1a1aaa; display: none; align-items: flex-end; padding: 10px 14px; }
   .banner-aol { color: white; font-family: Arial; font-size: 22px; font-weight: 900; font-style: italic; }
   .banner-aim { color: white; font-family: Arial; font-size: 16px; font-style: italic; }
-
   .signin-form { padding: 10px 12px 8px; background: #d4d0c8; }
-  .sn-label {
-    font-size: 13px; font-weight: bold; font-style: italic; color: #000080;
-    display: flex; align-items: center; gap: 4px; margin-bottom: 3px;
-  }
+  .sn-label { font-size: 13px; font-weight: bold; font-style: italic; color: #000080; display: flex; align-items: center; gap: 4px; margin-bottom: 3px; }
   .pw-label { font-size: 13px; font-weight: bold; color: #000; margin-bottom: 3px; display: block; }
   .form-input {
     width: 100%; height: 24px;
@@ -92,14 +106,9 @@
     background: #d4d0c8;
     border-top: 2px solid #ffffff; border-left: 2px solid #ffffff;
     border-right: 2px solid #808080; border-bottom: 2px solid #808080;
-    display: flex; align-items: center; justify-content: center;
-    pointer-events: none;
+    display: flex; align-items: center; justify-content: center; pointer-events: none;
   }
-  .sn-dropdown-arrow::after {
-    content: ''; width: 0; height: 0;
-    border-left: 4px solid transparent; border-right: 4px solid transparent;
-    border-top: 5px solid #808080;
-  }
+  .sn-dropdown-arrow::after { content: ''; width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 5px solid #808080; }
   .aim-link { color: #0000cc; font-size: 12px; font-style: italic; text-decoration: underline; cursor: pointer; display: block; margin: 3px 0 8px; font-family: Arial; }
   .form-row { margin-bottom: 4px; }
   .checkbox-row { display: flex; align-items: center; justify-content: space-between; margin: 6px 0; font-size: 11px; color: #808080; }
@@ -111,9 +120,8 @@
   .footer-icon-btn .icon-img { font-size: 22px; line-height: 1; }
   .signon-btn {
     background: #d4d0c8; border: 2px solid; border-color: #ffffff #808080 #808080 #ffffff;
-    border-radius: 0; padding: 5px 14px;
-    font-family: 'Tahoma', Arial; font-size: 12px; font-weight: bold;
-    cursor: pointer; color: #000;
+    border-radius: 0; padding: 5px 14px; font-family: 'Tahoma', Arial;
+    font-size: 12px; font-weight: bold; cursor: pointer; color: #000;
     display: flex; flex-direction: column; align-items: center; gap: 1px; min-width: 80px;
   }
   .signon-btn:active { border-color: #808080 #ffffff #ffffff #808080; }
@@ -122,40 +130,17 @@
 
   /* ══════════════ BUDDY LIST ══════════════ */
   #buddylist-window { width: 288px; top: 20px; left: 51px; }
-
   .buddy-menubar { display: flex; background: #d4d0c8; padding: 2px 4px; border-bottom: 1px solid #808080; }
   .buddy-menu-item { font-size: 11px; padding: 1px 5px; cursor: pointer; color: #000; }
   .buddy-menu-item:hover { background: #000080; color: white; }
-
-  /* Logo: contain so full image shows, grey fill for letterbox areas */
-  .buddy-banner-img {
-    width: 100%;
-    height: 70px;
-    background-image: url('buddy_logo.jpg');
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-color: #d4d0c8;
-    display: block;
-  }
-
+  .buddy-banner-img { width: 100%; height: 70px; background-image: url('buddy_logo.jpg'); background-size: contain; background-position: center; background-repeat: no-repeat; background-color: #d4d0c8; display: block; }
   .buddy-tabs { display: flex; border-bottom: 2px solid #808080; background: #d4d0c8; padding-top: 3px; }
   .buddy-tab { padding: 2px 10px; font-size: 11px; border: 1px solid #808080; border-bottom: none; cursor: pointer; background: #d4d0c8; margin-right: 2px; margin-left: 3px; color: #000; }
   .buddy-tab.active { background: white; font-weight: bold; border-bottom: 2px solid white; margin-bottom: -2px; position: relative; z-index: 1; }
-
-  .buddy-list-area {
-    background: white; border: 2px solid; border-color: #808080 #ffffff #ffffff #808080;
-    margin: 4px; height: 480px; overflow-y: auto;
-  }
-
-  .buddy-group-header {
-    background: #d4d0c8; padding: 1px 3px; font-size: 11px; font-weight: bold;
-    display: flex; align-items: center; gap: 3px;
-    cursor: pointer; border-bottom: 1px solid #808080; color: #000;
-  }
+  .buddy-list-area { background: white; border: 2px solid; border-color: #808080 #ffffff #ffffff #808080; margin: 4px; height: 480px; overflow-y: auto; }
+  .buddy-group-header { background: #d4d0c8; padding: 1px 3px; font-size: 11px; font-weight: bold; display: flex; align-items: center; gap: 3px; cursor: pointer; border-bottom: 1px solid #808080; color: #000; }
   .buddy-group-highlight-yellow { background: #ffff00; padding: 0 2px; color: #000; }
   .buddy-group-plain { background: transparent; padding: 0 2px; color: #000; }
-
   .buddy-item { padding: 1px 4px 1px 16px; font-size: 11px; cursor: pointer; white-space: nowrap; background: white; font-weight: normal; }
   .buddy-item.online  { color: #000000; }
   .buddy-item.offline { color: #999999; }
@@ -205,8 +190,43 @@
 <body>
 <div class="aim-root" id="root">
 
+  <!-- ═══ API KEY DIALOG ═══ -->
+  <div class="screen active" id="screen-apikey">
+    <div class="win-window" id="apikey-window">
+      <div class="win-titlebar">
+        <div class="win-titlebar-left">
+          <svg width="14" height="14" viewBox="0 0 20 20">
+            <rect x="2" y="8" width="16" height="10" rx="1" fill="none" stroke="#ffcc00" stroke-width="2"/>
+            <path d="M6 8 V5 a4 4 0 0 1 8 0 V8" fill="none" stroke="#ffcc00" stroke-width="2"/>
+            <circle cx="10" cy="13" r="1.5" fill="#ffcc00"/>
+          </svg>
+          AOL Instant Messenger
+        </div>
+        <div class="win-btns">
+          <div class="win-btn">_</div><div class="win-btn">&#9633;</div><div class="win-btn">&#10005;</div>
+        </div>
+      </div>
+      <div class="apikey-body">
+        <div class="apikey-icon-row">
+          <span class="apikey-icon">&#128274;</span>
+          <div class="apikey-msg">
+            <strong>Enter your Anthropic API Key</strong>
+            Your key is used this session only and is never saved or stored.
+          </div>
+        </div>
+        <input type="password" id="apikey-input" class="apikey-input" placeholder="sk-ant-..." onkeydown="onApiKeyEnter(event)">
+        <div class="apikey-note">&#128274; Key lives in memory only. Closing the page clears it.<br>Get a key at console.anthropic.com</div>
+        <hr class="apikey-divider">
+        <div class="apikey-footer">
+          <button class="btn-98" onclick="skipApiKey()">Skip</button>
+          <button class="btn-98 default" onclick="submitApiKey()">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ═══ SIGN IN ═══ -->
-  <div class="screen active" id="screen-signin">
+  <div class="screen" id="screen-signin">
     <div class="win-window" id="signin-window">
       <div class="win-titlebar">
         <div class="win-titlebar-left">
@@ -221,16 +241,13 @@
           Sign On
         </div>
         <div class="win-btns">
-          <div class="win-btn">_</div>
-          <div class="win-btn">&#9633;</div>
-          <div class="win-btn">&#10005;</div>
+          <div class="win-btn">_</div><div class="win-btn">&#9633;</div><div class="win-btn">&#10005;</div>
         </div>
       </div>
       <img src="aim_banner.png" class="aim-banner" alt="AOL Instant Messenger"
            onerror="this.style.display='none';document.getElementById('banner-fallback').style.display='flex';">
       <div class="aim-banner-fallback" id="banner-fallback">
-        <span class="banner-aol">AOL</span>&nbsp;
-        <span class="banner-aim">Instant Messenger</span>
+        <span class="banner-aol">AOL</span>&nbsp;<span class="banner-aim">Instant Messenger</span>
       </div>
       <div class="signin-form">
         <div class="form-row">
@@ -254,9 +271,7 @@
         </div>
         <div class="form-row">
           <span class="pw-label">Password</span>
-          <input type="password" id="pw-input" class="form-input"
-            autocomplete="current-password"
-            oninput="onPwInput()" onkeydown="onPwKey(event)">
+          <input type="password" id="pw-input" class="form-input" autocomplete="current-password" oninput="onPwInput()" onkeydown="onPwKey(event)">
           <a class="aim-link">Forgot Password?</a>
         </div>
         <div class="checkbox-row">
@@ -302,9 +317,7 @@
           <span id="bl-title">VANILA242's Buddy List ...</span>
         </div>
         <div class="win-btns">
-          <div class="win-btn">_</div>
-          <div class="win-btn">&#9633;</div>
-          <div class="win-btn" onclick="goSignin()">&#10005;</div>
+          <div class="win-btn">_</div><div class="win-btn">&#9633;</div><div class="win-btn" onclick="goSignin()">&#10005;</div>
         </div>
       </div>
       <div class="buddy-menubar">
@@ -337,9 +350,7 @@
           <span id="im-title">buddy - Instant Message</span>
         </div>
         <div class="win-btns">
-          <div class="win-btn">_</div>
-          <div class="win-btn">&#9633;</div>
-          <div class="win-btn" onclick="closeIM()">&#10005;</div>
+          <div class="win-btn">_</div><div class="win-btn">&#9633;</div><div class="win-btn" onclick="closeIM()">&#10005;</div>
         </div>
       </div>
       <div class="im-menubar">
@@ -376,7 +387,7 @@
           <div class="im-bottom-icon-btn"><span>&#10133;</span><span>Add Buddy</span></div>
           <div class="im-bottom-icon-btn"><span>&#8505;</span><span>Info</span></div>
         </div>
-        <button class="im-send-btn" onclick="sendMessage()">
+        <button class="im-send-btn" id="send-btn" onclick="sendMessage()">
           <span style="font-size:16px;">&#128232;</span> Send
         </button>
       </div>
@@ -395,20 +406,53 @@
 </div>
 
 <script>
+  var apiKey        = '';
   var currentUser   = 'VANILA242';
   var selectedBuddy = null;
   var currentBuddy  = null;
+  var chatHistories = {};
+  var rotateTimer   = null;
 
+  // ── Shared context injected into every personality ──
+  var SHARED_CONTEXT = 'IMPORTANT RULES YOU MUST FOLLOW: The current year is 1998/1999. You are a student at Bishop Verot High School (BVHS) in Fort Myers, Florida. The school mascot is the Vikings. You only know about events, music, movies, sports, and technology that existed before the year 2000. If someone asks about anything that happened after 1999, you say something like "idk what ur talking about, that hasnt happened yet lol" or "r u from the future lol". Popular AIM abbreviations you use: lol, brb, bbl, ttyl, omg, gtg, nm, wyd, jk, rofl, lmao, u, ur, r, 2, 4, cya, imo, btw, afk. You type in casual AIM style - lowercase, abbreviations, occasional typos. Keep ALL responses to 1-3 short sentences max. Never break character. Popular hangouts: Perkins restaurant, The Edison Mall, Centennial Park, The Bell Tower shops, The Bell Tower movie theatre, Bistro 41, The Sheppard House, Taco Bell. The guys are into the WWF/WCW wrestling war. The girls are into Dawsons Creek. The person you are chatting with is Joe, who goes by VANILA242 or Yukon242 on AIM.';
+
+  var buddyPersonalities = {
+    'CEMac16': SHARED_CONTEXT + ' YOUR CHARACTER: You are Katie, Joe\'s high school crush. You are sweet, reserved, and a little shy. You think Joe is really nice but he is too shy to ask you out and you are too shy to make the first move. You are into Key Club volunteering, shopping at the Edison Mall, and hanging out with your girlfriends. You love Dawsons Creek and talk about it a lot. You are a little oblivious to how much Joe likes you.',
+
+    'RazorCrash': SHARED_CONTEXT + ' YOUR CHARACTER: You are Jaime, a ska skateboarder. You love Rancid, Operation Ivy, Less Than Jake, and the Mighty Mighty Bosstones. You are always talking about skating spots around Fort Myers and hanging at the beach. You use ska and skate slang. You are chill and laid back.',
+
+    'Burrrrrr19': SHARED_CONTEXT + ' YOUR CHARACTER: You are Meagan, Joe\'s other high school crush. You and Joe talk on the phone for hours. You call Joe "JoJo" always. You live in Whiskey Creek in Fort Myers. You are really into cross country and track and are always training or talking about races. You love Dawsons Creek. You are warm and friendly and have great conversations with Joe.',
+
+    'DJello23': SHARED_CONTEXT + ' YOUR CHARACTER: You are Dawn, a girl who is huge into soccer. You are dating the school swim champion Matt Cull. You are a little flirty in a harmless way and outgoing. You love hanging out at Centennial Park. You are friends with Meagan and Julie.',
+
+    'Nf69boy': SHARED_CONTEXT + ' YOUR CHARACTER: You are Nick Foster. You are obsessed with basketball, PlayStation, Goldeneye 007 on N64, and pizza. You are always talking about the NBA (Shaq, Kobe, Jordan era), challenging people to Goldeneye, and debating pizza toppings. You are enthusiastic and use a lot of exclamation points.',
+
+    'Fatdonger': SHARED_CONTEXT + ' YOUR CHARACTER: You are Brandon. You are VERY into late 90s hardcore and Fat Wreck Chords punk. Your favorite band is Pennywise. You also love NOFX, Lagwagon, Bad Religion, and Strung Out. You are always looking for a reason to get in a fist fight with someone. You absolutely hate people who drink beer (straightedge) and you HATE racists with a passion and will fight them. You are actually a good loyal friend underneath the aggression.',
+
+    'TJCostello': SHARED_CONTEXT + ' YOUR CHARACTER: You are John Costello, the most tech savvy person anyone knows. You are starting Florida State University in the fall of 1999. You are in a band called Vanguard. You know everything about computers, the early internet, Napster, mp3s, and tech gadgets. You are smooth and confident.',
+
+    'EAS242': SHARED_CONTEXT + ' YOUR CHARACTER: You are a cartoonishly over-the-top hardcore music scene kid who grew up in a very comfortable suburban Fort Myers home but acts like he grew up extremely hard on the streets. You are obsessed with Attitude Era WWF wrestling - Stone Cold Steve Austin, The Rock, DX, Mankind. You are always talking about hardcore music and the pit. You have zero self-awareness about how suburban and comfortable your life actually is.',
+
+    'Kbowen7452': SHARED_CONTEXT + ' YOUR CHARACTER: You are Joe\'s mom. You are very proper, a little overprotective, but genuinely sweet and loving. You worry about Joe constantly. You ask about homework, curfew, eating right, and whether his friends are a good influence. You are not really comfortable with AIM and type a bit formally compared to the kids. You sign your messages "- Mom" sometimes.',
+
+    'Shiftcaps': SHARED_CONTEXT + ' YOUR CHARACTER: You are Joe\'s dad. You call Joe "buddy" always. You are really into classic old cars and auto racing - NASCAR, drag racing. You always ask how things are going and give wholesome dad advice. You are proud of Joe. You are not very good at AIM either and type a bit stiffly. You sometimes get sidetracked talking about a car you saw or a race you watched.',
+
+    'JKowala99': SHARED_CONTEXT + ' YOUR CHARACTER: You are Julie, a generic but sweet high school student at BVHS. You are friends with Dawn and Meagan. You are always dealing with some kind of high school social drama - who likes who, who said what, drama at lunch. You love Dawsons Creek and Titanic. You are friendly to Joe.',
+
+    'CarrotsWade93': SHARED_CONTEXT + ' YOUR CHARACTER: You are Wade, a vegan who is extremely proud of being from the Twin Cities in Minnesota. You are obsessed with keeping your knees flexible and talk about your stretching routine constantly. You are a huge fan of classic AWA (American Wrestling Association) wrestling from the 80s and think it was way better than WWF or WCW. You are friendly but always bringing conversations back to veganism, Minnesota, knee flexibility, or AWA wrestling.'
+  };
+
+  // ── Buddy data: 9 online, 3 offline to start ──
   var buddyData = [
     { group: 'Buddies', highlight: true, members: [
       { name: 'CEMac16',       online: true  },
-      { name: 'RazorCrash',    online: false },
+      { name: 'RazorCrash',    online: true  },
       { name: 'Burrrrrr19',    online: true  },
-      { name: 'DJello23',      online: false },
+      { name: 'DJello23',      online: true  },
       { name: 'Nf69boy',       online: true  },
       { name: 'EAS242',        online: false },
       { name: 'CarrotsWade93', online: true  },
-      { name: 'Kbowen7452',    online: false },
+      { name: 'Kbowen7452',    online: true  },
       { name: 'Shiftcaps',     online: true  },
       { name: 'JKowala99',     online: false },
       { name: 'Fatdonger',     online: true  },
@@ -418,6 +462,22 @@
     { group: 'Co-Workers', highlight: false, members: [] }
   ];
 
+  // ── API Key ──
+  function onApiKeyEnter(e) { if (e.key === 'Enter') submitApiKey(); }
+
+  function submitApiKey() {
+    var val = document.getElementById('apikey-input').value.trim();
+    if (val) apiKey = val;
+    showScreen('screen-signin');
+    setTimeout(function(){ document.getElementById('pw-input').focus(); }, 100);
+  }
+
+  function skipApiKey() {
+    showScreen('screen-signin');
+    setTimeout(function(){ document.getElementById('pw-input').focus(); }, 100);
+  }
+
+  // ── Sign In ──
   function onPwInput() {
     var val = document.getElementById('pw-input').value;
     var btn = document.getElementById('signon-btn');
@@ -430,31 +490,67 @@
     });
   }
 
-  function onPwKey(e) {
-    if (e.key === 'Enter') { e.preventDefault(); doSignOn(); }
-  }
+  function onPwKey(e) { if (e.key === 'Enter') { e.preventDefault(); doSignOn(); } }
 
   function doSignOn() {
     if (document.getElementById('pw-input').value !== 'vikings') return;
     currentUser = document.getElementById('sn-select').value;
     document.getElementById('bl-title').textContent = currentUser + "'s Buddy List ...";
     renderBuddyList();
-    showScreen('screen-buddylist');
+    // Hide signin screen completely and show buddy list
+    document.getElementById('screen-signin').style.display = 'none';
+    document.getElementById('screen-buddylist').style.display = 'block';
+    document.getElementById('screen-buddylist').classList.add('active');
+    startRotation();
   }
 
   function goSignin() {
+    stopRotation();
     document.getElementById('pw-input').value = '';
     onPwInput();
     selectedBuddy = null;
-    showScreen('screen-signin');
+    // Hide buddy list, show signin
+    document.getElementById('screen-buddylist').style.display = 'none';
+    document.getElementById('screen-buddylist').classList.remove('active');
+    document.getElementById('screen-signin').style.display = 'block';
+    document.getElementById('screen-signin').classList.add('active');
     setTimeout(function(){ document.getElementById('pw-input').focus(); }, 100);
   }
 
   function showScreen(id) {
-    document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
-    document.getElementById(id).classList.add('active');
+    document.querySelectorAll('.screen').forEach(function(s){
+      s.classList.remove('active');
+      s.style.display = 'none';
+    });
+    var el = document.getElementById(id);
+    el.style.display = 'block';
+    el.classList.add('active');
   }
 
+  // ── Buddy rotation: every 15s swap one online↔offline ──
+  function startRotation() {
+    stopRotation();
+    rotateTimer = setInterval(rotateBuddy, 15000);
+  }
+
+  function stopRotation() {
+    if (rotateTimer) { clearInterval(rotateTimer); rotateTimer = null; }
+  }
+
+  function rotateBuddy() {
+    var members = buddyData[0].members;
+    var online  = members.filter(function(m){ return m.online; });
+    var offline = members.filter(function(m){ return !m.online; });
+    if (!online.length || !offline.length) return;
+    // Pick one random online to go offline, one random offline to come online
+    var goOff = online[Math.floor(Math.random() * online.length)];
+    var goOn  = offline[Math.floor(Math.random() * offline.length)];
+    goOff.online = false;
+    goOn.online  = true;
+    renderBuddyList();
+  }
+
+  // ── Render Buddy List ──
   function renderBuddyList() {
     var area = document.getElementById('buddy-list-area');
     area.innerHTML = '';
@@ -472,6 +568,7 @@
         var item = document.createElement('div');
         item.className = 'buddy-item ' + (m.online ? 'online' : 'offline');
         item.textContent = m.name;
+        if (selectedBuddy === m.name) item.classList.add('selected');
         item.addEventListener('click', function(){ handleBuddyClick(item, m.name); });
         area.appendChild(item);
       });
@@ -485,35 +582,71 @@
     selectedBuddy = name;
   }
 
+  // ── IM Window ──
   function openIM(name) {
     currentBuddy = name;
+    if (!chatHistories[name]) chatHistories[name] = [];
     document.getElementById('im-title').textContent = name + ' - Instant Message';
     document.getElementById('im-warning-label').textContent = name + "'s Warning Level: 0%";
     var chat = document.getElementById('im-chat-area');
     chat.innerHTML = '';
-    addTypingIndicator(name);
+    // Replay history
+    chatHistories[name].forEach(function(msg) {
+      appendMessage(msg.role === 'user' ? currentUser : name, msg.content, msg.role === 'user');
+    });
     document.getElementById('im-input').value = '';
-    showScreen('screen-im');
+
+    // Hide buddy list, show IM
+    document.getElementById('screen-buddylist').style.display = 'none';
+    document.getElementById('screen-buddylist').classList.remove('active');
+    document.getElementById('screen-im').style.display = 'block';
+    document.getElementById('screen-im').classList.add('active');
+
     setTimeout(function(){ document.getElementById('im-input').focus(); }, 150);
-    setTimeout(removeTypingIndicator, 2200);
+
+    // Opening greeting if first time
+    if (chatHistories[name].length === 0) {
+      if (apiKey) {
+        setTimeout(function(){ getBuddyGreeting(name); }, 700);
+      } else {
+        showTyping(name);
+        setTimeout(hideTyping, 2000);
+      }
+    }
   }
 
-  function addTypingIndicator(name) {
+  function appendMessage(senderName, text, isUser) {
     var chat = document.getElementById('im-chat-area');
+    var div = document.createElement('div');
+    var nameSpan = isUser
+      ? '<span class="im-msg-user">' + esc(senderName) + ':</span> '
+      : '<span class="im-msg-buddy">' + esc(senderName) + ':</span> ';
+    div.innerHTML = nameSpan + '<span class="im-msg-text">' + esc(text) + '</span>';
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+  function showTyping(name) {
+    var chat = document.getElementById('im-chat-area');
+    hideTyping();
     var ti = document.createElement('div');
     ti.className = 'typing-indicator'; ti.id = 'typing-indicator';
     ti.textContent = (name || currentBuddy) + ': ...';
-    chat.appendChild(ti); chat.scrollTop = chat.scrollHeight;
+    chat.appendChild(ti);
+    chat.scrollTop = chat.scrollHeight;
   }
 
-  function removeTypingIndicator() {
+  function hideTyping() {
     var ti = document.getElementById('typing-indicator'); if (ti) ti.remove();
   }
 
   function closeIM() {
     selectedBuddy = null;
-    document.querySelectorAll('.buddy-item').forEach(function(i){ i.classList.remove('selected'); });
-    showScreen('screen-buddylist');
+    document.getElementById('screen-im').style.display = 'none';
+    document.getElementById('screen-im').classList.remove('active');
+    document.getElementById('screen-buddylist').style.display = 'block';
+    document.getElementById('screen-buddylist').classList.add('active');
+    renderBuddyList();
   }
 
   function imKeydown(e) {
@@ -524,16 +657,77 @@
     var input = document.getElementById('im-input');
     var text  = input.value.trim();
     if (!text) return;
-    var chat = document.getElementById('im-chat-area');
-    removeTypingIndicator();
-    var msg = document.createElement('div');
-    msg.innerHTML = '<span class="im-msg-user">' + esc(currentUser) + ':</span> <span class="im-msg-text">' + esc(text) + '</span>';
-    chat.appendChild(msg);
-    input.value = ''; chat.scrollTop = chat.scrollHeight; input.focus();
-    setTimeout(function(){
-      addTypingIndicator(currentBuddy);
-      setTimeout(removeTypingIndicator, 2000);
-    }, 600);
+    appendMessage(currentUser, text, true);
+    chatHistories[currentBuddy] = chatHistories[currentBuddy] || [];
+    chatHistories[currentBuddy].push({ role: 'user', content: text });
+    input.value = '';
+    input.focus();
+    if (apiKey) {
+      getBuddyReply(currentBuddy);
+    } else {
+      showTyping(currentBuddy);
+      setTimeout(hideTyping, 2000);
+    }
+  }
+
+  async function getBuddyGreeting(name) {
+    showTyping(name);
+    var personality = buddyPersonalities[name] || SHARED_CONTEXT;
+    try {
+      var response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 100,
+          system: personality,
+          messages: [{ role: 'user', content: 'Say a quick casual AIM greeting to Joe who just opened a chat window with you. Keep it very short, 1 sentence, in your character.' }]
+        })
+      });
+      var data = await response.json();
+      hideTyping();
+      var reply = data.content && data.content[0] ? data.content[0].text : 'hey';
+      chatHistories[name].push({ role: 'assistant', content: reply });
+      if (currentBuddy === name) appendMessage(name, reply, false);
+    } catch(e) { hideTyping(); }
+  }
+
+  async function getBuddyReply(name) {
+    showTyping(name);
+    var personality = buddyPersonalities[name] || SHARED_CONTEXT;
+    var history = (chatHistories[name] || []).slice();
+    try {
+      var response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 150,
+          system: personality,
+          messages: history
+        })
+      });
+      var data = await response.json();
+      hideTyping();
+      if (data.content && data.content[0]) {
+        var reply = data.content[0].text;
+        chatHistories[name].push({ role: 'assistant', content: reply });
+        if (currentBuddy === name) appendMessage(name, reply, false);
+      }
+    } catch(e) {
+      hideTyping();
+      if (currentBuddy === name) appendMessage(name, 'brb', false);
+    }
   }
 
   function esc(s) {
@@ -541,7 +735,7 @@
   }
 
   window.addEventListener('load', function(){
-    document.getElementById('pw-input').focus();
+    document.getElementById('apikey-input').focus();
   });
 </script>
 </body>
