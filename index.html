@@ -48,6 +48,17 @@
   .screen { display: none; }
   .screen.active { display: block; }
 
+  /* ══ LOADING SCREEN ══ */
+  #screen-loading { z-index: 10; }
+  #loading-window {
+    width: 350px; top: 180px; left: 20px;
+  }
+  .loading-img {
+    width: 100%; display: block;
+    border-top: 2px solid #808080; border-left: 2px solid #808080;
+    border-right: 2px solid #ffffff; border-bottom: 2px solid #ffffff;
+  }
+
   /* ══ API KEY ══ */
   #apikey-window { width: 320px; top: 180px; left: 35px; }
   .apikey-body { padding: 14px 14px 10px; background: #d4d0c8; }
@@ -143,7 +154,7 @@
   .buddy-group-plain { background: transparent; padding: 0 2px; color: #000; }
   .buddy-item { padding: 1px 4px 1px 16px; font-size: 11px; cursor: pointer; white-space: nowrap; background: white; font-weight: normal; }
   .buddy-item.online  { color: #000000; }
-  .buddy-item.offline { color: #999999; }
+  .buddy-item.offline { color: #999999; font-style: italic; }
   .buddy-item:hover   { background: #000080; color: white; }
   .buddy-item.selected { background: #000080; color: white; }
 
@@ -297,6 +308,27 @@
     </div>
   </div>
 
+  <!-- ═══ LOADING SCREEN ═══ -->
+  <div class="screen" id="screen-loading">
+    <div class="win-window" id="loading-window">
+      <div class="win-titlebar">
+        <div class="win-titlebar-left">
+          <svg width="14" height="14" viewBox="0 0 20 26">
+            <circle cx="10" cy="3" r="3" fill="#ffcc00"/>
+            <line x1="10" y1="6" x2="10" y2="16" stroke="#ffcc00" stroke-width="2.5"/>
+            <line x1="10" y1="10" x2="3" y2="14" stroke="#ffcc00" stroke-width="2"/>
+            <line x1="10" y1="10" x2="17" y2="13" stroke="#ffcc00" stroke-width="2"/>
+            <line x1="10" y1="16" x2="5" y2="24" stroke="#ffcc00" stroke-width="2"/>
+            <line x1="10" y1="16" x2="15" y2="24" stroke="#ffcc00" stroke-width="2"/>
+          </svg>
+          America Online
+        </div>
+        <div class="win-btns"><div class="win-btn">_</div><div class="win-btn">&#9633;</div><div class="win-btn">&#10005;</div></div>
+      </div>
+      <img src="loading.jpg" class="loading-img" alt="Connecting...">
+    </div>
+  </div>
+
   <!-- ═══ BUDDY LIST ═══ -->
   <div class="screen" id="screen-buddylist">
     <div class="win-window" id="buddylist-window">
@@ -402,10 +434,11 @@
   // Each sound is loaded once and reused. We reset currentTime before playing
   // so rapid triggers don't get swallowed.
   var sounds = {
-    gotMail : new Audio('yougotmail.mp3'),   // buddy list appears
-    imTone  : new Audio('aol-im.mp3'),       // buddy replies to IM
-    open    : new Audio('aol-open-1.mp3'),   // buddy signs on
-    close   : new Audio('aol-close.mp3')     // buddy signs off
+    gotMail : new Audio('yougotmail.mp3'),
+    imTone  : new Audio('aol-im.mp3'),
+    open    : new Audio('aol-open-1.mp3'),
+    close   : new Audio('aol-close.mp3'),
+    modem   : new Audio('modem.mp3')
   };
 
   function playSound(key) {
@@ -491,19 +524,32 @@
     if (document.getElementById('pw-input').value !== '242') return;
     currentUser = document.getElementById('sn-select').value;
     document.getElementById('bl-title').textContent = currentUser + "'s Buddy List ...";
-    renderBuddyList();
+
+    // Hide signin, show loading screen
     document.getElementById('screen-signin').style.display = 'none';
     document.getElementById('screen-signin').classList.remove('active');
-    document.getElementById('screen-buddylist').style.display = 'block';
-    document.getElementById('screen-buddylist').classList.add('active');
-    // ── SOUND: You've got mail — triggered directly on the click gesture ──
-    // Play immediately, then retry at 1s and 2s as fallback
-    playSound('gotMail');
-    setTimeout(function(){ playSound('gotMail'); }, 1000);
-    var _mailPlayed = false;
-    sounds.gotMail.addEventListener('play', function(){ _mailPlayed = true; }, { once: true });
-    setTimeout(function(){ if (!_mailPlayed) playSound('gotMail'); }, 2000);
-    startRotation();
+    document.getElementById('screen-loading').style.display = 'block';
+    document.getElementById('screen-loading').classList.add('active');
+
+    // Play modem sound immediately on click gesture
+    playSound('modem');
+
+    // After 4 seconds: stop modem, show buddy list, play gotMail
+    setTimeout(function() {
+      sounds.modem.pause();
+      sounds.modem.currentTime = 0;
+
+      document.getElementById('screen-loading').style.display = 'none';
+      document.getElementById('screen-loading').classList.remove('active');
+
+      renderBuddyList();
+      document.getElementById('screen-buddylist').style.display = 'block';
+      document.getElementById('screen-buddylist').classList.add('active');
+
+      // gotMail plays right as buddy list appears
+      playSound('gotMail');
+      startRotation();
+    }, 4000);
   }
 
   function goSignin() {
