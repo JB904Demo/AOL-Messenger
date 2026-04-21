@@ -7,14 +7,24 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Tahoma:wght@400;700&display=swap');
   * { box-sizing: border-box; margin: 0; padding: 0; }
+
   body {
-    background: #008080;
     display: flex; align-items: center; justify-content: center;
     min-height: 100vh;
     font-family: 'Tahoma', 'MS Sans Serif', Arial, sans-serif;
     font-size: 13px;
   }
-  .aim-root { width: 390px; height: 844px; background: #008080; position: relative; overflow: hidden; }
+
+  .aim-root {
+    width: 390px; height: 844px;
+    position: relative; overflow: hidden;
+    /* ── WALLPAPER: save your blue tech image as "wallpaper.jpg" in the repo ── */
+    background-image: url('wallpaper.jpg');
+    background-size: cover;
+    background-position: center;
+    background-color: #000044; /* fallback if image missing */
+  }
+
   .win-window {
     background: #d4d0c8; border: 2px solid;
     border-color: #ffffff #808080 #808080 #ffffff;
@@ -37,7 +47,7 @@
   .screen { display: none; }
   .screen.active { display: block; }
 
-  /* SIGN IN */
+  /* ══════════════ SIGN IN ══════════════ */
   #signin-window { width: 350px; top: 30px; left: 20px; }
 
   .aim-banner {
@@ -58,7 +68,6 @@
     display: flex; align-items: center; gap: 4px; margin-bottom: 3px;
   }
   .pw-label { font-size: 13px; font-weight: bold; color: #000; margin-bottom: 3px; display: block; }
-
   .form-input {
     width: 100%; height: 24px;
     border-top: 2px solid #808080; border-left: 2px solid #808080;
@@ -67,8 +76,6 @@
     font-family: 'Tahoma', Arial; font-size: 12px; padding: 0 4px;
     outline: none; display: block; color: #000;
   }
-
-  /* Win98 native-look dropdown */
   .sn-dropdown-wrap { position: relative; width: 100%; }
   .sn-dropdown-wrap select {
     width: 100%; height: 24px;
@@ -92,7 +99,6 @@
     border-left: 4px solid transparent; border-right: 4px solid transparent;
     border-top: 5px solid #808080;
   }
-
   .aim-link { color: #0000cc; font-size: 12px; font-style: italic; text-decoration: underline; cursor: pointer; display: block; margin: 3px 0 8px; font-family: Arial; }
   .form-row { margin-bottom: 4px; }
   .checkbox-row { display: flex; align-items: center; justify-content: space-between; margin: 6px 0; font-size: 11px; color: #808080; }
@@ -102,42 +108,60 @@
   .footer-icons { display: flex; gap: 16px; align-items: flex-end; }
   .footer-icon-btn { display: flex; flex-direction: column; align-items: center; font-size: 10px; color: #000; cursor: pointer; gap: 1px; }
   .footer-icon-btn .icon-img { font-size: 22px; line-height: 1; }
-
-  /* Sign On button — icon stacked above text, classic Win98 raised */
   .signon-btn {
-    background: #d4d0c8;
-    border: 2px solid; border-color: #ffffff #808080 #808080 #ffffff;
+    background: #d4d0c8; border: 2px solid; border-color: #ffffff #808080 #808080 #ffffff;
     border-radius: 0; padding: 5px 14px;
     font-family: 'Tahoma', Arial; font-size: 12px; font-weight: bold;
     cursor: pointer; color: #000;
-    display: flex; flex-direction: column; align-items: center; gap: 1px;
-    min-width: 80px;
+    display: flex; flex-direction: column; align-items: center; gap: 1px; min-width: 80px;
   }
   .signon-btn:active { border-color: #808080 #ffffff #ffffff #808080; }
   .signon-btn:disabled { color: #808080; cursor: default; }
-
   .version-text { font-size: 10px; color: #808080; text-align: center; margin-top: 6px; }
 
-  /* BUDDY LIST */
-  #buddylist-window { width: 195px; top: 40px; left: 98px; }
-  .buddy-menubar { display: flex; background: #d4d0c8; padding: 1px 3px; border-bottom: 1px solid #808080; }
-  .buddy-menu-item { font-size: 11px; padding: 1px 5px; cursor: pointer; color: #000; }
+  /* ══════════════ BUDDY LIST ══════════════ */
+  /* ~40% bigger than original 195px = ~273px, positioned to fill most of screen */
+  #buddylist-window { width: 360px; top: 20px; left: 15px; }
+
+  .buddy-menubar { display: flex; background: #d4d0c8; padding: 2px 4px; border-bottom: 1px solid #808080; }
+  .buddy-menu-item { font-size: 12px; padding: 2px 7px; cursor: pointer; color: #000; }
   .buddy-menu-item:hover { background: #000080; color: white; }
-  .buddy-banner-sm { background: #1a1aaa; height: 55px; display: flex; align-items: center; justify-content: center; padding: 4px; }
-  .buddy-banner-inner { display: flex; align-items: center; gap: 6px; }
+
+  /* Buddy list logo banner — image replaces the SVG stick man */
+  .buddy-banner-img {
+    width: 100%;
+    /* ── BUDDY LIST LOGO: save as "buddy_logo.jpg" in your repo ── */
+    background-image: url('buddy_logo.jpg');
+    background-size: cover;
+    background-position: center;
+    background-color: #2244aa; /* fallback */
+    height: 80px;
+    display: block;
+  }
+
   .buddy-tabs { display: flex; border-bottom: 2px solid #808080; background: #d4d0c8; padding-top: 3px; }
-  .buddy-tab { padding: 2px 10px; font-size: 11px; border: 1px solid #808080; border-bottom: none; cursor: pointer; background: #d4d0c8; margin-right: 2px; margin-left: 3px; color: #000; }
+  .buddy-tab { padding: 3px 14px; font-size: 12px; border: 1px solid #808080; border-bottom: none; cursor: pointer; background: #d4d0c8; margin-right: 2px; margin-left: 3px; color: #000; }
   .buddy-tab.active { background: white; font-weight: bold; border-bottom: 2px solid white; margin-bottom: -2px; position: relative; z-index: 1; }
-  .buddy-list-area { background: white; border: 2px solid; border-color: #808080 #ffffff #ffffff #808080; margin: 4px; min-height: 340px; overflow-y: auto; }
-  .buddy-group-header { background: #d4d0c8; padding: 1px 3px; font-size: 11px; font-weight: bold; display: flex; align-items: center; gap: 3px; cursor: pointer; border-bottom: 1px solid #808080; color: #000; }
-  .buddy-group-highlight { background: #ffff00; padding: 0 2px; color: #000; }
-  .buddy-item { padding: 1px 4px 1px 16px; font-size: 11px; cursor: pointer; color: #000; white-space: nowrap; background: white; }
+
+  .buddy-list-area {
+    background: white; border: 2px solid; border-color: #808080 #ffffff #ffffff #808080;
+    margin: 4px; height: 580px; overflow-y: auto;
+  }
+  .buddy-group-header {
+    background: #d4d0c8; padding: 2px 4px; font-size: 12px; font-weight: bold;
+    display: flex; align-items: center; gap: 4px;
+    cursor: pointer; border-bottom: 1px solid #808080; color: #000;
+  }
+  .buddy-group-highlight { background: #ffff00; padding: 0 3px; color: #000; }
+
+  .buddy-item { padding: 2px 6px 2px 20px; font-size: 12px; cursor: pointer; color: #000; white-space: nowrap; background: white; }
   .buddy-item:hover { background: #000080; color: white; }
   .buddy-item.selected { background: #000080; color: white; }
-  .buddy-item.offline { color: #808080; }
+  .buddy-item.offline { color: #808080; font-weight: normal; }
+  .buddy-item.online { font-weight: bold; color: #000; }
   .buddy-item.offline:hover { background: #000080; color: white; }
 
-  /* IM WINDOW */
+  /* ══════════════ IM WINDOW ══════════════ */
   #im-window { width: 350px; top: 20px; left: 20px; }
   .im-menubar { display: flex; background: #d4d0c8; padding: 1px 3px; border-bottom: 1px solid #808080; justify-content: space-between; align-items: center; }
   .im-menu-left { display: flex; }
@@ -180,7 +204,7 @@
 <body>
 <div class="aim-root" id="root">
 
-  <!-- SIGN IN -->
+  <!-- ═══ SIGN IN ═══ -->
   <div class="screen active" id="screen-signin">
     <div class="win-window" id="signin-window">
       <div class="win-titlebar">
@@ -201,14 +225,12 @@
           <div class="win-btn">&#10005;</div>
         </div>
       </div>
-
       <img src="aim_banner.png" class="aim-banner" alt="AOL Instant Messenger"
            onerror="this.style.display='none';document.getElementById('banner-fallback').style.display='flex';">
       <div class="aim-banner-fallback" id="banner-fallback">
-        <span class="banner-aol">AOL</span>
+        <span class="banner-aol">AOL</span>&nbsp;
         <span class="banner-aim">Instant Messenger</span>
       </div>
-
       <div class="signin-form">
         <div class="form-row">
           <div class="sn-label">
@@ -229,7 +251,6 @@
           </div>
           <a class="aim-link">Get a Screen Name</a>
         </div>
-
         <div class="form-row">
           <span class="pw-label">Password</span>
           <input type="password" id="pw-input" class="form-input"
@@ -237,22 +258,17 @@
             oninput="onPwInput()" onkeydown="onPwKey(event)">
           <a class="aim-link">Forgot Password?</a>
         </div>
-
         <div class="checkbox-row">
           <label><input type="checkbox" style="width:12px;height:12px;" disabled> Save password</label>
           <label><input type="checkbox" style="width:12px;height:12px;" disabled> Auto-login</label>
         </div>
-
         <hr class="signin-divider">
-
         <div class="signin-footer">
           <div class="footer-icons">
             <div class="footer-icon-btn"><span class="icon-img">&#10067;</span><span>Help</span></div>
             <div class="footer-icon-btn"><span class="icon-img">&#128295;</span><span>Setup</span></div>
           </div>
-
           <button class="signon-btn" id="signon-btn" disabled onclick="doSignOn()">
-            <!-- Running man icon, greyed until password correct, turns green on activation -->
             <svg id="runner-svg" width="28" height="32" viewBox="0 0 24 28">
               <circle cx="15" cy="3" r="3" fill="#808080"/>
               <line x1="15" y1="6"  x2="11" y2="15" stroke="#808080" stroke-width="2.2"/>
@@ -264,13 +280,12 @@
             <span style="font-size:12px;font-weight:bold;line-height:1;">Sign On</span>
           </button>
         </div>
-
         <div class="version-text">Version: 5.9.3690</div>
       </div>
     </div>
   </div>
 
-  <!-- BUDDY LIST -->
+  <!-- ═══ BUDDY LIST ═══ -->
   <div class="screen" id="screen-buddylist">
     <div class="win-window" id="buddylist-window">
       <div class="win-titlebar">
@@ -291,36 +306,26 @@
           <div class="win-btn" onclick="goSignin()">&#10005;</div>
         </div>
       </div>
+
       <div class="buddy-menubar">
         <span class="buddy-menu-item"><u>M</u>y AIM</span>
         <span class="buddy-menu-item">People</span>
         <span class="buddy-menu-item">Help</span>
       </div>
-      <div class="buddy-banner-sm">
-        <div class="buddy-banner-inner">
-          <svg width="28" height="36" viewBox="0 0 20 26">
-            <circle cx="10" cy="3" r="3" fill="#ffcc00"/>
-            <line x1="10" y1="6" x2="10" y2="16" stroke="#ffcc00" stroke-width="2.5"/>
-            <line x1="10" y1="10" x2="3" y2="14" stroke="#ffcc00" stroke-width="2"/>
-            <line x1="10" y1="10" x2="17" y2="13" stroke="#ffcc00" stroke-width="2"/>
-            <line x1="10" y1="16" x2="5" y2="24" stroke="#ffcc00" stroke-width="2"/>
-            <line x1="10" y1="16" x2="15" y2="24" stroke="#ffcc00" stroke-width="2"/>
-          </svg>
-          <div style="text-align:center;">
-            <div style="color:white;font-weight:bold;font-style:italic;font-size:13px;font-family:Arial;">AOL</div>
-            <div style="color:#aad4ff;font-size:10px;font-style:italic;font-family:Arial;">Instant<br>Messenger</div>
-          </div>
-        </div>
-      </div>
+
+      <!-- Buddy list logo image — save as buddy_logo.jpg in repo -->
+      <div class="buddy-banner-img"></div>
+
       <div class="buddy-tabs">
         <div class="buddy-tab active">Online</div>
         <div class="buddy-tab">List Setup</div>
       </div>
+
       <div class="buddy-list-area" id="buddy-list-area"></div>
     </div>
   </div>
 
-  <!-- IM WINDOW -->
+  <!-- ═══ IM WINDOW ═══ -->
   <div class="screen" id="screen-im">
     <div class="win-window" id="im-window">
       <div class="win-titlebar">
@@ -391,19 +396,31 @@
     <button class="back-btn" onclick="closeIM()">&#8592; Back to Buddy List</button>
   </div>
 
-</div>
+</div><!-- /.aim-root -->
 
 <script>
   var currentUser   = 'VANILA242';
   var selectedBuddy = null;
   var currentBuddy  = null;
 
+  // 16 buddies total — 8 online (bold), 8 offline (grey)
   var buddyData = [
     { group: 'Buddies', members: [
-      { name: 'DiscipleWade', online: true  },
-      { name: 'Buckles242',   online: false },
-      { name: 'ScaryBVHS',    online: true  },
-      { name: 'Chloecat99',   online: false }
+      { name: 'Buckles242',    online: true  },
+      { name: 'ScaryBVHS',     online: false },
+      { name: 'Chloecat99',    online: true  },
+      { name: 'CEMac16',       online: false },
+      { name: 'RazorCrash',    online: true  },
+      { name: 'Burrrrrr19',    online: false },
+      { name: 'DJello23',      online: true  },
+      { name: 'Nf69boy',       online: false },
+      { name: 'EAS242',        online: true  },
+      { name: 'CarrotsWade93', online: false },
+      { name: 'Kbowen7452',    online: true  },
+      { name: 'Shiftcaps',     online: false },
+      { name: 'JKowala99',     online: true  },
+      { name: 'Fatdonger',     online: false },
+      { name: 'TJCostello',    online: true  }
     ]},
     { group: 'Family',     members: [] },
     { group: 'Co-Workers', members: [] }
@@ -451,14 +468,16 @@
     area.innerHTML = '';
     buddyData.forEach(function(group) {
       var online = group.members.filter(function(m){ return m.online; }).length;
+      var total  = group.members.length;
       var hdr = document.createElement('div');
       hdr.className = 'buddy-group-header';
-      hdr.innerHTML = '<span>&#9660;</span><span class="buddy-group-highlight">'
-        + group.group + ' (' + online + '/' + group.members.length + ')</span>';
+      hdr.innerHTML = '<span style="font-size:10px;">&#9660;</span>'
+        + '<span class="buddy-group-highlight">'
+        + group.group + ' (' + online + '/' + total + ')</span>';
       area.appendChild(hdr);
       group.members.forEach(function(m) {
         var item = document.createElement('div');
-        item.className = 'buddy-item' + (m.online ? '' : ' offline');
+        item.className = 'buddy-item ' + (m.online ? 'online' : 'offline');
         item.textContent = m.name;
         item.addEventListener('click', function(){ handleBuddyClick(item, m.name); });
         area.appendChild(item);
