@@ -8,9 +8,10 @@
   @import url('https://fonts.googleapis.com/css2?family=Tahoma:wght@400;700&display=swap');
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
-  body {
+  html, body {
+    width: 100%; height: 100%;
+    margin: 0; padding: 0;
     display: flex; align-items: center; justify-content: center;
-    min-height: 100vh;
     font-family: 'Tahoma', 'MS Sans Serif', Arial, sans-serif;
     font-size: 13px;
   }
@@ -18,11 +19,12 @@
   .aim-root {
     width: 390px; height: 844px;
     position: relative; overflow: hidden;
-    /* ── WALLPAPER: save your blue tech image as "wallpaper.jpg" in the repo ── */
+    /* wallpaper — slightly oversized to bleed past edges and kill white border */
     background-image: url('wallpaper.jpg');
-    background-size: cover;
-    background-position: center;
-    background-color: #000044; /* fallback if image missing */
+    background-size: 110% 110%;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-color: #000044;
   }
 
   .win-window {
@@ -120,46 +122,49 @@
   .version-text { font-size: 10px; color: #808080; text-align: center; margin-top: 6px; }
 
   /* ══════════════ BUDDY LIST ══════════════ */
-  /* ~40% bigger than original 195px = ~273px, positioned to fill most of screen */
-  #buddylist-window { width: 360px; top: 20px; left: 15px; }
+  /* 360px * 0.8 = 288px */
+  #buddylist-window { width: 288px; top: 20px; left: 51px; }
 
   .buddy-menubar { display: flex; background: #d4d0c8; padding: 2px 4px; border-bottom: 1px solid #808080; }
-  .buddy-menu-item { font-size: 12px; padding: 2px 7px; cursor: pointer; color: #000; }
+  .buddy-menu-item { font-size: 11px; padding: 1px 5px; cursor: pointer; color: #000; }
   .buddy-menu-item:hover { background: #000080; color: white; }
 
-  /* Buddy list logo banner — image replaces the SVG stick man */
+  /* Logo banner — contain the full image so nothing is cropped */
   .buddy-banner-img {
     width: 100%;
-    /* ── BUDDY LIST LOGO: save as "buddy_logo.jpg" in your repo ── */
+    height: 70px;
     background-image: url('buddy_logo.jpg');
-    background-size: cover;
+    background-size: contain;
     background-position: center;
-    background-color: #2244aa; /* fallback */
-    height: 80px;
+    background-repeat: no-repeat;
+    background-color: #1a3aaa;
     display: block;
   }
 
   .buddy-tabs { display: flex; border-bottom: 2px solid #808080; background: #d4d0c8; padding-top: 3px; }
-  .buddy-tab { padding: 3px 14px; font-size: 12px; border: 1px solid #808080; border-bottom: none; cursor: pointer; background: #d4d0c8; margin-right: 2px; margin-left: 3px; color: #000; }
+  .buddy-tab { padding: 2px 10px; font-size: 11px; border: 1px solid #808080; border-bottom: none; cursor: pointer; background: #d4d0c8; margin-right: 2px; margin-left: 3px; color: #000; }
   .buddy-tab.active { background: white; font-weight: bold; border-bottom: 2px solid white; margin-bottom: -2px; position: relative; z-index: 1; }
 
   .buddy-list-area {
     background: white; border: 2px solid; border-color: #808080 #ffffff #ffffff #808080;
-    margin: 4px; height: 580px; overflow-y: auto;
+    margin: 4px; height: 480px; overflow-y: auto;
   }
+
+  /* Group headers — Buddies gets yellow highlight, Family/Co-Workers plain grey */
   .buddy-group-header {
-    background: #d4d0c8; padding: 2px 4px; font-size: 12px; font-weight: bold;
-    display: flex; align-items: center; gap: 4px;
+    background: #d4d0c8; padding: 1px 3px; font-size: 11px; font-weight: bold;
+    display: flex; align-items: center; gap: 3px;
     cursor: pointer; border-bottom: 1px solid #808080; color: #000;
   }
-  .buddy-group-highlight { background: #ffff00; padding: 0 3px; color: #000; }
+  .buddy-group-highlight-yellow { background: #ffff00; padding: 0 2px; color: #000; }
+  .buddy-group-plain { background: transparent; padding: 0 2px; color: #000; }
 
-  .buddy-item { padding: 2px 6px 2px 20px; font-size: 12px; cursor: pointer; color: #000; white-space: nowrap; background: white; }
-  .buddy-item:hover { background: #000080; color: white; }
+  /* Buddy items — online = black normal weight, offline = grey normal weight */
+  .buddy-item { padding: 1px 4px 1px 16px; font-size: 11px; cursor: pointer; white-space: nowrap; background: white; font-weight: normal; }
+  .buddy-item.online  { color: #000000; }
+  .buddy-item.offline { color: #999999; }
+  .buddy-item:hover   { background: #000080; color: white; }
   .buddy-item.selected { background: #000080; color: white; }
-  .buddy-item.offline { color: #808080; font-weight: normal; }
-  .buddy-item.online { font-weight: bold; color: #000; }
-  .buddy-item.offline:hover { background: #000080; color: white; }
 
   /* ══════════════ IM WINDOW ══════════════ */
   #im-window { width: 350px; top: 20px; left: 20px; }
@@ -306,21 +311,19 @@
           <div class="win-btn" onclick="goSignin()">&#10005;</div>
         </div>
       </div>
-
       <div class="buddy-menubar">
         <span class="buddy-menu-item"><u>M</u>y AIM</span>
         <span class="buddy-menu-item">People</span>
         <span class="buddy-menu-item">Help</span>
       </div>
 
-      <!-- Buddy list logo image — save as buddy_logo.jpg in repo -->
+      <!-- full logo visible via background-size: contain -->
       <div class="buddy-banner-img"></div>
 
       <div class="buddy-tabs">
         <div class="buddy-tab active">Online</div>
         <div class="buddy-tab">List Setup</div>
       </div>
-
       <div class="buddy-list-area" id="buddy-list-area"></div>
     </div>
   </div>
@@ -396,34 +399,32 @@
     <button class="back-btn" onclick="closeIM()">&#8592; Back to Buddy List</button>
   </div>
 
-</div><!-- /.aim-root -->
+</div>
 
 <script>
   var currentUser   = 'VANILA242';
   var selectedBuddy = null;
   var currentBuddy  = null;
 
-  // 16 buddies total — 8 online (bold), 8 offline (grey)
+  // Buckles242, ScaryBVHS, Chloecat99 removed
+  // 6 online, 6 offline — no bold, black vs grey only
   var buddyData = [
-    { group: 'Buddies', members: [
-      { name: 'Buckles242',    online: true  },
-      { name: 'ScaryBVHS',     online: false },
-      { name: 'Chloecat99',    online: true  },
-      { name: 'CEMac16',       online: false },
-      { name: 'RazorCrash',    online: true  },
-      { name: 'Burrrrrr19',    online: false },
-      { name: 'DJello23',      online: true  },
-      { name: 'Nf69boy',       online: false },
-      { name: 'EAS242',        online: true  },
-      { name: 'CarrotsWade93', online: false },
-      { name: 'Kbowen7452',    online: true  },
-      { name: 'Shiftcaps',     online: false },
-      { name: 'JKowala99',     online: true  },
-      { name: 'Fatdonger',     online: false },
-      { name: 'TJCostello',    online: true  }
+    { group: 'Buddies', highlight: true, members: [
+      { name: 'CEMac16',       online: true  },
+      { name: 'RazorCrash',    online: false },
+      { name: 'Burrrrrr19',    online: true  },
+      { name: 'DJello23',      online: false },
+      { name: 'Nf69boy',       online: true  },
+      { name: 'EAS242',        online: false },
+      { name: 'CarrotsWade93', online: true  },
+      { name: 'Kbowen7452',    online: false },
+      { name: 'Shiftcaps',     online: true  },
+      { name: 'JKowala99',     online: false },
+      { name: 'Fatdonger',     online: true  },
+      { name: 'TJCostello',    online: false }
     ]},
-    { group: 'Family',     members: [] },
-    { group: 'Co-Workers', members: [] }
+    { group: 'Family',     highlight: false, members: [] },
+    { group: 'Co-Workers', highlight: false, members: [] }
   ];
 
   function onPwInput() {
@@ -471,8 +472,10 @@
       var total  = group.members.length;
       var hdr = document.createElement('div');
       hdr.className = 'buddy-group-header';
+      // Only Buddies gets yellow highlight; Family and Co-Workers are plain
+      var labelClass = group.highlight ? 'buddy-group-highlight-yellow' : 'buddy-group-plain';
       hdr.innerHTML = '<span style="font-size:10px;">&#9660;</span>'
-        + '<span class="buddy-group-highlight">'
+        + '<span class="' + labelClass + '">'
         + group.group + ' (' + online + '/' + total + ')</span>';
       area.appendChild(hdr);
       group.members.forEach(function(m) {
