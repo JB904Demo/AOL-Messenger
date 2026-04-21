@@ -8,10 +8,10 @@
   @import url('https://fonts.googleapis.com/css2?family=Tahoma:wght@400;700&display=swap');
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
-  html, body {
-    width: 100%; height: 100%;
-    margin: 0; padding: 0;
+  body {
+    background: #008080;
     display: flex; align-items: center; justify-content: center;
+    min-height: 100vh;
     font-family: 'Tahoma', 'MS Sans Serif', Arial, sans-serif;
     font-size: 13px;
   }
@@ -19,9 +19,8 @@
   .aim-root {
     width: 390px; height: 844px;
     position: relative; overflow: hidden;
-    /* wallpaper — slightly oversized to bleed past edges and kill white border */
     background-image: url('wallpaper.jpg');
-    background-size: 110% 110%;
+    background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
     background-color: #000044;
@@ -122,14 +121,13 @@
   .version-text { font-size: 10px; color: #808080; text-align: center; margin-top: 6px; }
 
   /* ══════════════ BUDDY LIST ══════════════ */
-  /* 360px * 0.8 = 288px */
   #buddylist-window { width: 288px; top: 20px; left: 51px; }
 
   .buddy-menubar { display: flex; background: #d4d0c8; padding: 2px 4px; border-bottom: 1px solid #808080; }
   .buddy-menu-item { font-size: 11px; padding: 1px 5px; cursor: pointer; color: #000; }
   .buddy-menu-item:hover { background: #000080; color: white; }
 
-  /* Logo banner — contain the full image so nothing is cropped */
+  /* Logo: contain so full image shows, grey fill for letterbox areas */
   .buddy-banner-img {
     width: 100%;
     height: 70px;
@@ -137,7 +135,7 @@
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
-    background-color: #1a3aaa;
+    background-color: #d4d0c8;
     display: block;
   }
 
@@ -150,7 +148,6 @@
     margin: 4px; height: 480px; overflow-y: auto;
   }
 
-  /* Group headers — Buddies gets yellow highlight, Family/Co-Workers plain grey */
   .buddy-group-header {
     background: #d4d0c8; padding: 1px 3px; font-size: 11px; font-weight: bold;
     display: flex; align-items: center; gap: 3px;
@@ -159,7 +156,6 @@
   .buddy-group-highlight-yellow { background: #ffff00; padding: 0 2px; color: #000; }
   .buddy-group-plain { background: transparent; padding: 0 2px; color: #000; }
 
-  /* Buddy items — online = black normal weight, offline = grey normal weight */
   .buddy-item { padding: 1px 4px 1px 16px; font-size: 11px; cursor: pointer; white-space: nowrap; background: white; font-weight: normal; }
   .buddy-item.online  { color: #000000; }
   .buddy-item.offline { color: #999999; }
@@ -316,10 +312,7 @@
         <span class="buddy-menu-item">People</span>
         <span class="buddy-menu-item">Help</span>
       </div>
-
-      <!-- full logo visible via background-size: contain -->
       <div class="buddy-banner-img"></div>
-
       <div class="buddy-tabs">
         <div class="buddy-tab active">Online</div>
         <div class="buddy-tab">List Setup</div>
@@ -406,8 +399,6 @@
   var selectedBuddy = null;
   var currentBuddy  = null;
 
-  // Buckles242, ScaryBVHS, Chloecat99 removed
-  // 6 online, 6 offline — no bold, black vs grey only
   var buddyData = [
     { group: 'Buddies', highlight: true, members: [
       { name: 'CEMac16',       online: true  },
@@ -472,7 +463,6 @@
       var total  = group.members.length;
       var hdr = document.createElement('div');
       hdr.className = 'buddy-group-header';
-      // Only Buddies gets yellow highlight; Family and Co-Workers are plain
       var labelClass = group.highlight ? 'buddy-group-highlight-yellow' : 'buddy-group-plain';
       hdr.innerHTML = '<span style="font-size:10px;">&#9660;</span>'
         + '<span class="' + labelClass + '">'
