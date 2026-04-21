@@ -489,8 +489,6 @@
 
   function doSignOn() {
     if (document.getElementById('pw-input').value !== 'vikings') return;
-    // ── SOUND: You've got mail ──
-    playSound('gotMail');
     currentUser = document.getElementById('sn-select').value;
     document.getElementById('bl-title').textContent = currentUser + "'s Buddy List ...";
     renderBuddyList();
@@ -498,6 +496,8 @@
     document.getElementById('screen-signin').classList.remove('active');
     document.getElementById('screen-buddylist').style.display = 'block';
     document.getElementById('screen-buddylist').classList.add('active');
+    // ── SOUND: You've got mail — plays once buddy list is visible ──
+    setTimeout(function(){ playSound('gotMail'); }, 100);
     startRotation();
   }
 
@@ -526,7 +526,7 @@
   // ── Buddy rotation: every 15s, sign one off (with sound), wait 3s, sign one on (with sound) ──
   function startRotation() {
     stopRotation();
-    rotateTimer = setInterval(rotateBuddy, 15000);
+    rotateTimer = setInterval(rotateBuddy, 45000);
   }
   function stopRotation() {
     if (rotateTimer) { clearInterval(rotateTimer); rotateTimer = null; }
