@@ -48,7 +48,7 @@
   .screen { display: none; }
   .screen.active { display: block; }
 
-  /* ══════════════ API KEY DIALOG ══════════════ */
+  /* ══ API KEY ══ */
   #apikey-window { width: 320px; top: 180px; left: 35px; }
   .apikey-body { padding: 14px 14px 10px; background: #d4d0c8; }
   .apikey-icon-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
@@ -74,7 +74,7 @@
   .btn-98:active { border-color: #808080 #ffffff #ffffff #808080; }
   .btn-98.default { border: 3px solid #000; padding: 2px 15px; }
 
-  /* ══════════════ SIGN IN ══════════════ */
+  /* ══ SIGN IN ══ */
   #signin-window { width: 350px; top: 30px; left: 20px; }
   .aim-banner { width: 100%; display: block; height: 220px; object-fit: cover; object-position: top; background: #1a1aaa; }
   .aim-banner-fallback { width: 100%; height: 220px; background: #1a1aaa; display: none; align-items: flex-end; padding: 10px 14px; }
@@ -128,7 +128,7 @@
   .signon-btn:disabled { color: #808080; cursor: default; }
   .version-text { font-size: 10px; color: #808080; text-align: center; margin-top: 6px; }
 
-  /* ══════════════ BUDDY LIST ══════════════ */
+  /* ══ BUDDY LIST ══ */
   #buddylist-window { width: 288px; top: 20px; left: 51px; }
   .buddy-menubar { display: flex; background: #d4d0c8; padding: 2px 4px; border-bottom: 1px solid #808080; }
   .buddy-menu-item { font-size: 11px; padding: 1px 5px; cursor: pointer; color: #000; }
@@ -147,7 +147,7 @@
   .buddy-item:hover   { background: #000080; color: white; }
   .buddy-item.selected { background: #000080; color: white; }
 
-  /* ══════════════ IM WINDOW ══════════════ */
+  /* ══ IM WINDOW ══ */
   #im-window { width: 350px; top: 20px; left: 20px; }
   .im-menubar { display: flex; background: #d4d0c8; padding: 1px 3px; border-bottom: 1px solid #808080; justify-content: space-between; align-items: center; }
   .im-menu-left { display: flex; }
@@ -190,7 +190,7 @@
 <body>
 <div class="aim-root" id="root">
 
-  <!-- ═══ API KEY DIALOG ═══ -->
+  <!-- ═══ API KEY ═══ -->
   <div class="screen active" id="screen-apikey">
     <div class="win-window" id="apikey-window">
       <div class="win-titlebar">
@@ -202,9 +202,7 @@
           </svg>
           AOL Instant Messenger
         </div>
-        <div class="win-btns">
-          <div class="win-btn">_</div><div class="win-btn">&#9633;</div><div class="win-btn">&#10005;</div>
-        </div>
+        <div class="win-btns"><div class="win-btn">_</div><div class="win-btn">&#9633;</div><div class="win-btn">&#10005;</div></div>
       </div>
       <div class="apikey-body">
         <div class="apikey-icon-row">
@@ -240,9 +238,7 @@
           </svg>
           Sign On
         </div>
-        <div class="win-btns">
-          <div class="win-btn">_</div><div class="win-btn">&#9633;</div><div class="win-btn">&#10005;</div>
-        </div>
+        <div class="win-btns"><div class="win-btn">_</div><div class="win-btn">&#9633;</div><div class="win-btn">&#10005;</div></div>
       </div>
       <img src="aim_banner.png" class="aim-banner" alt="AOL Instant Messenger"
            onerror="this.style.display='none';document.getElementById('banner-fallback').style.display='flex';">
@@ -316,9 +312,7 @@
           </svg>
           <span id="bl-title">VANILA242's Buddy List ...</span>
         </div>
-        <div class="win-btns">
-          <div class="win-btn">_</div><div class="win-btn">&#9633;</div><div class="win-btn" onclick="goSignin()">&#10005;</div>
-        </div>
+        <div class="win-btns"><div class="win-btn">_</div><div class="win-btn">&#9633;</div><div class="win-btn" onclick="goSignin()">&#10005;</div></div>
       </div>
       <div class="buddy-menubar">
         <span class="buddy-menu-item"><u>M</u>y AIM</span>
@@ -349,9 +343,7 @@
           </svg>
           <span id="im-title">buddy - Instant Message</span>
         </div>
-        <div class="win-btns">
-          <div class="win-btn">_</div><div class="win-btn">&#9633;</div><div class="win-btn" onclick="closeIM()">&#10005;</div>
-        </div>
+        <div class="win-btns"><div class="win-btn">_</div><div class="win-btn">&#9633;</div><div class="win-btn" onclick="closeIM()">&#10005;</div></div>
       </div>
       <div class="im-menubar">
         <div class="im-menu-left">
@@ -403,9 +395,28 @@
     <button class="back-btn" onclick="closeIM()">&#8592; Back to Buddy List</button>
   </div>
 
-</div>
+</div><!-- /.aim-root -->
 
 <script>
+  // ── Sound effects ──
+  // Each sound is loaded once and reused. We reset currentTime before playing
+  // so rapid triggers don't get swallowed.
+  var sounds = {
+    gotMail : new Audio('yougotmail.mp3'),   // login accepted
+    imTone  : new Audio('aol-im.mp3'),       // buddy replies to IM
+    open    : new Audio('aol-open-1.mp3'),   // buddy signs on
+    close   : new Audio('aol-close.mp3')     // buddy signs off
+  };
+
+  function playSound(key) {
+    try {
+      var s = sounds[key];
+      s.currentTime = 0;
+      s.play().catch(function(){});
+    } catch(e) {}
+  }
+
+  // ── App state ──
   var apiKey        = '';
   var currentUser   = 'VANILA242';
   var selectedBuddy = null;
@@ -413,36 +424,23 @@
   var chatHistories = {};
   var rotateTimer   = null;
 
-  // ── Shared context injected into every personality ──
-  var SHARED_CONTEXT = 'IMPORTANT RULES YOU MUST FOLLOW: The current year is 1998/1999. You are a student at Bishop Verot High School (BVHS) in Fort Myers, Florida. The school mascot is the Vikings. You only know about events, music, movies, sports, and technology that existed before the year 2000. If someone asks about anything that happened after 1999, you say something like "idk what ur talking about, that hasnt happened yet lol" or "r u from the future lol". Popular AIM abbreviations you use: lol, brb, bbl, ttyl, omg, gtg, nm, wyd, jk, rofl, lmao, u, ur, r, 2, 4, cya, imo, btw, afk. You type in casual AIM style - lowercase, abbreviations, occasional typos. Keep ALL responses to 1-3 short sentences max. Never break character. Popular hangouts: Perkins restaurant, The Edison Mall, Centennial Park, The Bell Tower shops, The Bell Tower movie theatre, Bistro 41, The Sheppard House, Taco Bell. The guys are into the WWF/WCW wrestling war. The girls are into Dawsons Creek. The person you are chatting with is Joe, who goes by VANILA242 or Yukon242 on AIM.';
+  var SHARED_CONTEXT = 'IMPORTANT RULES YOU MUST FOLLOW: The current year is 1998/1999. You are a student at Bishop Verot High School (BVHS) in Fort Myers, Florida. The school mascot is the Vikings. You only know about events, music, movies, sports, and technology that existed before the year 2000. If someone asks about anything that happened after 1999, say something like "idk what ur talking about, that hasnt happened yet lol" or "r u from the future lol". Popular AIM abbreviations: lol, brb, bbl, ttyl, omg, gtg, nm, wyd, jk, rofl, lmao, u, ur, r, 2, 4, cya, imo, btw, afk. Type in casual AIM style - lowercase, abbreviations, occasional typos. Keep ALL responses to 1-3 short sentences max. Never break character. Popular hangouts: Perkins restaurant, The Edison Mall, Centennial Park, The Bell Tower shops, The Bell Tower movie theatre, Bistro 41, The Sheppard House, Taco Bell. The guys are into the WWF/WCW wrestling war. The girls are into Dawsons Creek. The person you are chatting with is Joe, who goes by VANILA242 or Yukon242 on AIM.';
 
   var buddyPersonalities = {
-    'CEMac16': SHARED_CONTEXT + ' YOUR CHARACTER: You are Katie, Joe\'s high school crush. You are sweet, reserved, and a little shy. You think Joe is really nice but he is too shy to ask you out and you are too shy to make the first move. You are into Key Club volunteering, shopping at the Edison Mall, and hanging out with your girlfriends. You love Dawsons Creek and talk about it a lot. You are a little oblivious to how much Joe likes you.',
-
-    'RazorCrash': SHARED_CONTEXT + ' YOUR CHARACTER: You are Jaime, a ska skateboarder. You love Rancid, Operation Ivy, Less Than Jake, and the Mighty Mighty Bosstones. You are always talking about skating spots around Fort Myers and hanging at the beach. You use ska and skate slang. You are chill and laid back.',
-
-    'Burrrrrr19': SHARED_CONTEXT + ' YOUR CHARACTER: You are Meagan, Joe\'s other high school crush. You and Joe talk on the phone for hours. You call Joe "JoJo" always. You live in Whiskey Creek in Fort Myers. You are really into cross country and track and are always training or talking about races. You love Dawsons Creek. You are warm and friendly and have great conversations with Joe.',
-
-    'DJello23': SHARED_CONTEXT + ' YOUR CHARACTER: You are Dawn, a girl who is huge into soccer. You are dating the school swim champion Matt Cull. You are a little flirty in a harmless way and outgoing. You love hanging out at Centennial Park. You are friends with Meagan and Julie.',
-
-    'Nf69boy': SHARED_CONTEXT + ' YOUR CHARACTER: You are Nick Foster. You are obsessed with basketball, PlayStation, Goldeneye 007 on N64, and pizza. You are always talking about the NBA (Shaq, Kobe, Jordan era), challenging people to Goldeneye, and debating pizza toppings. You are enthusiastic and use a lot of exclamation points.',
-
-    'Fatdonger': SHARED_CONTEXT + ' YOUR CHARACTER: You are Brandon. You are VERY into late 90s hardcore and Fat Wreck Chords punk. Your favorite band is Pennywise. You also love NOFX, Lagwagon, Bad Religion, and Strung Out. You are always looking for a reason to get in a fist fight with someone. You absolutely hate people who drink beer (straightedge) and you HATE racists with a passion and will fight them. You are actually a good loyal friend underneath the aggression.',
-
-    'TJCostello': SHARED_CONTEXT + ' YOUR CHARACTER: You are John Costello, the most tech savvy person anyone knows. You are starting Florida State University in the fall of 1999. You are in a band called Vanguard. You know everything about computers, the early internet, Napster, mp3s, and tech gadgets. You are smooth and confident.',
-
-    'EAS242': SHARED_CONTEXT + ' YOUR CHARACTER: You are a cartoonishly over-the-top hardcore music scene kid who grew up in a very comfortable suburban Fort Myers home but acts like he grew up extremely hard on the streets. You are obsessed with Attitude Era WWF wrestling - Stone Cold Steve Austin, The Rock, DX, Mankind. You are always talking about hardcore music and the pit. You have zero self-awareness about how suburban and comfortable your life actually is.',
-
-    'Kbowen7452': SHARED_CONTEXT + ' YOUR CHARACTER: You are Joe\'s mom. You are very proper, a little overprotective, but genuinely sweet and loving. You worry about Joe constantly. You ask about homework, curfew, eating right, and whether his friends are a good influence. You are not really comfortable with AIM and type a bit formally compared to the kids. You sign your messages "- Mom" sometimes.',
-
-    'Shiftcaps': SHARED_CONTEXT + ' YOUR CHARACTER: You are Joe\'s dad. You call Joe "buddy" always. You are really into classic old cars and auto racing - NASCAR, drag racing. You always ask how things are going and give wholesome dad advice. You are proud of Joe. You are not very good at AIM either and type a bit stiffly. You sometimes get sidetracked talking about a car you saw or a race you watched.',
-
-    'JKowala99': SHARED_CONTEXT + ' YOUR CHARACTER: You are Julie, a generic but sweet high school student at BVHS. You are friends with Dawn and Meagan. You are always dealing with some kind of high school social drama - who likes who, who said what, drama at lunch. You love Dawsons Creek and Titanic. You are friendly to Joe.',
-
-    'CarrotsWade93': SHARED_CONTEXT + ' YOUR CHARACTER: You are Wade, a vegan who is extremely proud of being from the Twin Cities in Minnesota. You are obsessed with keeping your knees flexible and talk about your stretching routine constantly. You are a huge fan of classic AWA (American Wrestling Association) wrestling from the 80s and think it was way better than WWF or WCW. You are friendly but always bringing conversations back to veganism, Minnesota, knee flexibility, or AWA wrestling.'
+    'CEMac16':       SHARED_CONTEXT + ' YOUR CHARACTER: You are Katie, Joe\'s high school crush. You are sweet, reserved, and a little shy. You think Joe is really nice but he is too shy to ask you out and you are too shy to make the first move. You are into Key Club volunteering, shopping at the Edison Mall, and hanging out with your girlfriends. You love Dawsons Creek and talk about it a lot. You are a little oblivious to how much Joe likes you.',
+    'RazorCrash':    SHARED_CONTEXT + ' YOUR CHARACTER: You are Jaime, a ska skateboarder. You love Rancid, Operation Ivy, Less Than Jake, and the Mighty Mighty Bosstones. You are always talking about skating spots around Fort Myers and hanging at the beach. You use ska and skate slang. You are chill and laid back.',
+    'Burrrrrr19':    SHARED_CONTEXT + ' YOUR CHARACTER: You are Meagan, Joe\'s other high school crush. You and Joe talk on the phone for hours. You ALWAYS call Joe "JoJo" - never just Joe. You live in Whiskey Creek in Fort Myers. You are really into cross country and track and are always training or talking about races. You love Dawsons Creek. You are warm, friendly, and have great long conversations with Joe.',
+    'DJello23':      SHARED_CONTEXT + ' YOUR CHARACTER: You are Dawn, a girl who is huge into soccer. You are dating the school swim champion Matt Cull. You are a little flirty in a harmless fun way and very outgoing. You love hanging at Centennial Park. You are friends with Meagan and Julie.',
+    'Nf69boy':       SHARED_CONTEXT + ' YOUR CHARACTER: You are Nick Foster. You are obsessed with basketball, PlayStation, Goldeneye 007 on N64, and pizza. You are always talking about the NBA (Shaq, Kobe, Jordan era), challenging people to Goldeneye, and debating pizza toppings. Very enthusiastic, lots of exclamation points.',
+    'Fatdonger':     SHARED_CONTEXT + ' YOUR CHARACTER: You are Brandon. You are VERY into late 90s hardcore and Fat Wreck Chords punk. Your favorite band is Pennywise. You also love NOFX, Lagwagon, Bad Religion, and Strung Out. You are always looking for a reason to get in a fist fight. You are straightedge and hate people who drink beer. You HATE racists and will fight them. You are actually a good loyal friend underneath the aggression.',
+    'TJCostello':    SHARED_CONTEXT + ' YOUR CHARACTER: You are John Costello, the most tech savvy person anyone knows. You are starting Florida State University in fall 1999. You are in a band called Vanguard. You know everything about computers, early internet, Napster, mp3s, and gadgets. Smooth and confident.',
+    'EAS242':        SHARED_CONTEXT + ' YOUR CHARACTER: You are a cartoonishly over-the-top hardcore kid who grew up in a very comfortable Fort Myers suburb but acts like he came up hard on the streets. You are obsessed with Attitude Era WWF - Stone Cold, The Rock, DX, Mankind. You are always talking about hardcore music and the pit. You have zero self-awareness about how suburban your life actually is.',
+    'Kbowen7452':    SHARED_CONTEXT + ' YOUR CHARACTER: You are Joe\'s mom. You are very proper, a little overprotective, but genuinely sweet and loving. You worry about Joe constantly. You ask about homework, curfew, eating right, and whether his friends are a good influence. You are not comfortable with AIM and type a bit formally. You sometimes sign messages "- Mom".',
+    'Shiftcaps':     SHARED_CONTEXT + ' YOUR CHARACTER: You are Joe\'s dad. You ALWAYS call Joe "buddy". You are really into classic old cars and auto racing - NASCAR and drag racing. You always ask how things are going and give wholesome dad advice. You are proud of Joe. You type a bit stiffly. You get sidetracked talking about a car you saw or a race you watched.',
+    'JKowala99':     SHARED_CONTEXT + ' YOUR CHARACTER: You are Julie, a sweet generic high school student at BVHS. You are friends with Dawn and Meagan. You are always in the middle of some high school social drama - who likes who, who said what, drama at lunch. You love Dawsons Creek and Titanic. Friendly to Joe.',
+    'CarrotsWade93': SHARED_CONTEXT + ' YOUR CHARACTER: You are Wade, a vegan who is extremely proud of being from the Twin Cities in Minnesota. You are obsessed with keeping your knees flexible and talk about your stretching routine constantly. You are a huge fan of classic AWA (American Wrestling Association) wrestling from the 80s and think it was way better than WWF or WCW. Friendly but always steering conversations back to veganism, Minnesota, knee flexibility, or AWA wrestling.'
   };
 
-  // ── Buddy data: 9 online, 3 offline to start ──
   var buddyData = [
     { group: 'Buddies', highlight: true, members: [
       { name: 'CEMac16',       online: true  },
@@ -464,14 +462,12 @@
 
   // ── API Key ──
   function onApiKeyEnter(e) { if (e.key === 'Enter') submitApiKey(); }
-
   function submitApiKey() {
     var val = document.getElementById('apikey-input').value.trim();
     if (val) apiKey = val;
     showScreen('screen-signin');
     setTimeout(function(){ document.getElementById('pw-input').focus(); }, 100);
   }
-
   function skipApiKey() {
     showScreen('screen-signin');
     setTimeout(function(){ document.getElementById('pw-input').focus(); }, 100);
@@ -489,16 +485,17 @@
       else el.setAttribute('stroke', col);
     });
   }
-
   function onPwKey(e) { if (e.key === 'Enter') { e.preventDefault(); doSignOn(); } }
 
   function doSignOn() {
     if (document.getElementById('pw-input').value !== 'vikings') return;
+    // ── SOUND: You've got mail ──
+    playSound('gotMail');
     currentUser = document.getElementById('sn-select').value;
     document.getElementById('bl-title').textContent = currentUser + "'s Buddy List ...";
     renderBuddyList();
-    // Hide signin screen completely and show buddy list
     document.getElementById('screen-signin').style.display = 'none';
+    document.getElementById('screen-signin').classList.remove('active');
     document.getElementById('screen-buddylist').style.display = 'block';
     document.getElementById('screen-buddylist').classList.add('active');
     startRotation();
@@ -509,7 +506,6 @@
     document.getElementById('pw-input').value = '';
     onPwInput();
     selectedBuddy = null;
-    // Hide buddy list, show signin
     document.getElementById('screen-buddylist').style.display = 'none';
     document.getElementById('screen-buddylist').classList.remove('active');
     document.getElementById('screen-signin').style.display = 'block';
@@ -527,12 +523,11 @@
     el.classList.add('active');
   }
 
-  // ── Buddy rotation: every 15s swap one online↔offline ──
+  // ── Buddy rotation: every 15s, sign one off (with sound), wait 3s, sign one on (with sound) ──
   function startRotation() {
     stopRotation();
     rotateTimer = setInterval(rotateBuddy, 15000);
   }
-
   function stopRotation() {
     if (rotateTimer) { clearInterval(rotateTimer); rotateTimer = null; }
   }
@@ -542,12 +537,22 @@
     var online  = members.filter(function(m){ return m.online; });
     var offline = members.filter(function(m){ return !m.online; });
     if (!online.length || !offline.length) return;
-    // Pick one random online to go offline, one random offline to come online
+
+    // Step 1: sign one buddy off immediately + play close sound
     var goOff = online[Math.floor(Math.random() * online.length)];
-    var goOn  = offline[Math.floor(Math.random() * offline.length)];
     goOff.online = false;
-    goOn.online  = true;
+    playSound('close');
     renderBuddyList();
+
+    // Step 2: after 3 seconds, sign one buddy on + play open sound
+    setTimeout(function() {
+      var stillOffline = members.filter(function(m){ return !m.online; });
+      if (!stillOffline.length) return;
+      var goOn = stillOffline[Math.floor(Math.random() * stillOffline.length)];
+      goOn.online = true;
+      playSound('open');
+      renderBuddyList();
+    }, 3000);
   }
 
   // ── Render Buddy List ──
@@ -590,21 +595,15 @@
     document.getElementById('im-warning-label').textContent = name + "'s Warning Level: 0%";
     var chat = document.getElementById('im-chat-area');
     chat.innerHTML = '';
-    // Replay history
     chatHistories[name].forEach(function(msg) {
       appendMessage(msg.role === 'user' ? currentUser : name, msg.content, msg.role === 'user');
     });
     document.getElementById('im-input').value = '';
-
-    // Hide buddy list, show IM
     document.getElementById('screen-buddylist').style.display = 'none';
     document.getElementById('screen-buddylist').classList.remove('active');
     document.getElementById('screen-im').style.display = 'block';
     document.getElementById('screen-im').classList.add('active');
-
     setTimeout(function(){ document.getElementById('im-input').focus(); }, 150);
-
-    // Opening greeting if first time
     if (chatHistories[name].length === 0) {
       if (apiKey) {
         setTimeout(function(){ getBuddyGreeting(name); }, 700);
@@ -635,7 +634,6 @@
     chat.appendChild(ti);
     chat.scrollTop = chat.scrollHeight;
   }
-
   function hideTyping() {
     var ti = document.getElementById('typing-indicator'); if (ti) ti.remove();
   }
@@ -686,14 +684,18 @@
           model: 'claude-sonnet-4-20250514',
           max_tokens: 100,
           system: personality,
-          messages: [{ role: 'user', content: 'Say a quick casual AIM greeting to Joe who just opened a chat window with you. Keep it very short, 1 sentence, in your character.' }]
+          messages: [{ role: 'user', content: 'Say a quick casual AIM greeting to Joe who just opened a chat window with you. 1 sentence max, stay in character.' }]
         })
       });
       var data = await response.json();
       hideTyping();
       var reply = data.content && data.content[0] ? data.content[0].text : 'hey';
       chatHistories[name].push({ role: 'assistant', content: reply });
-      if (currentBuddy === name) appendMessage(name, reply, false);
+      if (currentBuddy === name) {
+        appendMessage(name, reply, false);
+        // ── SOUND: buddy replied ──
+        playSound('imTone');
+      }
     } catch(e) { hideTyping(); }
   }
 
@@ -722,7 +724,11 @@
       if (data.content && data.content[0]) {
         var reply = data.content[0].text;
         chatHistories[name].push({ role: 'assistant', content: reply });
-        if (currentBuddy === name) appendMessage(name, reply, false);
+        if (currentBuddy === name) {
+          appendMessage(name, reply, false);
+          // ── SOUND: buddy replied ──
+          playSound('imTone');
+        }
       }
     } catch(e) {
       hideTyping();
