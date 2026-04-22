@@ -26,17 +26,15 @@
   }
 
   /* ── Screens ── */
-  .screen { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-  .screen.active { display: block; }
+  .screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; }
 
   /* ════════════════════════════════════════
      WIN95 API KEY DIALOG
   ════════════════════════════════════════ */
   #screen-apikey {
     background: #008080;
-    display: flex; align-items: center; justify-content: center;
+    align-items: center; justify-content: center;
   }
-  #screen-apikey.active { display: flex; }
 
   .w95-window {
     background: #c0c0c0;
@@ -85,8 +83,8 @@
   /* ════════════════════════════════════════
      AOL DESKTOP BACKGROUND
   ════════════════════════════════════════ */
-  #screen-signin, #screen-loading, #screen-desktop {
-    background-image: url('Minimized_Background.png');
+  #screen-signin, #screen-loading {
+    background-image: url('Minimized_Background.PNG');
     background-size: cover;
     background-position: center;
     background-color: #3a3a3a;
@@ -195,9 +193,8 @@
      MODEM LOADING SCREEN
   ════════════════════════════════════════ */
   #screen-loading {
-    display: flex; align-items: center; justify-content: center;
+    align-items: center; justify-content: center;
   }
-  #screen-loading.active { display: flex; }
   .loading-fullscreen {
     width: 100%; height: 100%;
     object-fit: cover;
@@ -207,7 +204,7 @@
   /* ════════════════════════════════════════
      DESKTOP SCREEN
   ════════════════════════════════════════ */
-  #screen-desktop { background-image: url('Constant_Background.png'); background-size: cover; background-position: center; }
+  #screen-desktop { background-image: url('Constant_Background.png'); background-size: cover; background-position: center; background-color: #3a3a3a; }
 
   /* ════════════════════════════════════════
      DRAGGABLE BUDDY LIST
@@ -359,7 +356,7 @@
   <!-- ══════════════════════════════════════
        API KEY — WIN95 STYLE
   ══════════════════════════════════════ -->
-  <div class="screen active" id="screen-apikey">
+  <div class="screen" id="screen-apikey">
     <div class="w95-window" style="width:360px;">
       <div class="w95-titlebar">
         <div class="w95-titlebar-left">
@@ -618,13 +615,15 @@
     }, 5000);
   }
 
+  // Screens that need display:flex to center their content
+  var flexScreens = { 'screen-apikey': true, 'screen-loading': true };
+
   function showScreen(id) {
     document.querySelectorAll('.screen').forEach(function(s){
-      s.classList.remove('active');
-      s.style.display = '';
+      s.style.display = 'none';
     });
     var el = document.getElementById(id);
-    el.classList.add('active');
+    el.style.display = flexScreens[id] ? 'flex' : 'block';
   }
 
   // ── Buddy rotation ──
@@ -930,7 +929,8 @@
   }
 
   window.addEventListener('load', function(){
-    document.getElementById('apikey-input').focus();
+    showScreen('screen-apikey');
+    setTimeout(function(){ document.getElementById('apikey-input').focus(); }, 100);
   });
 </script>
 </body>
