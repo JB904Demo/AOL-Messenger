@@ -2,318 +2,486 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>AIM Simulator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>America Online</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Tahoma:wght@400;700&display=swap');
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
 
   body {
-    background: #008080;
+    background: #000;
     display: flex; align-items: center; justify-content: center;
     min-height: 100vh;
     font-family: 'Tahoma', 'MS Sans Serif', Arial, sans-serif;
-    font-size: 13px;
+    font-size: 12px;
+    overflow: hidden;
   }
 
-  .aim-root {
-    width: 390px; height: 844px;
+  /* ── Main canvas: always 1024×768 ── */
+  #canvas {
+    width: 1024px; height: 768px;
     position: relative; overflow: hidden;
-    background-image: url('wallpaper.jpg');
-    background-size: cover;
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-color: #000044;
+    flex-shrink: 0;
   }
 
-  .win-window {
-    background: #d4d0c8; border: 2px solid;
-    border-color: #ffffff #808080 #808080 #ffffff;
-    box-shadow: 2px 2px 0 #000; position: absolute;
-  }
-  .win-titlebar {
-    background: linear-gradient(to right, #000080, #1084d0);
-    color: white; font-size: 13px; font-weight: bold;
-    padding: 3px 5px; display: flex; align-items: center;
-    justify-content: space-between; height: 22px; user-select: none;
-  }
-  .win-titlebar-left { display: flex; align-items: center; gap: 4px; }
-  .win-btns { display: flex; gap: 2px; }
-  .win-btn {
-    width: 16px; height: 14px; background: #d4d0c8; border: 1px solid;
-    border-color: #ffffff #808080 #808080 #ffffff;
-    font-size: 9px; display: flex; align-items: center; justify-content: center;
-    cursor: pointer; color: #000; line-height: 1; font-weight: bold;
-  }
-  .screen { display: none; }
+  /* ── Screens ── */
+  .screen { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
   .screen.active { display: block; }
 
-  /* ══ LOADING SCREEN ══ */
-  #screen-loading { z-index: 10; }
-  #loading-window {
-    width: 350px; top: 180px; left: 20px;
+  /* ════════════════════════════════════════
+     WIN95 API KEY DIALOG
+  ════════════════════════════════════════ */
+  #screen-apikey {
+    background: #008080;
+    display: flex; align-items: center; justify-content: center;
   }
-  .loading-img {
-    width: 100%; display: block;
+  #screen-apikey.active { display: flex; }
+
+  .w95-window {
+    background: #c0c0c0;
+    border: 2px solid;
+    border-color: #ffffff #808080 #808080 #ffffff;
+    box-shadow: 2px 2px 0 #000;
+  }
+  .w95-titlebar {
+    background: #000080;
+    color: white; font-size: 12px; font-weight: bold;
+    padding: 3px 6px; display: flex; align-items: center;
+    justify-content: space-between; height: 20px;
+  }
+  .w95-titlebar-left { display: flex; align-items: center; gap: 4px; }
+  .w95-title-icon { font-size: 11px; }
+  .w95-btns { display: flex; gap: 2px; }
+  .w95-btn {
+    width: 16px; height: 14px; background: #c0c0c0; border: 1px solid;
+    border-color: #ffffff #808080 #808080 #ffffff; font-size: 9px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: #000; font-weight: bold;
+  }
+  .w95-body { padding: 16px; }
+  .w95-input-row { display: flex; align-items: center; gap: 8px; margin: 10px 0; }
+  .w95-label { font-size: 12px; color: #000; min-width: 60px; }
+  .w95-input {
+    flex: 1; height: 22px;
     border-top: 2px solid #808080; border-left: 2px solid #808080;
     border-right: 2px solid #ffffff; border-bottom: 2px solid #ffffff;
+    background: #fff; font-family: 'Tahoma', Arial; font-size: 12px;
+    padding: 0 4px; outline: none; color: #000;
+    user-select: text;
+  }
+  .w95-note { font-size: 10px; color: #444; margin: 6px 0 12px; line-height: 1.5; }
+  .w95-divider { border: none; border-top: 1px solid #808080; border-bottom: 1px solid #fff; margin: 10px 0; }
+  .w95-btn-row { display: flex; justify-content: flex-end; gap: 6px; }
+  .w95-push-btn {
+    background: #c0c0c0; border: 2px solid;
+    border-color: #ffffff #808080 #808080 #ffffff;
+    padding: 3px 18px; font-family: 'Tahoma', Arial;
+    font-size: 12px; cursor: pointer; color: #000; min-width: 75px;
+  }
+  .w95-push-btn:active { border-color: #808080 #ffffff #ffffff #808080; }
+  .w95-push-btn.default { outline: 2px solid #000; outline-offset: -4px; }
+
+  /* ════════════════════════════════════════
+     AOL DESKTOP BACKGROUND
+  ════════════════════════════════════════ */
+  #screen-signin, #screen-loading, #screen-desktop {
+    background-image: url('Minimized_Background.png');
+    background-size: cover;
+    background-position: center;
+    background-color: #3a3a3a;
   }
 
-  /* ══ API KEY ══ */
-  #apikey-window { width: 320px; top: 180px; left: 35px; }
-  .apikey-body { padding: 14px 14px 10px; background: #d4d0c8; }
-  .apikey-icon-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-  .apikey-icon { font-size: 28px; }
-  .apikey-msg { font-size: 12px; color: #000; line-height: 1.5; }
-  .apikey-msg strong { display: block; margin-bottom: 4px; font-size: 13px; }
-  .apikey-input {
-    width: 100%; height: 26px;
-    border-top: 2px solid #808080; border-left: 2px solid #808080;
-    border-right: 2px solid #ffffff; border-bottom: 2px solid #ffffff;
-    border-radius: 0; background: #ffffff;
-    font-family: 'Tahoma', Arial; font-size: 12px; padding: 0 6px;
-    outline: none; color: #000; margin-bottom: 10px;
+  /* ════════════════════════════════════════
+     AOL 4.0 SIGN IN WINDOW
+  ════════════════════════════════════════ */
+  #signin-window {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 580px;
+    background: #c8c8b8;
+    border: 2px solid;
+    border-color: #ffffff #808080 #808080 #ffffff;
+    box-shadow: 3px 3px 6px rgba(0,0,0,0.5);
   }
-  .apikey-note { font-size: 10px; color: #808080; margin-bottom: 12px; line-height: 1.4; }
-  .apikey-divider { border: none; border-top: 1px solid #808080; border-bottom: 1px solid #ffffff; margin: 8px 0; }
-  .apikey-footer { display: flex; justify-content: flex-end; gap: 6px; }
-  .btn-98 {
-    background: #d4d0c8; border: 2px solid; border-color: #ffffff #808080 #808080 #ffffff;
-    border-radius: 0; padding: 3px 16px; font-family: 'Tahoma', Arial;
-    font-size: 12px; cursor: pointer; color: #000; min-width: 70px; text-align: center;
-  }
-  .btn-98:active { border-color: #808080 #ffffff #ffffff #808080; }
-  .btn-98.default { border: 3px solid #000; padding: 2px 15px; }
 
-  /* ══ SIGN IN ══ */
-  #signin-window { width: 350px; top: 30px; left: 20px; }
-  .aim-banner { width: 100%; display: block; height: 220px; object-fit: cover; object-position: top; background: #1a1aaa; }
-  .aim-banner-fallback { width: 100%; height: 220px; background: #1a1aaa; display: none; align-items: flex-end; padding: 10px 14px; }
-  .banner-aol { color: white; font-family: Arial; font-size: 22px; font-weight: 900; font-style: italic; }
-  .banner-aim { color: white; font-family: Arial; font-size: 16px; font-style: italic; }
-  .signin-form { padding: 10px 12px 8px; background: #d4d0c8; }
-  .sn-label { font-size: 13px; font-weight: bold; font-style: italic; color: #000080; display: flex; align-items: center; gap: 4px; margin-bottom: 3px; }
-  .pw-label { font-size: 13px; font-weight: bold; color: #000; margin-bottom: 3px; display: block; }
-  .form-input {
-    width: 100%; height: 24px;
-    border-top: 2px solid #808080; border-left: 2px solid #808080;
-    border-right: 2px solid #ffffff; border-bottom: 2px solid #ffffff;
-    border-radius: 0; background: #ffffff;
-    font-family: 'Tahoma', Arial; font-size: 12px; padding: 0 4px;
-    outline: none; display: block; color: #000;
+  .aol-titlebar {
+    background: linear-gradient(to bottom, #2a7a8c, #1a5a6c);
+    color: #7ad4e8; font-size: 12px; font-weight: bold;
+    padding: 3px 6px; display: flex; align-items: center;
+    justify-content: space-between; height: 22px;
+    font-family: 'Tahoma', Arial;
   }
-  .sn-dropdown-wrap { position: relative; width: 100%; }
-  .sn-dropdown-wrap select {
+  .aol-titlebar-left { display: flex; align-items: center; gap: 5px; }
+  .aol-title-text { color: #c8f0ff; font-size: 12px; font-weight: bold; }
+  .aol-win-btns { display: flex; gap: 2px; }
+  .aol-win-btn {
+    width: 16px; height: 14px; background: #c0c0c0; border: 1px solid;
+    border-color: #ffffff #808080 #808080 #ffffff;
+    font-size: 9px; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: #000; font-weight: bold;
+  }
+
+  .signin-body { display: flex; height: 440px; }
+
+  /* Left blue sidebar */
+  .signin-sidebar {
+    width: 130px; flex-shrink: 0;
+    background-image: url('Sign_In_Sidebar.jpg');
+    background-size: cover; background-position: top center;
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: flex-end; padding-bottom: 16px;
+    color: #a0d8f0; font-size: 11px;
+  }
+  .sidebar-runner { font-size: 24px; margin-bottom: 4px; }
+  .sidebar-version { color: #8ec8e8; font-size: 11px; font-weight: bold; }
+
+  /* Right cream form area */
+  .signin-form-area {
+    flex: 1; background: #f0ede0;
+    padding: 30px 30px 16px;
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .signin-fields { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 28px; }
+  .signin-field-group { display: flex; flex-direction: column; gap: 5px; }
+  .signin-field-label { font-size: 12px; font-weight: bold; color: #000; }
+
+  /* AOL 4.0 dropdown style */
+  .aol-dropdown-wrap { position: relative; width: 220px; }
+  .aol-dropdown-wrap select {
     width: 100%; height: 24px;
-    border-top: 2px solid #808080; border-left: 2px solid #808080;
-    border-right: 2px solid #ffffff; border-bottom: 2px solid #ffffff;
-    border-radius: 0; background: #ffffff;
+    background: #1a3a7a; color: white;
+    border: 2px solid; border-color: #808080 #ffffff #ffffff #808080;
     font-family: 'Tahoma', Arial; font-size: 12px;
-    padding: 0 26px 0 4px; outline: none; color: #000;
+    padding: 0 24px 0 6px; outline: none;
     appearance: none; -webkit-appearance: none; cursor: pointer;
   }
-  .sn-dropdown-arrow {
-    position: absolute; right: 0; top: 0; width: 22px; height: 100%;
-    background: #d4d0c8;
-    border-top: 2px solid #ffffff; border-left: 2px solid #ffffff;
-    border-right: 2px solid #808080; border-bottom: 2px solid #808080;
-    display: flex; align-items: center; justify-content: center; pointer-events: none;
+  .aol-dropdown-arrow {
+    position: absolute; right: 0; top: 0; width: 20px; height: 100%;
+    background: #9090a0;
+    border-left: 2px solid #808080;
+    display: flex; align-items: center; justify-content: center;
+    pointer-events: none;
   }
-  .sn-dropdown-arrow::after { content: ''; width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 5px solid #808080; }
-  .aim-link { color: #0000cc; font-size: 12px; font-style: italic; text-decoration: underline; cursor: pointer; display: block; margin: 3px 0 8px; font-family: Arial; }
-  .form-row { margin-bottom: 4px; }
-  .checkbox-row { display: flex; align-items: center; justify-content: space-between; margin: 6px 0; font-size: 11px; color: #808080; }
-  .checkbox-row label { display: flex; align-items: center; gap: 3px; cursor: default; color: #808080; }
-  .signin-divider { border: none; border-top: 1px solid #808080; border-bottom: 1px solid #ffffff; margin: 8px 0; }
-  .signin-footer { display: flex; align-items: center; justify-content: space-between; padding: 2px 0; }
-  .footer-icons { display: flex; gap: 16px; align-items: flex-end; }
-  .footer-icon-btn { display: flex; flex-direction: column; align-items: center; font-size: 10px; color: #000; cursor: pointer; gap: 1px; }
-  .footer-icon-btn .icon-img { font-size: 22px; line-height: 1; }
-  .signon-btn {
-    background: #d4d0c8; border: 2px solid; border-color: #ffffff #808080 #808080 #ffffff;
-    border-radius: 0; padding: 5px 14px; font-family: 'Tahoma', Arial;
-    font-size: 12px; font-weight: bold; cursor: pointer; color: #000;
-    display: flex; flex-direction: column; align-items: center; gap: 1px; min-width: 80px;
+  .aol-dropdown-arrow::after {
+    content: ''; width: 0; height: 0;
+    border-left: 4px solid transparent; border-right: 4px solid transparent;
+    border-top: 5px solid #000;
   }
-  .signon-btn:active { border-color: #808080 #ffffff #ffffff #808080; }
-  .signon-btn:disabled { color: #808080; cursor: default; }
-  .version-text { font-size: 10px; color: #808080; text-align: center; margin-top: 6px; }
 
-  /* ══ BUDDY LIST ══ */
-  #buddylist-window { width: 288px; top: 20px; left: 51px; }
-  .buddy-menubar { display: flex; background: #d4d0c8; padding: 2px 4px; border-bottom: 1px solid #808080; }
-  .buddy-menu-item { font-size: 11px; padding: 1px 5px; cursor: pointer; color: #000; }
-  .buddy-menu-item:hover { background: #000080; color: white; }
-  .buddy-banner-img { width: 100%; height: 70px; background-image: url('buddy_logo.jpg'); background-size: contain; background-position: center; background-repeat: no-repeat; background-color: #d4d0c8; display: block; }
-  .buddy-tabs { display: flex; border-bottom: 2px solid #808080; background: #d4d0c8; padding-top: 3px; }
-  .buddy-tab { padding: 2px 10px; font-size: 11px; border: 1px solid #808080; border-bottom: none; cursor: pointer; background: #d4d0c8; margin-right: 2px; margin-left: 3px; color: #000; }
-  .buddy-tab.active { background: white; font-weight: bold; border-bottom: 2px solid white; margin-bottom: -2px; position: relative; z-index: 1; }
-  .buddy-list-area { background: white; border: 2px solid; border-color: #808080 #ffffff #ffffff #808080; margin: 4px; height: 480px; overflow-y: auto; }
-  .buddy-group-header { background: #d4d0c8; padding: 1px 3px; font-size: 11px; font-weight: bold; display: flex; align-items: center; gap: 3px; cursor: pointer; border-bottom: 1px solid #808080; color: #000; }
-  .buddy-group-highlight-yellow { background: #ffff00; padding: 0 2px; color: #000; }
-  .buddy-group-plain { background: transparent; padding: 0 2px; color: #000; }
-  .buddy-item { padding: 1px 4px 1px 16px; font-size: 11px; cursor: pointer; white-space: nowrap; background: white; font-weight: normal; }
-  .buddy-item.online  { color: #000000; }
-  .buddy-item.offline { color: #999999; font-style: italic; }
-  .buddy-item:hover   { background: #000080; color: white; }
-  .buddy-item.selected { background: #000080; color: white; }
-
-  /* ══ IM WINDOW ══ */
-  #im-window { width: 350px; top: 20px; left: 20px; }
-  .im-menubar { display: flex; background: #d4d0c8; padding: 1px 3px; border-bottom: 1px solid #808080; justify-content: space-between; align-items: center; }
-  .im-menu-left { display: flex; }
-  .im-menu-item { font-size: 11px; padding: 1px 5px; cursor: pointer; color: #000; text-decoration: underline; }
-  .im-warning { font-size: 9px; color: #000; padding-right: 4px; }
-  .im-chat-area {
-    background: #ffffff;
-    border-top: 2px solid #808080; border-left: 2px solid #808080;
-    border-right: 2px solid #ffffff; border-bottom: 2px solid #ffffff;
-    margin: 4px 4px 2px 4px; height: 180px; overflow-y: auto; padding: 4px; font-size: 11px; line-height: 1.6;
+  /* Password field */
+  .aol-pw-input {
+    width: 220px; height: 24px;
+    border: 2px solid; border-color: #808080 #ffffff #ffffff #808080;
+    background: #fff; font-family: 'Tahoma', Arial; font-size: 12px;
+    padding: 0 6px; outline: none; color: #000;
+    user-select: text;
   }
-  .im-msg-buddy { color: #0000cc; font-weight: bold; }
-  .im-msg-user  { color: #cc0000; font-weight: bold; }
-  .im-msg-text  { color: #000; font-weight: normal; }
-  .im-toolbar { background: #d4d0c8; border-top: 1px solid #ffffff; border-bottom: 1px solid #808080; padding: 2px 4px; display: flex; align-items: center; gap: 6px; }
-  .im-font-btn { font-size: 11px; font-weight: bold; cursor: pointer; padding: 0 2px; border: 1px solid transparent; color: #000; background: none; font-family: 'Tahoma', Arial; border-radius: 0; }
-  .im-font-btn:hover { border-color: #808080; background: #d4d0c8; }
-  .im-font-sep { width: 1px; height: 14px; background: #808080; }
-  .im-link-btn { color: #0000cc; font-size: 11px; text-decoration: underline; cursor: pointer; background: none; border: none; font-family: 'Tahoma', Arial; }
-  #im-input {
-    background: #ffffff;
-    border-top: 2px solid #808080; border-left: 2px solid #808080;
-    border-right: 2px solid #ffffff; border-bottom: 2px solid #ffffff;
-    border-radius: 0; margin: 2px 4px; height: 60px; padding: 4px;
+
+  /* AOL 4.0 bottom buttons */
+  .signin-buttons { display: flex; gap: 6px; padding-top: 16px; }
+  .aol-btn {
+    background: #4a7ab0;
+    border: 2px solid; border-color: #8ab4e0 #2a5a90 #2a5a90 #8ab4e0;
+    color: white; font-family: 'Tahoma', Arial; font-size: 11px;
+    font-weight: bold; padding: 4px 12px; cursor: pointer;
+    min-width: 80px; text-align: center; letter-spacing: 0.5px;
+  }
+  .aol-btn:active { border-color: #2a5a90 #8ab4e0 #8ab4e0 #2a5a90; }
+  .aol-btn.primary { background: #3a6aa0; min-width: 90px; }
+
+  /* ════════════════════════════════════════
+     MODEM LOADING SCREEN
+  ════════════════════════════════════════ */
+  #screen-loading {
+    display: flex; align-items: center; justify-content: center;
+  }
+  #screen-loading.active { display: flex; }
+  .loading-fullscreen {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    position: absolute; top: 0; left: 0;
+  }
+
+  /* ════════════════════════════════════════
+     DESKTOP SCREEN
+  ════════════════════════════════════════ */
+  #screen-desktop { background-image: url('Constant_Background.png'); background-size: cover; background-position: center; }
+
+  /* ════════════════════════════════════════
+     DRAGGABLE BUDDY LIST
+  ════════════════════════════════════════ */
+  #buddy-list-window {
+    position: absolute;
+    top: 60px; right: 20px;
+    width: 200px;
+    background: #c0c0c0;
+    border: 2px solid; border-color: #ffffff #808080 #808080 #ffffff;
+    box-shadow: 2px 2px 0 #000;
+    display: none;
+    z-index: 100;
+  }
+  #buddy-list-window.visible { display: block; }
+
+  .bl-titlebar {
+    background: #000080; color: white;
+    font-size: 11px; font-weight: bold;
+    padding: 2px 4px; display: flex; align-items: center;
+    justify-content: space-between; height: 18px; cursor: grab;
+  }
+  .bl-titlebar:active { cursor: grabbing; }
+  .bl-titlebar-left { display: flex; align-items: center; gap: 3px; font-size: 10px; }
+  .bl-btns { display: flex; gap: 1px; }
+  .bl-btn {
+    width: 13px; height: 11px; background: #c0c0c0;
+    border: 1px solid; border-color: #fff #808080 #808080 #fff;
+    font-size: 7px; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: #000; font-weight: bold;
+  }
+
+  .bl-menubar { display: flex; background: #c0c0c0; padding: 1px 3px; border-bottom: 1px solid #808080; }
+  .bl-menu-item { font-size: 11px; padding: 1px 5px; cursor: pointer; color: #000; }
+  .bl-menu-item:hover { background: #000080; color: white; }
+
+  .bl-banner {
+    width: 100%; height: 50px;
+    background-image: url('buddy_logo.jpg');
+    background-size: contain; background-position: center;
+    background-repeat: no-repeat; background-color: #d4d0c8;
+  }
+
+  .bl-tabs { display: flex; border-bottom: 2px solid #808080; background: #c0c0c0; padding-top: 2px; }
+  .bl-tab { padding: 1px 8px; font-size: 11px; border: 1px solid #808080; border-bottom: none; cursor: pointer; background: #c0c0c0; margin-right: 2px; margin-left: 2px; color: #000; }
+  .bl-tab.active { background: white; font-weight: bold; border-bottom: 2px solid white; margin-bottom: -2px; position: relative; z-index: 1; }
+
+  .bl-list-area { background: white; border: 2px solid; border-color: #808080 #ffffff #ffffff #808080; margin: 3px; height: 340px; overflow-y: auto; }
+  .bl-group-header { background: #c0c0c0; padding: 1px 3px; font-size: 11px; font-weight: bold; display: flex; align-items: center; gap: 3px; border-bottom: 1px solid #808080; color: #000; }
+  .bl-group-yellow { background: #ffff00; padding: 0 2px; color: #000; }
+  .bl-group-plain { padding: 0 2px; color: #000; }
+  .bl-buddy { padding: 1px 4px 1px 14px; font-size: 11px; cursor: pointer; white-space: nowrap; background: white; font-weight: normal; }
+  .bl-buddy.online { color: #000; }
+  .bl-buddy.offline { color: #999; font-style: italic; }
+  .bl-buddy:hover, .bl-buddy.selected { background: #000080; color: white; }
+
+  /* ════════════════════════════════════════
+     CHAT WINDOWS
+  ════════════════════════════════════════ */
+  .chat-window {
+    position: absolute;
+    width: 420px;
+    background: #c0c0c0;
+    border: 2px solid; border-color: #ffffff #808080 #808080 #ffffff;
+    box-shadow: 2px 2px 0 #000;
+    z-index: 200;
+    display: flex; flex-direction: column;
+  }
+
+  .chat-titlebar {
+    background: linear-gradient(to bottom, #2a7a8c, #1a5a6c);
+    color: #c8f0ff; font-size: 11px; font-weight: bold;
+    padding: 2px 5px; display: flex; align-items: center;
+    justify-content: space-between; height: 20px; cursor: grab;
+  }
+  .chat-titlebar:active { cursor: grabbing; }
+  .chat-titlebar-left { display: flex; align-items: center; gap: 4px; }
+  .chat-win-btns { display: flex; gap: 2px; }
+  .chat-win-btn {
+    width: 14px; height: 12px; background: #c0c0c0;
+    border: 1px solid; border-color: #fff #808080 #808080 #fff;
+    font-size: 8px; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: #000; font-weight: bold;
+  }
+
+  .chat-menubar {
+    display: flex; background: #c0c0c0; padding: 1px 4px;
+    border-bottom: 1px solid #808080; justify-content: space-between; align-items: center;
+    font-size: 10px;
+  }
+  .chat-menu-left { display: flex; }
+  .chat-menu-item { padding: 1px 5px; cursor: pointer; color: #000; text-decoration: underline; font-size: 10px; }
+  .chat-warning { font-size: 9px; color: #000; padding-right: 4px; }
+
+  .chat-area {
+    background: #fff;
+    border: 2px solid; border-color: #808080 #ffffff #ffffff #808080;
+    margin: 3px 3px 1px 3px; height: 160px; overflow-y: auto;
+    padding: 3px; font-size: 11px; line-height: 1.5;
+  }
+  .chat-msg-buddy { color: #0000cc; font-weight: bold; }
+  .chat-msg-user  { color: #cc0000; font-weight: bold; }
+  .chat-msg-text  { color: #000; font-weight: normal; }
+
+  .chat-toolbar {
+    background: #c0c0c0; padding: 2px 4px;
+    border-top: 1px solid #fff; border-bottom: 1px solid #808080;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .chat-font-btn { font-size: 10px; font-weight: bold; cursor: pointer; padding: 0 2px; border: 1px solid transparent; color: #000; background: none; font-family: 'Tahoma', Arial; }
+  .chat-font-btn:hover { border-color: #808080; }
+  .chat-font-sep { width: 1px; height: 12px; background: #808080; }
+
+  .chat-input {
+    background: #fff;
+    border: 2px solid; border-color: #808080 #ffffff #ffffff #808080;
+    margin: 1px 3px 2px 3px; height: 52px; padding: 3px;
     font-family: 'Tahoma', Arial; font-size: 11px; resize: none;
-    width: calc(100% - 8px); outline: none; color: #000; display: block;
+    width: calc(100% - 6px); outline: none; color: #000;
+    user-select: text;
   }
-  .im-bottom-bar { display: flex; align-items: center; justify-content: space-between; padding: 3px 4px; background: #d4d0c8; }
-  .im-bottom-icons { display: flex; gap: 4px; align-items: flex-end; }
-  .im-bottom-icon-btn { display: flex; flex-direction: column; align-items: center; font-size: 8px; gap: 1px; cursor: pointer; color: #000; min-width: 34px; }
-  .im-bottom-icon-btn span:first-child { font-size: 18px; }
-  .im-send-btn { background: #d4d0c8; border: 2px solid; border-color: #ffffff #808080 #808080 #ffffff; border-radius: 0; padding: 3px 10px; font-size: 11px; cursor: pointer; display: flex; align-items: center; gap: 3px; font-family: 'Tahoma', Arial; color: #000; }
-  .im-send-btn:active { border-color: #808080 #ffffff #ffffff #808080; }
-  .im-status-bar { height: 10px; background: #d4d0c8; border-top: 1px solid #808080; display: flex; align-items: center; justify-content: flex-end; padding-right: 4px; }
-  .status-light { width: 8px; height: 6px; display: inline-block; }
-  .typing-indicator { color: #808080; font-style: italic; font-size: 10px; padding: 1px 0; }
-  .back-btn { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: #d4d0c8; border: 2px solid; border-color: #ffffff #808080 #808080 #ffffff; border-radius: 0; padding: 3px 12px; font-family: 'Tahoma', Arial; font-size: 11px; cursor: pointer; color: #000; white-space: nowrap; }
+
+  .chat-bottom {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 2px 4px 3px; background: #c0c0c0;
+  }
+  .chat-bottom-icons { display: flex; gap: 3px; align-items: flex-end; }
+  .chat-icon-btn { display: flex; flex-direction: column; align-items: center; font-size: 7px; gap: 1px; cursor: pointer; color: #000; min-width: 28px; }
+  .chat-icon-btn span:first-child { font-size: 15px; }
+
+  .chat-send-btn {
+    background: #4a7ab0; border: 2px solid;
+    border-color: #8ab4e0 #2a5a90 #2a5a90 #8ab4e0;
+    color: white; font-family: 'Tahoma', Arial; font-size: 11px;
+    font-weight: bold; padding: 3px 12px; cursor: pointer;
+    letter-spacing: 0.5px;
+  }
+  .chat-send-btn:active { border-color: #2a5a90 #8ab4e0 #8ab4e0 #2a5a90; }
+
+  .chat-status-bar { height: 8px; background: #c0c0c0; border-top: 1px solid #808080; display: flex; align-items: center; justify-content: flex-end; padding-right: 3px; }
+  .status-dot { width: 6px; height: 5px; display: inline-block; }
+
+  .typing-indicator { color: #808080; font-style: italic; font-size: 10px; }
 </style>
 </head>
 <body>
-<div class="aim-root" id="root">
+<div id="canvas">
 
-  <!-- ═══ API KEY ═══ -->
+  <!-- ══════════════════════════════════════
+       API KEY — WIN95 STYLE
+  ══════════════════════════════════════ -->
   <div class="screen active" id="screen-apikey">
-    <div class="win-window" id="apikey-window">
-      <div class="win-titlebar">
-        <div class="win-titlebar-left">
-          <svg width="14" height="14" viewBox="0 0 20 20">
-            <rect x="2" y="8" width="16" height="10" rx="1" fill="none" stroke="#ffcc00" stroke-width="2"/>
-            <path d="M6 8 V5 a4 4 0 0 1 8 0 V8" fill="none" stroke="#ffcc00" stroke-width="2"/>
-            <circle cx="10" cy="13" r="1.5" fill="#ffcc00"/>
-          </svg>
-          AOL Instant Messenger
+    <div class="w95-window" style="width:360px;">
+      <div class="w95-titlebar">
+        <div class="w95-titlebar-left">
+          <span class="w95-title-icon">🔑</span>
+          America Online — Enter API Key
         </div>
-        <div class="win-btns"><div class="win-btn">_</div><div class="win-btn">&#9633;</div><div class="win-btn">&#10005;</div></div>
+        <div class="w95-btns">
+          <div class="w95-btn">_</div>
+          <div class="w95-btn">□</div>
+          <div class="w95-btn">✕</div>
+        </div>
       </div>
-      <div class="apikey-body">
-        <div class="apikey-icon-row">
-          <span class="apikey-icon">&#128274;</span>
-          <div class="apikey-msg">
-            <strong>Enter your Anthropic API Key</strong>
-            Your key is used this session only and is never saved or stored.
+      <div class="w95-body">
+        <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
+          <span style="font-size:32px;line-height:1;">🖥️</span>
+          <div>
+            <div style="font-weight:bold;font-size:12px;margin-bottom:4px;">Anthropic API Key Required</div>
+            <div style="font-size:11px;color:#333;line-height:1.5;">Enter your API key to enable buddy chat responses. Your key is used this session only and never stored.</div>
           </div>
         </div>
-        <input type="password" id="apikey-input" class="apikey-input" placeholder="sk-ant-..." onkeydown="onApiKeyEnter(event)">
-        <div class="apikey-note">&#128274; Key lives in memory only. Closing the page clears it.<br>Get a key at console.anthropic.com</div>
-        <hr class="apikey-divider">
-        <div class="apikey-footer">
-          <button class="btn-98" onclick="skipApiKey()">Skip</button>
-          <button class="btn-98 default" onclick="submitApiKey()">OK</button>
+        <div class="w95-input-row">
+          <span class="w95-label">API Key:</span>
+          <input type="password" id="apikey-input" class="w95-input" placeholder="sk-ant-..." onkeydown="onApiKeyEnter(event)">
+        </div>
+        <div class="w95-note">🔒 Key lives in memory only. Get a key at console.anthropic.com</div>
+        <hr class="w95-divider">
+        <div class="w95-btn-row">
+          <button class="w95-push-btn" onclick="skipApiKey()">Skip</button>
+          <button class="w95-push-btn default" onclick="submitApiKey()">OK</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ═══ SIGN IN ═══ -->
+  <!-- ══════════════════════════════════════
+       SIGN IN SCREEN
+  ══════════════════════════════════════ -->
   <div class="screen" id="screen-signin">
-    <div class="win-window" id="signin-window">
-      <div class="win-titlebar">
-        <div class="win-titlebar-left">
-          <svg width="14" height="14" viewBox="0 0 20 26">
-            <circle cx="10" cy="3" r="3" fill="#ffcc00"/>
-            <line x1="10" y1="6" x2="10" y2="16" stroke="#ffcc00" stroke-width="2.5"/>
-            <line x1="10" y1="10" x2="3" y2="14" stroke="#ffcc00" stroke-width="2"/>
-            <line x1="10" y1="10" x2="17" y2="13" stroke="#ffcc00" stroke-width="2"/>
-            <line x1="10" y1="16" x2="5" y2="24" stroke="#ffcc00" stroke-width="2"/>
-            <line x1="10" y1="16" x2="15" y2="24" stroke="#ffcc00" stroke-width="2"/>
-          </svg>
-          Sign On
+    <div id="signin-window">
+      <div class="aol-titlebar">
+        <div class="aol-titlebar-left">
+          <svg width="14" height="14" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8" fill="none" stroke="#7ad4e8" stroke-width="2"/><text x="10" y="14" text-anchor="middle" font-size="10" fill="#7ad4e8">A</text></svg>
+          <span class="aol-title-text">Sign On</span>
         </div>
-        <div class="win-btns"><div class="win-btn">_</div><div class="win-btn">&#9633;</div><div class="win-btn">&#10005;</div></div>
+        <div class="aol-win-btns">
+          <div class="aol-win-btn">_</div>
+          <div class="aol-win-btn">□</div>
+          <div class="aol-win-btn">✕</div>
+        </div>
       </div>
-      <img src="aim_banner.png" class="aim-banner" alt="AOL Instant Messenger"
-           onerror="this.style.display='none';document.getElementById('banner-fallback').style.display='flex';">
-      <div class="aim-banner-fallback" id="banner-fallback">
-        <span class="banner-aol">AOL</span>&nbsp;<span class="banner-aim">Instant Messenger</span>
-      </div>
-      <div class="signin-form">
-        <div class="form-row">
-          <div class="sn-label">
-            ScreenName
-            <svg width="20" height="12" viewBox="0 0 30 14">
-              <circle cx="6" cy="7" r="5" fill="none" stroke="#c8960c" stroke-width="2"/>
-              <line x1="10" y1="7" x2="26" y2="7" stroke="#c8960c" stroke-width="2"/>
-              <line x1="22" y1="7" x2="22" y2="11" stroke="#c8960c" stroke-width="2"/>
-              <line x1="26" y1="7" x2="26" y2="11" stroke="#c8960c" stroke-width="2"/>
-            </svg>
+
+      <div class="signin-body">
+        <!-- Blue sidebar with image -->
+        <div class="signin-sidebar">
+          <div class="sidebar-runner">🏃</div>
+          <div class="sidebar-version">version 4.0</div>
+        </div>
+
+        <!-- Cream form area -->
+        <div class="signin-form-area">
+          <div class="signin-fields">
+
+            <div class="signin-field-group">
+              <div class="signin-field-label">Select Screen Name:</div>
+              <div class="aol-dropdown-wrap">
+                <select id="sn-select">
+                  <option value="VANILA242">VANILA242</option>
+                  <option value="Yukon242">Yukon242</option>
+                </select>
+                <div class="aol-dropdown-arrow"></div>
+              </div>
+            </div>
+
+            <div class="signin-field-group">
+              <div class="signin-field-label">Enter Password:</div>
+              <input type="password" id="pw-input" class="aol-pw-input"
+                autocomplete="current-password"
+                oninput="onPwInput()" onkeydown="onPwKey(event)"
+                placeholder="">
+            </div>
+
+            <div class="signin-field-group">
+              <div class="signin-field-label">Select Location:</div>
+              <div class="aol-dropdown-wrap">
+                <select>
+                  <option>ISP/LAN Connection</option>
+                  <option>Home — Fort Myers</option>
+                </select>
+                <div class="aol-dropdown-arrow"></div>
+              </div>
+            </div>
+
           </div>
-          <div class="sn-dropdown-wrap">
-            <select id="sn-select">
-              <option value="VANILA242">VANILA242</option>
-              <option value="Yukon242">Yukon242</option>
-            </select>
-            <div class="sn-dropdown-arrow"></div>
+
+          <div class="signin-buttons">
+            <button class="aol-btn">SETUP</button>
+            <button class="aol-btn">ACCESS NUMBERS</button>
+            <button class="aol-btn">HELP</button>
+            <button class="aol-btn primary" id="signon-btn" disabled onclick="doSignOn()">SIGN ON</button>
           </div>
-          <a class="aim-link">Get a Screen Name</a>
         </div>
-        <div class="form-row">
-          <span class="pw-label">Password</span>
-          <input type="password" id="pw-input" class="form-input" autocomplete="current-password" oninput="onPwInput()" onkeydown="onPwKey(event)">
-          <a class="aim-link">Forgot Password?</a>
-        </div>
-        <div class="checkbox-row">
-          <label><input type="checkbox" style="width:12px;height:12px;" disabled> Save password</label>
-          <label><input type="checkbox" style="width:12px;height:12px;" disabled> Auto-login</label>
-        </div>
-        <hr class="signin-divider">
-        <div class="signin-footer">
-          <div class="footer-icons">
-            <div class="footer-icon-btn"><span class="icon-img">&#10067;</span><span>Help</span></div>
-            <div class="footer-icon-btn"><span class="icon-img">&#128295;</span><span>Setup</span></div>
-          </div>
-          <button class="signon-btn" id="signon-btn" disabled onclick="doSignOn()">
-            <svg id="runner-svg" width="28" height="32" viewBox="0 0 24 28">
-              <circle cx="15" cy="3" r="3" fill="#808080"/>
-              <line x1="15" y1="6"  x2="11" y2="15" stroke="#808080" stroke-width="2.2"/>
-              <line x1="13" y1="10" x2="5"  y2="9"  stroke="#808080" stroke-width="2"/>
-              <line x1="13" y1="10" x2="19" y2="7"  stroke="#808080" stroke-width="2"/>
-              <line x1="11" y1="15" x2="7"  y2="24" stroke="#808080" stroke-width="2"/>
-              <line x1="11" y1="15" x2="16" y2="23" stroke="#808080" stroke-width="2"/>
-            </svg>
-            <span style="font-size:12px;font-weight:bold;line-height:1;">Sign On</span>
-          </button>
-        </div>
-        <div class="version-text">Version: 5.9.3690</div>
       </div>
     </div>
   </div>
 
-  <!-- ═══ LOADING SCREEN ═══ -->
+  <!-- ══════════════════════════════════════
+       MODEM LOADING SCREEN
+  ══════════════════════════════════════ -->
   <div class="screen" id="screen-loading">
-    <div class="win-window" id="loading-window">
-      <div class="win-titlebar">
-        <div class="win-titlebar-left">
-          <svg width="14" height="14" viewBox="0 0 20 26">
+    <img src="Modem_Loading.png" class="loading-fullscreen" alt="Connecting...">
+  </div>
+
+  <!-- ══════════════════════════════════════
+       DESKTOP SCREEN
+  ══════════════════════════════════════ -->
+  <div class="screen" id="screen-desktop">
+
+    <!-- Draggable Buddy List -->
+    <div id="buddy-list-window">
+      <div class="bl-titlebar" id="bl-titlebar">
+        <div class="bl-titlebar-left">
+          <svg width="11" height="11" viewBox="0 0 20 26">
             <circle cx="10" cy="3" r="3" fill="#ffcc00"/>
             <line x1="10" y1="6" x2="10" y2="16" stroke="#ffcc00" stroke-width="2.5"/>
             <line x1="10" y1="10" x2="3" y2="14" stroke="#ffcc00" stroke-width="2"/>
@@ -321,118 +489,35 @@
             <line x1="10" y1="16" x2="5" y2="24" stroke="#ffcc00" stroke-width="2"/>
             <line x1="10" y1="16" x2="15" y2="24" stroke="#ffcc00" stroke-width="2"/>
           </svg>
-          America Online
+          <span id="bl-title">VANILA242's Buddy List</span>
         </div>
-        <div class="win-btns"><div class="win-btn">_</div><div class="win-btn">&#9633;</div><div class="win-btn">&#10005;</div></div>
+        <div class="bl-btns">
+          <div class="bl-btn">_</div>
+          <div class="bl-btn">□</div>
+          <div class="bl-btn">✕</div>
+        </div>
       </div>
-      <img src="loading.jpg" class="loading-img" alt="Connecting...">
+      <div class="bl-menubar">
+        <span class="bl-menu-item"><u>M</u>y AIM</span>
+        <span class="bl-menu-item">People</span>
+        <span class="bl-menu-item">Help</span>
+      </div>
+      <div class="bl-banner"></div>
+      <div class="bl-tabs">
+        <div class="bl-tab active">Online</div>
+        <div class="bl-tab">List Setup</div>
+      </div>
+      <div class="bl-list-area" id="bl-list-area"></div>
     </div>
+
+    <!-- Chat windows injected here by JS -->
+
   </div>
 
-  <!-- ═══ BUDDY LIST ═══ -->
-  <div class="screen" id="screen-buddylist">
-    <div class="win-window" id="buddylist-window">
-      <div class="win-titlebar">
-        <div class="win-titlebar-left">
-          <svg width="13" height="13" viewBox="0 0 20 26">
-            <circle cx="10" cy="3" r="3" fill="#ffcc00"/>
-            <line x1="10" y1="6" x2="10" y2="16" stroke="#ffcc00" stroke-width="2.5"/>
-            <line x1="10" y1="10" x2="3" y2="14" stroke="#ffcc00" stroke-width="2"/>
-            <line x1="10" y1="10" x2="17" y2="13" stroke="#ffcc00" stroke-width="2"/>
-            <line x1="10" y1="16" x2="5" y2="24" stroke="#ffcc00" stroke-width="2"/>
-            <line x1="10" y1="16" x2="15" y2="24" stroke="#ffcc00" stroke-width="2"/>
-          </svg>
-          <span id="bl-title">VANILA242's Buddy List ...</span>
-        </div>
-        <div class="win-btns"><div class="win-btn">_</div><div class="win-btn">&#9633;</div><div class="win-btn" onclick="goSignin()">&#10005;</div></div>
-      </div>
-      <div class="buddy-menubar">
-        <span class="buddy-menu-item"><u>M</u>y AIM</span>
-        <span class="buddy-menu-item">People</span>
-        <span class="buddy-menu-item">Help</span>
-      </div>
-      <div class="buddy-banner-img"></div>
-      <div class="buddy-tabs">
-        <div class="buddy-tab active">Online</div>
-        <div class="buddy-tab">List Setup</div>
-      </div>
-      <div class="buddy-list-area" id="buddy-list-area"></div>
-    </div>
-  </div>
-
-  <!-- ═══ IM WINDOW ═══ -->
-  <div class="screen" id="screen-im">
-    <div class="win-window" id="im-window">
-      <div class="win-titlebar">
-        <div class="win-titlebar-left">
-          <svg width="13" height="13" viewBox="0 0 20 26">
-            <circle cx="10" cy="3" r="3" fill="#ffcc00"/>
-            <line x1="10" y1="6" x2="10" y2="16" stroke="#ffcc00" stroke-width="2.5"/>
-            <line x1="10" y1="10" x2="3" y2="14" stroke="#ffcc00" stroke-width="2"/>
-            <line x1="10" y1="10" x2="17" y2="13" stroke="#ffcc00" stroke-width="2"/>
-            <line x1="10" y1="16" x2="5" y2="24" stroke="#ffcc00" stroke-width="2"/>
-            <line x1="10" y1="16" x2="15" y2="24" stroke="#ffcc00" stroke-width="2"/>
-          </svg>
-          <span id="im-title">buddy - Instant Message</span>
-        </div>
-        <div class="win-btns"><div class="win-btn">_</div><div class="win-btn">&#9633;</div><div class="win-btn" onclick="closeIM()">&#10005;</div></div>
-      </div>
-      <div class="im-menubar">
-        <div class="im-menu-left">
-          <span class="im-menu-item">File</span>
-          <span class="im-menu-item">Edit</span>
-          <span class="im-menu-item">View</span>
-          <span class="im-menu-item">People</span>
-        </div>
-        <div class="im-warning" id="im-warning-label">buddy's Warning Level: 0%</div>
-      </div>
-      <div class="im-chat-area" id="im-chat-area"></div>
-      <div class="im-toolbar">
-        <button class="im-font-btn" style="font-size:14px;">A</button>
-        <button class="im-font-btn" style="font-size:14px;background:#000;color:#fff;padding:0 2px;">A</button>
-        <div class="im-font-sep"></div>
-        <button class="im-font-btn" style="font-size:9px;">A&#9660;</button>
-        <button class="im-font-btn">A</button>
-        <button class="im-font-btn" style="font-size:10px;">&#7424;A</button>
-        <div class="im-font-sep"></div>
-        <button class="im-font-btn" style="font-weight:bold;">B</button>
-        <button class="im-font-btn" style="font-style:italic;">I</button>
-        <button class="im-font-btn" style="text-decoration:underline;">U</button>
-        <div class="im-font-sep"></div>
-        <button class="im-link-btn">link</button>
-      </div>
-      <textarea id="im-input" onkeydown="imKeydown(event)"></textarea>
-      <div class="im-bottom-bar">
-        <div class="im-bottom-icons">
-          <div style="font-size:30px;line-height:1;margin-right:4px;">&#128021;</div>
-          <div class="im-bottom-icon-btn"><span>&#9889;</span><span>Warn</span></div>
-          <div class="im-bottom-icon-btn"><span>&#128683;</span><span>Block</span></div>
-          <div style="width:16px;"></div>
-          <div class="im-bottom-icon-btn"><span>&#10133;</span><span>Add Buddy</span></div>
-          <div class="im-bottom-icon-btn"><span>&#8505;</span><span>Info</span></div>
-        </div>
-        <button class="im-send-btn" id="send-btn" onclick="sendMessage()">
-          <span style="font-size:16px;">&#128232;</span> Send
-        </button>
-      </div>
-      <div class="im-status-bar">
-        <div style="display:flex;gap:1px;align-items:center;">
-          <span class="status-light" style="background:#00cc00;"></span>
-          <span class="status-light" style="background:#00cc00;"></span>
-          <span class="status-light" style="background:#00cc00;"></span>
-          <span class="status-light" style="background:#cccccc;"></span>
-        </div>
-      </div>
-    </div>
-    <button class="back-btn" onclick="closeIM()">&#8592; Back to Buddy List</button>
-  </div>
-
-</div><!-- /.aim-root -->
+</div><!-- /#canvas -->
 
 <script>
-  // ── Sound effects ──
-  // Each sound is loaded once and reused. We reset currentTime before playing
-  // so rapid triggers don't get swallowed.
+  // ── Sounds ──
   var sounds = {
     gotMail : new Audio('yougotmail.mp3'),
     imTone  : new Audio('aol-im.mp3'),
@@ -440,64 +525,66 @@
     close   : new Audio('aol-close.mp3'),
     modem   : new Audio('modem.mp3')
   };
-
-  function playSound(key) {
-    try {
-      var s = sounds[key];
-      s.currentTime = 0;
-      s.play().catch(function(){});
-    } catch(e) {}
+  function playSound(k) {
+    try { var s=sounds[k]; s.currentTime=0; s.play().catch(function(){}); } catch(e){}
   }
 
-  // ── App state ──
-  var apiKey        = '';
-  var currentUser   = 'VANILA242';
+  // ── State ──
+  var apiKey = '';
+  var currentUser = 'VANILA242';
   var selectedBuddy = null;
-  var currentBuddy  = null;
   var chatHistories = {};
-  var rotateTimer   = null;
+  var openChats = {};      // name → chat window element
+  var rotateTimer = null;
+  var chatCascade = 0;     // offset for cascading new windows
 
-  var SHARED_CONTEXT = 'IMPORTANT RULES YOU MUST FOLLOW: The current year is 1998/1999. You are a student at Bishop Verot High School (BVHS) in Fort Myers, Florida. The school mascot is the Vikings. You only know about events, music, movies, sports, and technology that existed before the year 2000. If someone asks about anything that happened after 1999, say something like "idk what ur talking about, that hasnt happened yet lol" or "r u from the future lol". Popular AIM abbreviations: lol, brb, bbl, ttyl, omg, gtg, nm, wyd, jk, rofl, lmao, u, ur, r, 2, 4, cya, imo, btw, afk. Type in casual AIM style - lowercase, abbreviations, occasional typos. Keep ALL responses to 1-3 short sentences max. Never break character. Popular hangouts: Perkins restaurant, The Edison Mall, Centennial Park, The Bell Tower shops, The Bell Tower movie theatre, Bistro 41, The Sheppard House, Taco Bell. The guys are into the WWF/WCW wrestling war. The girls are into Dawsons Creek. The person you are chatting with is Joe, who goes by VANILA242 or Yukon242 on AIM.';
+  // ── Shared context ──
+  var SHARED = 'IMPORTANT: The year is 1998/1999. You attend Bishop Verot High School (BVHS) in Fort Myers, Florida — mascot is the Vikings. You only know events, music, sports, tech from before 2000. If asked about anything after 1999 say "idk what ur talking about, that hasnt happened yet lol". Use casual AIM style: lowercase, abbreviations (lol brb omg gtg nm wyd jk rofl u ur r 2 4 cya imo btw afk), occasional typos. Max 1-3 short sentences. Never break character. Popular hangouts: Perkins, Edison Mall, Centennial Park, Bell Tower, Bistro 41, Sheppard House, Taco Bell. Guys: WWF/WCW war. Girls: Dawsons Creek. Chatting with Joe (VANILA242 or Yukon242).';
 
-  var buddyPersonalities = {
-    'CEMac16':       SHARED_CONTEXT + ' YOUR CHARACTER: You are Katie, Joe\'s high school crush. You are sweet, reserved, and a little shy. You think Joe is really nice but he is too shy to ask you out and you are too shy to make the first move. You are into Key Club volunteering, shopping at the Edison Mall, and hanging out with your girlfriends. You love Dawsons Creek and talk about it a lot. You are a little oblivious to how much Joe likes you.',
-    'RazorCrash':    SHARED_CONTEXT + ' YOUR CHARACTER: You are Jaime, a ska skateboarder. You love Rancid, Operation Ivy, Less Than Jake, and the Mighty Mighty Bosstones. You are always talking about skating spots around Fort Myers and hanging at the beach. You use ska and skate slang. You are chill and laid back.',
-    'Burrrrrr19':    SHARED_CONTEXT + ' YOUR CHARACTER: You are Meagan, Joe\'s other high school crush. You and Joe talk on the phone for hours. You ALWAYS call Joe "JoJo" - never just Joe. You live in Whiskey Creek in Fort Myers. You are really into cross country and track and are always training or talking about races. You love Dawsons Creek. You are warm, friendly, and have great long conversations with Joe.',
-    'DJello23':      SHARED_CONTEXT + ' YOUR CHARACTER: You are Dawn, a girl who is huge into soccer. You are dating the school swim champion Matt Cull. You are a little flirty in a harmless fun way and very outgoing. You love hanging at Centennial Park. You are friends with Meagan and Julie.',
-    'Nf69boy':       SHARED_CONTEXT + ' YOUR CHARACTER: You are Nick Foster. You are obsessed with basketball, PlayStation, Goldeneye 007 on N64, and pizza. You are always talking about the NBA (Shaq, Kobe, Jordan era), challenging people to Goldeneye, and debating pizza toppings. Very enthusiastic, lots of exclamation points.',
-    'Fatdonger':     SHARED_CONTEXT + ' YOUR CHARACTER: You are Brandon. You are VERY into late 90s hardcore and Fat Wreck Chords punk. Your favorite band is Pennywise. You also love NOFX, Lagwagon, Bad Religion, and Strung Out. You are always looking for a reason to get in a fist fight. You are straightedge and hate people who drink beer. You HATE racists and will fight them. You are actually a good loyal friend underneath the aggression.',
-    'TJCostello':    SHARED_CONTEXT + ' YOUR CHARACTER: You are John Costello, the most tech savvy person anyone knows. You are starting Florida State University in fall 1999. You are in a band called Vanguard. You know everything about computers, early internet, Napster, mp3s, and gadgets. Smooth and confident.',
-    'EAS242':        SHARED_CONTEXT + ' YOUR CHARACTER: You are a cartoonishly over-the-top hardcore kid who grew up in a very comfortable Fort Myers suburb but acts like he came up hard on the streets. You are obsessed with Attitude Era WWF - Stone Cold, The Rock, DX, Mankind. You are always talking about hardcore music and the pit. You have zero self-awareness about how suburban your life actually is.',
-    'Kbowen7452':    SHARED_CONTEXT + ' YOUR CHARACTER: You are Joe\'s mom. You are very proper, a little overprotective, but genuinely sweet and loving. You worry about Joe constantly. You ask about homework, curfew, eating right, and whether his friends are a good influence. You are not comfortable with AIM and type a bit formally. You sometimes sign messages "- Mom".',
-    'Shiftcaps':     SHARED_CONTEXT + ' YOUR CHARACTER: You are Joe\'s dad. You ALWAYS call Joe "buddy". You are really into classic old cars and auto racing - NASCAR and drag racing. You always ask how things are going and give wholesome dad advice. You are proud of Joe. You type a bit stiffly. You get sidetracked talking about a car you saw or a race you watched.',
-    'JKowala99':     SHARED_CONTEXT + ' YOUR CHARACTER: You are Julie, a sweet generic high school student at BVHS. You are friends with Dawn and Meagan. You are always in the middle of some high school social drama - who likes who, who said what, drama at lunch. You love Dawsons Creek and Titanic. Friendly to Joe.',
-    'CarrotsWade93': SHARED_CONTEXT + ' YOUR CHARACTER: You are Wade, a vegan who is extremely proud of being from the Twin Cities in Minnesota. You are obsessed with keeping your knees flexible and talk about your stretching routine constantly. You are a huge fan of classic AWA (American Wrestling Association) wrestling from the 80s and think it was way better than WWF or WCW. Friendly but always steering conversations back to veganism, Minnesota, knee flexibility, or AWA wrestling.'
+  var personalities = {
+    'CEMac16':       SHARED+' YOU ARE: Katie, Joe\'s high school crush. Sweet, reserved, shy. Think Joe is nice but both too shy to make a move. Into Key Club, shopping at Edison Mall, friends. Loves Dawsons Creek. Oblivious to how much Joe likes her.',
+    'RazorCrash':    SHARED+' YOU ARE: Jaime, ska skateboarder. Loves Rancid, Operation Ivy, Less Than Jake, Mighty Mighty Bosstones. Always talking about Fort Myers skate spots and the beach. Chill and laid back.',
+    'Burrrrrr19':    SHARED+' YOU ARE: Meagan, Joe\'s other crush. Always call Joe "JoJo" — never just Joe. Lives in Whiskey Creek. Really into cross country and track, always training. Loves Dawsons Creek. Warm and friendly, great long conversations.',
+    'DJello23':      SHARED+' YOU ARE: Dawn, huge into soccer. Dating swim champion Matt Cull. Little flirty in a harmless way, very outgoing. Loves Centennial Park. Friends with Meagan and Julie.',
+    'Nf69boy':       SHARED+' YOU ARE: Nick Foster. Obsessed with basketball, PlayStation, Goldeneye 007 on N64, pizza. Always talking NBA (Shaq/Kobe/Jordan), challenging people to Goldeneye, debating pizza toppings. Very enthusiastic, lots of exclamation points.',
+    'Fatdonger':     SHARED+' YOU ARE: Brandon. VERY into Fat Wreck Chords punk. Favorite band Pennywise. Also NOFX, Lagwagon, Bad Religion, Strung Out. Always looking for a fight. Straightedge — hates beer drinkers. HATES racists and will fight them. Good loyal friend underneath.',
+    'TJCostello':    SHARED+' YOU ARE: John Costello, most tech savvy person around. Starting FSU fall 1999. In a band called Vanguard. Knows everything about computers, early internet, Napster, mp3s. Smooth and confident.',
+    'EAS242':        SHARED+' YOU ARE: Cartoonishly over-the-top hardcore kid from a comfortable Fort Myers suburb who acts like he came up hard on the streets. Obsessed with Attitude Era WWF (Stone Cold, The Rock, DX, Mankind). Always talking hardcore music and the pit. Zero self-awareness about how suburban his life actually is.',
+    'Kbowen7452':    SHARED+' YOU ARE: Joe\'s mom. Very proper, a little overprotective, genuinely sweet and loving. Worries about Joe constantly — asks about homework, curfew, eating right, good friends. Not comfortable with AIM, types formally. Sometimes signs "- Mom".',
+    'Shiftcaps':     SHARED+' YOU ARE: Joe\'s dad. ALWAYS call Joe "buddy". Into classic cars and auto racing — NASCAR and drag racing. Always asks how things are going, gives wholesome dad advice. Proud of Joe. Types a bit stiffly. Gets sidetracked by cars or races.',
+    'JKowala99':     SHARED+' YOU ARE: Julie, sweet generic BVHS student. Friends with Dawn and Meagan. Always in some high school social drama — who likes who, what was said, lunch drama. Loves Dawsons Creek and Titanic. Friendly to Joe.',
+    'CarrotsWade93': SHARED+' YOU ARE: Wade, vegan extremely proud of the Twin Cities MN. Obsessed with keeping knees flexible and talks about stretching constantly. Huge fan of classic AWA wrestling from the 80s — thinks it was way better than WWF/WCW. Always steering conversations back to veganism, Minnesota, knee flexibility, or AWA.'
+  };
+
+  var buddyTextStyles = {
+    'CEMac16':    'font-family:"Comic Sans MS",Comic Sans,cursive;font-weight:bold;color:#ff69b4;',
+    'Burrrrrr19': 'font-family:"Comic Sans MS",Comic Sans,cursive;font-weight:bold;color:#000080;'
   };
 
   var buddyData = [
-    { group: 'Buddies', highlight: true, members: [
-      { name: 'CEMac16',       online: true  },
-      { name: 'RazorCrash',    online: true  },
-      { name: 'Burrrrrr19',    online: true  },
-      { name: 'DJello23',      online: true  },
-      { name: 'Nf69boy',       online: true  },
-      { name: 'EAS242',        online: false },
-      { name: 'CarrotsWade93', online: true  },
-      { name: 'Kbowen7452',    online: true  },
-      { name: 'Shiftcaps',     online: true  },
-      { name: 'JKowala99',     online: false },
-      { name: 'Fatdonger',     online: true  },
-      { name: 'TJCostello',    online: false }
+    { group:'Buddies', highlight:true, members:[
+      { name:'CEMac16',       online:true  },
+      { name:'RazorCrash',    online:true  },
+      { name:'Burrrrrr19',    online:true  },
+      { name:'DJello23',      online:true  },
+      { name:'Nf69boy',       online:true  },
+      { name:'EAS242',        online:false },
+      { name:'CarrotsWade93', online:true  },
+      { name:'Kbowen7452',    online:true  },
+      { name:'Shiftcaps',     online:true  },
+      { name:'JKowala99',     online:false },
+      { name:'Fatdonger',     online:true  },
+      { name:'TJCostello',    online:false }
     ]},
-    { group: 'Family',     highlight: false, members: [] },
-    { group: 'Co-Workers', highlight: false, members: [] }
+    { group:'Family',     highlight:false, members:[] },
+    { group:'Co-Workers', highlight:false, members:[] }
   ];
 
   // ── API Key ──
-  function onApiKeyEnter(e) { if (e.key === 'Enter') submitApiKey(); }
+  function onApiKeyEnter(e) { if (e.key==='Enter') submitApiKey(); }
   function submitApiKey() {
-    var val = document.getElementById('apikey-input').value.trim();
-    if (val) apiKey = val;
+    var v = document.getElementById('apikey-input').value.trim();
+    if (v) apiKey = v;
     showScreen('screen-signin');
     setTimeout(function(){ document.getElementById('pw-input').focus(); }, 100);
   }
@@ -508,73 +595,39 @@
 
   // ── Sign In ──
   function onPwInput() {
-    var val = document.getElementById('pw-input').value;
-    var btn = document.getElementById('signon-btn');
-    var ok  = (val === '242');
-    btn.disabled = !ok;
-    var col = ok ? '#3a7a2a' : '#808080';
-    document.querySelectorAll('#runner-svg circle, #runner-svg line').forEach(function(el){
-      if (el.tagName === 'circle') el.setAttribute('fill', col);
-      else el.setAttribute('stroke', col);
-    });
+    var v = document.getElementById('pw-input').value;
+    var ok = (v === '242');
+    document.getElementById('signon-btn').disabled = !ok;
   }
-  function onPwKey(e) { if (e.key === 'Enter') { e.preventDefault(); doSignOn(); } }
+  function onPwKey(e) { if (e.key==='Enter') { e.preventDefault(); doSignOn(); } }
 
   function doSignOn() {
     if (document.getElementById('pw-input').value !== '242') return;
     currentUser = document.getElementById('sn-select').value;
-    document.getElementById('bl-title').textContent = currentUser + "'s Buddy List ...";
-
-    // Hide signin, show loading screen
-    document.getElementById('screen-signin').style.display = 'none';
-    document.getElementById('screen-signin').classList.remove('active');
-    document.getElementById('screen-loading').style.display = 'block';
-    document.getElementById('screen-loading').classList.add('active');
-
     // Play modem sound immediately on click gesture
     playSound('modem');
-
-    // After 4 seconds: stop modem, show buddy list, play gotMail
+    showScreen('screen-loading');
     setTimeout(function() {
-      sounds.modem.pause();
-      sounds.modem.currentTime = 0;
-
-      document.getElementById('screen-loading').style.display = 'none';
-      document.getElementById('screen-loading').classList.remove('active');
-
+      sounds.modem.pause(); sounds.modem.currentTime = 0;
+      showScreen('screen-desktop');
+      document.getElementById('bl-title').textContent = currentUser + "'s Buddy List";
       renderBuddyList();
-      document.getElementById('screen-buddylist').style.display = 'block';
-      document.getElementById('screen-buddylist').classList.add('active');
-
-      // gotMail plays right as buddy list appears
+      document.getElementById('buddy-list-window').classList.add('visible');
       playSound('gotMail');
       startRotation();
-    }, 4000);
-  }
-
-  function goSignin() {
-    stopRotation();
-    document.getElementById('pw-input').value = '';
-    onPwInput();
-    selectedBuddy = null;
-    document.getElementById('screen-buddylist').style.display = 'none';
-    document.getElementById('screen-buddylist').classList.remove('active');
-    document.getElementById('screen-signin').style.display = 'block';
-    document.getElementById('screen-signin').classList.add('active');
-    setTimeout(function(){ document.getElementById('pw-input').focus(); }, 100);
+    }, 5000);
   }
 
   function showScreen(id) {
     document.querySelectorAll('.screen').forEach(function(s){
       s.classList.remove('active');
-      s.style.display = 'none';
+      s.style.display = '';
     });
     var el = document.getElementById(id);
-    el.style.display = 'block';
     el.classList.add('active');
   }
 
-  // ── Buddy rotation: every 15s, sign one off (with sound), wait 3s, sign one on (with sound) ──
+  // ── Buddy rotation ──
   function startRotation() {
     stopRotation();
     rotateTimer = setInterval(rotateBuddy, 45000);
@@ -582,24 +635,19 @@
   function stopRotation() {
     if (rotateTimer) { clearInterval(rotateTimer); rotateTimer = null; }
   }
-
   function rotateBuddy() {
     var members = buddyData[0].members;
     var online  = members.filter(function(m){ return m.online; });
     var offline = members.filter(function(m){ return !m.online; });
     if (!online.length || !offline.length) return;
-
-    // Step 1: sign one buddy off immediately + play close sound
-    var goOff = online[Math.floor(Math.random() * online.length)];
+    var goOff = online[Math.floor(Math.random()*online.length)];
     goOff.online = false;
     playSound('close');
     renderBuddyList();
-
-    // Step 2: after 3 seconds, sign one buddy on + play open sound
-    setTimeout(function() {
-      var stillOffline = members.filter(function(m){ return !m.online; });
-      if (!stillOffline.length) return;
-      var goOn = stillOffline[Math.floor(Math.random() * stillOffline.length)];
+    setTimeout(function(){
+      var stillOff = members.filter(function(m){ return !m.online; });
+      if (!stillOff.length) return;
+      var goOn = stillOff[Math.floor(Math.random()*stillOff.length)];
       goOn.online = true;
       playSound('open');
       renderBuddyList();
@@ -608,23 +656,20 @@
 
   // ── Render Buddy List ──
   function renderBuddyList() {
-    var area = document.getElementById('buddy-list-area');
+    var area = document.getElementById('bl-list-area');
     area.innerHTML = '';
     buddyData.forEach(function(group) {
-      var online = group.members.filter(function(m){ return m.online; }).length;
-      var total  = group.members.length;
+      var onCount = group.members.filter(function(m){ return m.online; }).length;
       var hdr = document.createElement('div');
-      hdr.className = 'buddy-group-header';
-      var labelClass = group.highlight ? 'buddy-group-highlight-yellow' : 'buddy-group-plain';
-      hdr.innerHTML = '<span style="font-size:10px;">&#9660;</span>'
-        + '<span class="' + labelClass + '">'
-        + group.group + ' (' + online + '/' + total + ')</span>';
+      hdr.className = 'bl-group-header';
+      var cls = group.highlight ? 'bl-group-yellow' : 'bl-group-plain';
+      hdr.innerHTML = '<span style="font-size:9px;">▼</span><span class="'+cls+'">'+group.group+' ('+onCount+'/'+group.members.length+')</span>';
       area.appendChild(hdr);
       group.members.forEach(function(m) {
         var item = document.createElement('div');
-        item.className = 'buddy-item ' + (m.online ? 'online' : 'offline');
+        item.className = 'bl-buddy '+(m.online?'online':'offline');
         item.textContent = m.name;
-        if (selectedBuddy === m.name) item.classList.add('selected');
+        if (selectedBuddy===m.name) item.classList.add('selected');
         item.addEventListener('click', function(){ handleBuddyClick(item, m.name); });
         area.appendChild(item);
       });
@@ -632,174 +677,256 @@
   }
 
   function handleBuddyClick(el, name) {
-    if (selectedBuddy === name) { selectedBuddy = null; openIM(name); return; }
-    document.querySelectorAll('.buddy-item').forEach(function(i){ i.classList.remove('selected'); });
+    if (selectedBuddy===name) {
+      selectedBuddy = null;
+      openChat(name);
+      return;
+    }
+    document.querySelectorAll('.bl-buddy').forEach(function(i){ i.classList.remove('selected'); });
     el.classList.add('selected');
     selectedBuddy = name;
   }
 
-  // ── IM Window ──
-  function openIM(name) {
-    currentBuddy = name;
-    if (!chatHistories[name]) chatHistories[name] = [];
-    document.getElementById('im-title').textContent = name + ' - Instant Message';
-    document.getElementById('im-warning-label').textContent = name + "'s Warning Level: 0%";
-    var chat = document.getElementById('im-chat-area');
-    chat.innerHTML = '';
-    chatHistories[name].forEach(function(msg) {
-      appendMessage(msg.role === 'user' ? currentUser : name, msg.content, msg.role === 'user');
+  // ── Chat Windows ──
+  function openChat(name) {
+    // If already open, bring to front
+    if (openChats[name]) {
+      openChats[name].style.zIndex = ++chatZBase;
+      return;
+    }
+    chatHistories[name] = chatHistories[name] || [];
+
+    var offset = chatCascade * 22;
+    chatCascade = (chatCascade + 1) % 8;
+
+    var win = document.createElement('div');
+    win.className = 'chat-window';
+    win.id = 'chat-'+name;
+    win.style.top  = (120 + offset) + 'px';
+    win.style.left = (260 + offset) + 'px';
+    win.style.zIndex = ++chatZBase;
+
+    win.innerHTML = `
+      <div class="chat-titlebar" data-name="${name}">
+        <div class="chat-titlebar-left">
+          <svg width="11" height="11" viewBox="0 0 20 26"><circle cx="10" cy="3" r="3" fill="#ffcc00"/><line x1="10" y1="6" x2="10" y2="16" stroke="#ffcc00" stroke-width="2.5"/><line x1="10" y1="10" x2="3" y2="14" stroke="#ffcc00" stroke-width="2"/><line x1="10" y1="10" x2="17" y2="13" stroke="#ffcc00" stroke-width="2"/><line x1="10" y1="16" x2="5" y2="24" stroke="#ffcc00" stroke-width="2"/><line x1="10" y1="16" x2="15" y2="24" stroke="#ffcc00" stroke-width="2"/></svg>
+          ${esc(name)} - Instant Message
+        </div>
+        <div class="chat-win-btns">
+          <div class="chat-win-btn">_</div>
+          <div class="chat-win-btn">□</div>
+          <div class="chat-win-btn close-chat-btn" data-name="${name}">✕</div>
+        </div>
+      </div>
+      <div class="chat-menubar">
+        <div class="chat-menu-left">
+          <span class="chat-menu-item">File</span>
+          <span class="chat-menu-item">Edit</span>
+          <span class="chat-menu-item">View</span>
+          <span class="chat-menu-item">People</span>
+        </div>
+        <span class="chat-warning">${esc(name)}'s Warning Level: 0%</span>
+      </div>
+      <div class="chat-area" id="chat-area-${name}"></div>
+      <div class="chat-toolbar">
+        <button class="chat-font-btn" style="font-size:13px;">A</button>
+        <button class="chat-font-btn" style="font-size:13px;background:#000;color:#fff;padding:0 2px;">A</button>
+        <div class="chat-font-sep"></div>
+        <button class="chat-font-btn" style="font-weight:bold;">B</button>
+        <button class="chat-font-btn" style="font-style:italic;">I</button>
+        <button class="chat-font-btn" style="text-decoration:underline;">U</button>
+        <div class="chat-font-sep"></div>
+        <span style="font-size:10px;color:#0000cc;text-decoration:underline;cursor:pointer;">link</span>
+      </div>
+      <textarea class="chat-input" id="chat-input-${name}" placeholder=""></textarea>
+      <div class="chat-bottom">
+        <div class="chat-bottom-icons">
+          <div style="font-size:22px;line-height:1;margin-right:3px;">🐕</div>
+          <div class="chat-icon-btn"><span>⚡</span><span>Warn</span></div>
+          <div class="chat-icon-btn"><span>🚫</span><span>Block</span></div>
+          <div style="width:10px;"></div>
+          <div class="chat-icon-btn"><span>➕</span><span>Add</span></div>
+          <div class="chat-icon-btn"><span>ℹ️</span><span>Info</span></div>
+        </div>
+        <button class="chat-send-btn" data-name="${name}">SEND</button>
+      </div>
+      <div class="chat-status-bar">
+        <span class="status-dot" style="background:#00cc00;"></span>
+        <span class="status-dot" style="background:#00cc00;"></span>
+        <span class="status-dot" style="background:#cccccc;"></span>
+      </div>
+    `;
+
+    document.getElementById('screen-desktop').appendChild(win);
+    openChats[name] = win;
+
+    // Draggable
+    makeDraggable(win, win.querySelector('.chat-titlebar'));
+
+    // Bring to front on click
+    win.addEventListener('mousedown', function() { win.style.zIndex = ++chatZBase; });
+
+    // Close button
+    win.querySelector('.close-chat-btn').addEventListener('click', function() { closeChat(name); });
+
+    // Send button
+    win.querySelector('.chat-send-btn').addEventListener('click', function() { sendChat(name); });
+
+    // Enter key in textarea
+    var inp = document.getElementById('chat-input-'+name);
+    inp.addEventListener('keydown', function(e) {
+      if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); sendChat(name); }
     });
-    document.getElementById('im-input').value = '';
-    document.getElementById('screen-buddylist').style.display = 'none';
-    document.getElementById('screen-buddylist').classList.remove('active');
-    document.getElementById('screen-im').style.display = 'block';
-    document.getElementById('screen-im').classList.add('active');
-    setTimeout(function(){ document.getElementById('im-input').focus(); }, 150);
+    inp.addEventListener('focus', function() { win.style.zIndex = ++chatZBase; });
+
+    // Opening greeting
     if (chatHistories[name].length === 0) {
       if (apiKey) {
         setTimeout(function(){ getBuddyGreeting(name); }, 700);
       } else {
         showTyping(name);
-        setTimeout(hideTyping, 2000);
+        setTimeout(function(){ hideTyping(name); }, 2000);
       }
-    }
-  }
-
-  // ── Per-buddy text styling for their messages ──
-  var buddyTextStyles = {
-    'CEMac16':    'font-family: "Comic Sans MS", Comic Sans, cursive; font-weight: bold; color: #ff69b4;',
-    'Burrrrrr19': 'font-family: "Comic Sans MS", Comic Sans, cursive; font-weight: bold; color: #000080;'
-  };
-
-  function appendMessage(senderName, text, isUser) {
-    var chat = document.getElementById('im-chat-area');
-    var div = document.createElement('div');
-    var nameSpan, textStyle;
-    if (isUser) {
-      nameSpan  = '<span class="im-msg-user">' + esc(senderName) + ':</span> ';
-      textStyle = '';
     } else {
-      nameSpan  = '<span class="im-msg-buddy">' + esc(senderName) + ':</span> ';
-      textStyle = buddyTextStyles[senderName] ? ' style="' + buddyTextStyles[senderName] + '"' : '';
+      // Replay history
+      chatHistories[name].forEach(function(msg) {
+        appendChatMsg(name, msg.role==='user' ? currentUser : name, msg.content, msg.role==='user');
+      });
     }
-    div.innerHTML = nameSpan + '<span class="im-msg-text"' + textStyle + '>' + esc(text) + '</span>';
-    chat.appendChild(div);
-    chat.scrollTop = chat.scrollHeight;
+
+    setTimeout(function(){ if (inp) inp.focus(); }, 150);
   }
 
-  function showTyping(name) {
-    var chat = document.getElementById('im-chat-area');
-    hideTyping();
-    var ti = document.createElement('div');
-    ti.className = 'typing-indicator'; ti.id = 'typing-indicator';
-    ti.textContent = (name || currentBuddy) + ': ...';
-    chat.appendChild(ti);
-    chat.scrollTop = chat.scrollHeight;
-  }
-  function hideTyping() {
-    var ti = document.getElementById('typing-indicator'); if (ti) ti.remove();
-  }
+  var chatZBase = 200;
 
-  function closeIM() {
+  function closeChat(name) {
+    if (openChats[name]) {
+      openChats[name].remove();
+      delete openChats[name];
+    }
     selectedBuddy = null;
-    document.getElementById('screen-im').style.display = 'none';
-    document.getElementById('screen-im').classList.remove('active');
-    document.getElementById('screen-buddylist').style.display = 'block';
-    document.getElementById('screen-buddylist').classList.add('active');
     renderBuddyList();
   }
 
-  function imKeydown(e) {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+  function appendChatMsg(name, sender, text, isUser) {
+    var area = document.getElementById('chat-area-'+name);
+    if (!area) return;
+    var div = document.createElement('div');
+    var style = (!isUser && buddyTextStyles[name]) ? ' style="'+buddyTextStyles[name]+'"' : '';
+    var nameSpan = isUser
+      ? '<span class="chat-msg-user">'+esc(sender)+':</span> '
+      : '<span class="chat-msg-buddy">'+esc(sender)+':</span> ';
+    div.innerHTML = nameSpan + '<span class="chat-msg-text"'+style+'>'+esc(text)+'</span>';
+    area.appendChild(div);
+    area.scrollTop = area.scrollHeight;
   }
 
-  function sendMessage() {
-    var input = document.getElementById('im-input');
-    var text  = input.value.trim();
+  function showTyping(name) {
+    var area = document.getElementById('chat-area-'+name);
+    if (!area) return;
+    hideTyping(name);
+    var ti = document.createElement('div');
+    ti.className = 'typing-indicator'; ti.id = 'typing-'+name;
+    ti.textContent = name+': ...';
+    area.appendChild(ti);
+    area.scrollTop = area.scrollHeight;
+  }
+  function hideTyping(name) {
+    var ti = document.getElementById('typing-'+name);
+    if (ti) ti.remove();
+  }
+
+  function sendChat(name) {
+    var inp = document.getElementById('chat-input-'+name);
+    if (!inp) return;
+    var text = inp.value.trim();
     if (!text) return;
-    appendMessage(currentUser, text, true);
-    chatHistories[currentBuddy] = chatHistories[currentBuddy] || [];
-    chatHistories[currentBuddy].push({ role: 'user', content: text });
-    input.value = '';
-    input.focus();
-    if (apiKey) {
-      getBuddyReply(currentBuddy);
-    } else {
-      showTyping(currentBuddy);
-      setTimeout(hideTyping, 2000);
-    }
+    appendChatMsg(name, currentUser, text, true);
+    chatHistories[name] = chatHistories[name] || [];
+    chatHistories[name].push({ role:'user', content:text });
+    inp.value = '';
+    inp.focus();
+    if (apiKey) { getBuddyReply(name); }
+    else { showTyping(name); setTimeout(function(){ hideTyping(name); }, 2000); }
   }
 
   async function getBuddyGreeting(name) {
     showTyping(name);
-    var personality = buddyPersonalities[name] || SHARED_CONTEXT;
+    var p = personalities[name] || SHARED;
     try {
-      var response = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01',
-          'anthropic-dangerous-direct-browser-access': 'true'
-        },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 100,
-          system: personality,
-          messages: [{ role: 'user', content: 'Say a quick casual AIM greeting to Joe who just opened a chat window with you. 1 sentence max, stay in character.' }]
-        })
+      var r = await fetch('https://api.anthropic.com/v1/messages', {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true' },
+        body:JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:100, system:p, messages:[{ role:'user', content:'Say a quick casual AIM greeting to Joe who just opened a chat window with you. 1 sentence max, stay in character.' }] })
       });
-      var data = await response.json();
-      hideTyping();
-      var reply = data.content && data.content[0] ? data.content[0].text : 'hey';
-      chatHistories[name].push({ role: 'assistant', content: reply });
-      if (currentBuddy === name) {
-        appendMessage(name, reply, false);
-        // ── SOUND: buddy replied ──
-        playSound('imTone');
-      }
-    } catch(e) { hideTyping(); }
+      var d = await r.json();
+      hideTyping(name);
+      var reply = d.content&&d.content[0] ? d.content[0].text : 'hey';
+      chatHistories[name].push({ role:'assistant', content:reply });
+      appendChatMsg(name, name, reply, false);
+      playSound('imTone');
+    } catch(e) { hideTyping(name); }
   }
 
   async function getBuddyReply(name) {
     showTyping(name);
-    var personality = buddyPersonalities[name] || SHARED_CONTEXT;
-    var history = (chatHistories[name] || []).slice();
+    var p = personalities[name] || SHARED;
+    var hist = (chatHistories[name]||[]).slice();
     try {
-      var response = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01',
-          'anthropic-dangerous-direct-browser-access': 'true'
-        },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 150,
-          system: personality,
-          messages: history
-        })
+      var r = await fetch('https://api.anthropic.com/v1/messages', {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true' },
+        body:JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:150, system:p, messages:hist })
       });
-      var data = await response.json();
-      hideTyping();
-      if (data.content && data.content[0]) {
-        var reply = data.content[0].text;
-        chatHistories[name].push({ role: 'assistant', content: reply });
-        if (currentBuddy === name) {
-          appendMessage(name, reply, false);
-          // ── SOUND: buddy replied ──
-          playSound('imTone');
-        }
+      var d = await r.json();
+      hideTyping(name);
+      if (d.content&&d.content[0]) {
+        var reply = d.content[0].text;
+        chatHistories[name].push({ role:'assistant', content:reply });
+        appendChatMsg(name, name, reply, false);
+        playSound('imTone');
       }
     } catch(e) {
-      hideTyping();
-      if (currentBuddy === name) appendMessage(name, 'brb', false);
+      hideTyping(name);
+      appendChatMsg(name, name, 'brb', false);
     }
   }
 
+  // ── Draggable windows ──
+  function makeDraggable(win, handle) {
+    var dx=0, dy=0, startX=0, startY=0;
+    handle.addEventListener('mousedown', function(e) {
+      e.preventDefault();
+      startX = e.clientX - win.offsetLeft;
+      startY = e.clientY - win.offsetTop;
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+    });
+    function onMove(e) {
+      var nx = e.clientX - startX;
+      var ny = e.clientY - startY;
+      var canvas = document.getElementById('canvas');
+      nx = Math.max(0, Math.min(nx, canvas.offsetWidth - win.offsetWidth));
+      ny = Math.max(0, Math.min(ny, canvas.offsetHeight - win.offsetHeight));
+      win.style.left = nx+'px';
+      win.style.top  = ny+'px';
+      win.style.right = 'auto';
+    }
+    function onUp() {
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+    }
+  }
+
+  // Make buddy list draggable
+  makeDraggable(
+    document.getElementById('buddy-list-window'),
+    document.getElementById('bl-titlebar')
+  );
+
+  // ── Utils ──
   function esc(s) {
-    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
 
   window.addEventListener('load', function(){
