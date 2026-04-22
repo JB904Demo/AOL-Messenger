@@ -95,13 +95,13 @@
   ════════════════════════════════════════ */
   #signin-window {
     position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
+    top: 120px; left: 212px;
     width: 580px;
     background: #c8c8b8;
     border: 2px solid;
     border-color: #ffffff #808080 #808080 #ffffff;
     box-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+    cursor: default;
   }
 
   .aol-titlebar {
@@ -109,8 +109,9 @@
     color: #7ad4e8; font-size: 12px; font-weight: bold;
     padding: 3px 6px; display: flex; align-items: center;
     justify-content: space-between; height: 22px;
-    font-family: 'Tahoma', Arial;
+    font-family: 'Tahoma', Arial; cursor: grab;
   }
+  .aol-titlebar:active { cursor: grabbing; }
   .aol-titlebar-left { display: flex; align-items: center; gap: 5px; }
   .aol-title-text { color: #c8f0ff; font-size: 12px; font-weight: bold; }
   .aol-win-btns { display: flex; gap: 2px; }
@@ -396,7 +397,7 @@
   ══════════════════════════════════════ -->
   <div class="screen" id="screen-signin">
     <div id="signin-window">
-      <div class="aol-titlebar">
+      <div class="aol-titlebar" id="signin-titlebar">
         <div class="aol-titlebar-left">
           <svg width="14" height="14" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8" fill="none" stroke="#7ad4e8" stroke-width="2"/><text x="10" y="14" text-anchor="middle" font-size="10" fill="#7ad4e8">A</text></svg>
           <span class="aol-title-text">Sign On</span>
@@ -612,7 +613,7 @@
       document.getElementById('buddy-list-window').classList.add('visible');
       playSound('gotMail');
       startRotation();
-    }, 5000);
+    }, 7000);
   }
 
   // Screens that need display:flex to center their content
@@ -779,15 +780,9 @@
     inp.addEventListener('focus', function() { win.style.zIndex = ++chatZBase; });
 
     // Opening greeting
-    if (chatHistories[name].length === 0) {
-      if (apiKey) {
-        setTimeout(function(){ getBuddyGreeting(name); }, 700);
-      } else {
-        showTyping(name);
-        setTimeout(function(){ hideTyping(name); }, 2000);
-      }
-    } else {
-      // Replay history
+    // Buddy waits for user to speak first — no auto-greeting
+    if (chatHistories[name].length > 0) {
+      // Replay existing history if chat was previously opened
       chatHistories[name].forEach(function(msg) {
         appendChatMsg(name, msg.role==='user' ? currentUser : name, msg.content, msg.role==='user');
       });
@@ -921,6 +916,12 @@
   makeDraggable(
     document.getElementById('buddy-list-window'),
     document.getElementById('bl-titlebar')
+  );
+
+  // Make sign-in window draggable
+  makeDraggable(
+    document.getElementById('signin-window'),
+    document.getElementById('signin-titlebar')
   );
 
   // ── Utils ──
