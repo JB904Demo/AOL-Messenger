@@ -95,7 +95,7 @@
   ════════════════════════════════════════ */
   #signin-window {
     position: absolute;
-    top: 120px; left: 212px;
+    top: 264px; left: 212px;
     width: 580px;
     background: #c8c8b8;
     border: 2px solid;
@@ -212,7 +212,7 @@
   ════════════════════════════════════════ */
   #buddy-list-window {
     position: absolute;
-    top: 60px; right: 20px;
+    top: 204px; right: 20px;
     width: 200px;
     background: #c0c0c0;
     border: 2px solid; border-color: #ffffff #808080 #808080 #ffffff;
@@ -349,6 +349,153 @@
   .status-dot { width: 6px; height: 5px; display: inline-block; }
 
   .typing-indicator { color: #808080; font-style: italic; font-size: 10px; }
+
+  /* ════════════════════════════════════════
+     CHAT BUTTON (on desktop background)
+  ════════════════════════════════════════ */
+  #chat-launch-btn {
+    position: absolute;
+    bottom: 148px; left: 63px;
+    width: 90px; height: 68px;
+    cursor: pointer;
+    display: none;
+    z-index: 50;
+    background: transparent;
+    border: none; padding: 0;
+  }
+  #chat-launch-btn img {
+    width: 100%; height: 100%;
+    object-fit: contain;
+  }
+  #chat-launch-btn:hover { filter: brightness(1.15); }
+
+  /* ════════════════════════════════════════
+     CHATROOM WINDOW
+  ════════════════════════════════════════ */
+  #chatroom-window {
+    position: absolute;
+    top: 140px; left: 180px;
+    width: 680px; height: 480px;
+    background: #c0c0c0;
+    border: 2px solid; border-color: #ffffff #808080 #808080 #ffffff;
+    box-shadow: 2px 2px 0 #000;
+    display: none;
+    flex-direction: column;
+    z-index: 300;
+  }
+  #chatroom-window.open { display: flex; }
+
+  .cr-titlebar {
+    background: linear-gradient(to bottom, #2a7a8c, #1a5a6c);
+    color: #c8f0ff; font-size: 12px; font-weight: bold;
+    padding: 2px 5px; display: flex; align-items: center;
+    justify-content: space-between; height: 20px; cursor: grab; flex-shrink: 0;
+  }
+  .cr-titlebar:active { cursor: grabbing; }
+  .cr-titlebar-left { display: flex; align-items: center; gap: 4px; }
+  .cr-win-btns { display: flex; gap: 2px; }
+  .cr-win-btn {
+    width: 14px; height: 12px; background: #c0c0c0;
+    border: 1px solid; border-color: #fff #808080 #808080 #fff;
+    font-size: 8px; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: #000; font-weight: bold;
+  }
+
+  .cr-body { display: flex; flex: 1; overflow: hidden; }
+
+  /* Left: chat transcript */
+  .cr-chat-pane {
+    flex: 1; display: flex; flex-direction: column; overflow: hidden;
+    border-right: 2px solid #808080;
+  }
+  .cr-messages {
+    flex: 1; background: #ffffff; overflow-y: auto; padding: 4px 6px;
+    font-size: 12px; line-height: 1.6;
+    border-top: 2px solid #808080; border-left: 2px solid #808080;
+    border-right: 2px solid #fff; border-bottom: 2px solid #fff;
+    margin: 3px 3px 0 3px;
+    user-select: text;
+  }
+  .cr-msg-line { margin-bottom: 1px; }
+  .cr-name-user  { color: #cc0000; font-weight: bold; }
+  .cr-name-other { color: #0000cc; font-weight: bold; }
+  .cr-name-host  { color: #006600; font-weight: bold; }
+  .cr-msg-text   { color: #000; }
+
+  /* Toolbar row */
+  .cr-toolbar {
+    display: flex; align-items: center; gap: 4px;
+    padding: 3px 4px; background: #c0c0c0;
+    border-top: 1px solid #fff;
+    flex-shrink: 0;
+  }
+  .cr-font-select {
+    height: 20px; width: 110px; font-size: 11px;
+    border: 2px solid; border-color: #808080 #fff #fff #808080;
+    background: #fff; font-family: 'Tahoma', Arial; outline: none;
+  }
+  .cr-fmt-btn {
+    width: 20px; height: 20px; background: #c0c0c0;
+    border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    font-family: serif; color: #000;
+  }
+  .cr-fmt-btn:active { border-color: #808080 #fff #fff #808080; }
+
+  /* Input row */
+  .cr-input-row {
+    display: flex; align-items: stretch;
+    padding: 3px; gap: 3px; background: #c0c0c0; flex-shrink: 0;
+  }
+  .cr-input {
+    flex: 1; height: 26px;
+    border: 2px solid; border-color: #808080 #fff #fff #808080;
+    background: #fff; font-family: 'Tahoma', Arial; font-size: 12px;
+    padding: 0 4px; outline: none; color: #000;
+    user-select: text;
+  }
+  .cr-send-btn {
+    background: #4a7ab0; border: 2px solid;
+    border-color: #8ab4e0 #2a5a90 #2a5a90 #8ab4e0;
+    color: white; font-family: 'Tahoma', Arial; font-size: 11px;
+    font-weight: bold; padding: 2px 10px; cursor: pointer; white-space: nowrap;
+  }
+  .cr-send-btn:active { border-color: #2a5a90 #8ab4e0 #8ab4e0 #2a5a90; }
+
+  /* Right: people panel */
+  .cr-people-pane {
+    width: 190px; flex-shrink: 0; display: flex; flex-direction: column;
+    background: #c0c0c0;
+  }
+  .cr-people-header {
+    background: #1a3a6a; color: white; font-size: 11px; font-weight: bold;
+    padding: 3px 6px; display: flex; align-items: center; gap: 6px;
+    flex-shrink: 0;
+  }
+  .cr-people-count {
+    font-size: 11px; color: #000; padding: 4px 6px; font-weight: bold; flex-shrink: 0;
+  }
+  .cr-people-list {
+    background: #fff; border: 2px solid; border-color: #808080 #fff #fff #808080;
+    margin: 0 4px; flex: 1; overflow-y: auto; font-size: 11px;
+  }
+  .cr-person {
+    padding: 2px 5px; cursor: default; color: #000;
+    border-bottom: 1px solid #e8e8e8;
+  }
+  .cr-person:hover { background: #000080; color: white; }
+  .cr-person.is-me { color: #cc0000; font-weight: bold; }
+  .cr-dbl-note { font-size: 9px; color: #666; padding: 3px 5px; flex-shrink: 0; }
+  .cr-people-btns {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 3px; padding: 4px; flex-shrink: 0;
+  }
+  .cr-ppl-btn {
+    background: #4a7ab0; border: 2px solid;
+    border-color: #8ab4e0 #2a5a90 #2a5a90 #8ab4e0;
+    color: white; font-size: 9px; font-weight: bold;
+    padding: 3px 2px; cursor: pointer; text-align: center; line-height: 1.2;
+  }
 </style>
 </head>
 <body>
@@ -508,6 +655,61 @@
       <div class="bl-list-area" id="bl-list-area"></div>
     </div>
 
+    <!-- Chat launch button (sits over the static Chat icon in the background image) -->
+    <button id="chat-launch-btn" onclick="openChatroom()" title="Chat">
+      <img src="chat_button.png" alt="Chat">
+    </button>
+
+    <!-- Chatroom window -->
+    <div id="chatroom-window">
+      <div class="cr-titlebar" id="cr-titlebar">
+        <div class="cr-titlebar-left">
+          <svg width="11" height="11" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8" fill="none" stroke="#7ad4e8" stroke-width="2"/><text x="10" y="14" text-anchor="middle" font-size="9" fill="#7ad4e8">A</text></svg>
+          The Bonfire
+        </div>
+        <div class="cr-win-btns">
+          <div class="cr-win-btn">_</div>
+          <div class="cr-win-btn">□</div>
+          <div class="cr-win-btn" id="cr-close-btn">✕</div>
+        </div>
+      </div>
+      <div class="cr-body">
+        <!-- Left: messages + toolbar + input -->
+        <div class="cr-chat-pane">
+          <div class="cr-messages" id="cr-messages"></div>
+          <div class="cr-toolbar">
+            <select class="cr-font-select"><option>Verdana</option><option>Times New Roman</option><option>Arial</option><option>Comic Sans MS</option></select>
+            <div class="cr-fmt-btn" style="font-size:10px;">&#9650;</div>
+            <div class="cr-fmt-btn" style="font-weight:bold;">B</div>
+            <div class="cr-fmt-btn" style="font-style:italic;">I</div>
+            <div class="cr-fmt-btn" style="text-decoration:underline;">U</div>
+            <div class="cr-fmt-btn">A</div>
+          </div>
+          <div class="cr-input-row">
+            <input type="text" class="cr-input" id="cr-input" placeholder="" onkeydown="crKeydown(event)">
+            <button class="cr-send-btn" onclick="crSend()">&#9658;Send</button>
+          </div>
+        </div>
+        <!-- Right: people panel -->
+        <div class="cr-people-pane">
+          <div class="cr-people-header">
+            <svg width="16" height="12" viewBox="0 0 24 16"><path d="M4 8 Q12 2 20 8" stroke="#7ad4e8" stroke-width="2" fill="none"/></svg>
+            MAIN &nbsp; HELP
+          </div>
+          <div class="cr-people-count" id="cr-people-count">20 people here</div>
+          <div class="cr-people-list" id="cr-people-list"></div>
+          <div class="cr-dbl-note">double click on name for more info</div>
+          <div class="cr-people-btns">
+            <div class="cr-ppl-btn">Find a Chat</div>
+            <div class="cr-ppl-btn">AOL LIVE</div>
+            <div class="cr-ppl-btn">Private Chat</div>
+            <div class="cr-ppl-btn">Chat Preferences</div>
+            <div class="cr-ppl-btn">Member Directory</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Chat windows injected here by JS -->
 
   </div>
@@ -611,6 +813,7 @@
       document.getElementById('bl-title').textContent = currentUser + "'s Buddy List";
       renderBuddyList();
       document.getElementById('buddy-list-window').classList.add('visible');
+      document.getElementById('chat-launch-btn').style.display = 'block';
       playSound('gotMail');
       startRotation();
     }, 7000);
@@ -928,6 +1131,200 @@
   function esc(s) {
     return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
+
+  // ════════════════════════════════════════
+  // CHATROOM — The Bonfire
+  // ════════════════════════════════════════
+  var CR_NAMES = [
+    'MHouse123','GXGX171717','CookieLife4Me','SurfDog99','FLBeachBum',
+    'NightOwl2112','SkaterKid88','PizzaKing404','DawnPatrol77','CoolBreeze11',
+    'MallRat1999','TacoTuesday5','SunsetVibes7','BoardShorts42','NeonSign88',
+    'GroovyTimes9','DirtBike247','WaveRider66','CheezWiz2000','PalmTree99'
+  ];
+  var crOpen = false;
+  var crWaitingForUser = false;   // true = paused, waiting for user to send
+  var crRotateIndex = 0;          // round-robin pointer through shuffled names
+  var crShuffled = [];            // shuffled copy of CR_NAMES for this session
+  var crHistory = [];             // conversation history for the chatroom Claude call
+  var crPendingResponders = [];   // queue of 5 names for current batch
+
+  // Shuffle helper
+  function crShuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  // Pick next 5 unique names round-robin
+  function crPickNext5() {
+    var picks = [];
+    for (var i = 0; i < 5; i++) {
+      picks.push(crShuffled[crRotateIndex % crShuffled.length]);
+      crRotateIndex++;
+    }
+    return picks;
+  }
+
+  function openChatroom() {
+    if (crOpen) {
+      document.getElementById('chatroom-window').style.zIndex = 400;
+      return;
+    }
+    crOpen = true;
+    crShuffled = crShuffle(CR_NAMES);
+    crRotateIndex = 0;
+    crHistory = [];
+    crWaitingForUser = false;
+
+    var win = document.getElementById('chatroom-window');
+    win.classList.add('open');
+    win.style.zIndex = 350;
+
+    // Populate people list
+    var list = document.getElementById('cr-people-list');
+    list.innerHTML = '';
+    // Add user at top
+    var meEl = document.createElement('div');
+    meEl.className = 'cr-person is-me';
+    meEl.textContent = currentUser;
+    list.appendChild(meEl);
+    // Add all 20 random names
+    crShuffled.forEach(function(n) {
+      var el = document.createElement('div');
+      el.className = 'cr-person';
+      el.textContent = n;
+      list.appendChild(el);
+    });
+    document.getElementById('cr-people-count').textContent = '21 people here';
+
+    // Entrance message
+    crAppendHost('OnlineHost', currentUser + ' has entered the room.');
+
+    // Fire first batch of 5 after a short pause
+    crWaitingForUser = false;
+    crFireBatch(crPickNext5(), 0, function() {
+      crWaitingForUser = true;
+    });
+  }
+
+  function closeChatroom() {
+    crOpen = false;
+    crWaitingForUser = false;
+    document.getElementById('chatroom-window').classList.remove('open');
+    document.getElementById('cr-messages').innerHTML = '';
+  }
+
+  function crAppendHost(name, text) {
+    var msgs = document.getElementById('cr-messages');
+    var div = document.createElement('div');
+    div.className = 'cr-msg-line';
+    div.innerHTML = '<span class="cr-name-host">'+esc(name)+':</span>\t<span class="cr-msg-text">'+esc(text)+'</span>';
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  function crAppendMsg(name, text, isMe) {
+    var msgs = document.getElementById('cr-messages');
+    var div = document.createElement('div');
+    div.className = 'cr-msg-line';
+    var cls = isMe ? 'cr-name-user' : 'cr-name-other';
+    div.innerHTML = '<span class="'+cls+'">'+esc(name)+':</span>\t<span class="cr-msg-text">'+esc(text)+'</span>';
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  // Fire a batch of responses with 2s delay between each
+  function crFireBatch(names, idx, onDone) {
+    if (idx >= names.length) {
+      if (onDone) onDone();
+      return;
+    }
+    setTimeout(function() {
+      var name = names[idx];
+      getChatroomReply(name, function(text) {
+        crAppendMsg(name, text, false);
+        crFireBatch(names, idx + 1, onDone);
+      });
+    }, idx === 0 ? 1200 : 2000);
+  }
+
+  function crKeydown(e) {
+    if (e.key === 'Enter') { e.preventDefault(); crSend(); }
+  }
+
+  function crSend() {
+    if (!crWaitingForUser) return;
+    var inp = document.getElementById('cr-input');
+    var text = inp.value.trim();
+    if (!text) return;
+    inp.value = '';
+    crWaitingForUser = false;
+
+    // Show user message
+    crAppendMsg(currentUser, text, true);
+    crHistory.push({ role: 'user', content: currentUser + ': ' + text });
+
+    // Fire next batch of 5, then wait again
+    crFireBatch(crPickNext5(), 0, function() {
+      crWaitingForUser = true;
+    });
+  }
+
+  async function getChatroomReply(name, cb) {
+    if (!apiKey) {
+      // Fallback lines if no API key
+      var fallbacks = ['lol','no way','for real?','haha yeah','omg','brb','lmao','tru','word','nice'];
+      cb(fallbacks[Math.floor(Math.random() * fallbacks.length)]);
+      return;
+    }
+    var systemPrompt = 'You are ' + name + ', a random person in an AOL chatroom called "The Bonfire" in 1998/1999. '
+      + 'You are a teenager or young adult. You type in classic AOL chatroom style: very short, casual, '
+      + 'lowercase, abbreviations (lol brb omg asl nm sup u ur r), occasional typos, slang. '
+      + 'Keep responses to ONE very short sentence or fragment — 2 to 8 words max. '
+      + 'React naturally to what others said, make small talk, ask questions, joke around. '
+      + 'Never break character. Never write more than one sentence.';
+
+    // Build context from recent history (last 8 messages)
+    var recent = crHistory.slice(-8);
+    var contextText = recent.map(function(m){ return m.content; }).join('\n');
+    var prompt = contextText ? 'Recent chat:\n' + contextText + '\n\nNow write ONE short chatroom message as ' + name + ':' : 'Write ONE short chatroom message as ' + name + ' to start a conversation:';
+
+    try {
+      var r = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 60,
+          system: systemPrompt,
+          messages: [{ role: 'user', content: prompt }]
+        })
+      });
+      var d = await r.json();
+      var reply = (d.content && d.content[0]) ? d.content[0].text.trim() : 'lol';
+      // Strip quotes if Claude wrapped it
+      reply = reply.replace(/^["']|["']$/g, '');
+      crHistory.push({ role: 'assistant', content: name + ': ' + reply });
+      cb(reply);
+    } catch(e) {
+      cb('lol');
+    }
+  }
+
+  // Wire up chatroom close and drag
+  document.getElementById('cr-close-btn').addEventListener('click', closeChatroom);
+  makeDraggable(document.getElementById('chatroom-window'), document.getElementById('cr-titlebar'));
+  document.getElementById('chatroom-window').addEventListener('mousedown', function() {
+    document.getElementById('chatroom-window').style.zIndex = ++chatZBase + 100;
+  });
 
   window.addEventListener('load', function(){
     showScreen('screen-apikey');
