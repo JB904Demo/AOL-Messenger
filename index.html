@@ -355,11 +355,7 @@
   ════════════════════════════════════════ */
   #chat-launch-btn {
     position: absolute;
-    /* Align with the sidebar column of icon buttons in Constant_Background.png.
-       The sidebar is ~210px wide. Icon buttons are centered around x=108.
-       Chat button sits at the bottom of the icon stack, approx y=680 from top
-       of the 768px canvas. Width matches the other sidebar icons (~90px). */
-    bottom: 52px;
+    top: 638px;
     left: 18px;
     width: 190px;
     height: 72px;
@@ -372,7 +368,7 @@
   #chat-launch-btn img {
     width: 100%; height: 100%;
     object-fit: contain;
-    object-position: center bottom;
+    object-position: center;
   }
   #chat-launch-btn:hover { filter: brightness(1.15); }
 
@@ -1210,11 +1206,13 @@
     // Entrance message
     crAppendHost('OnlineHost', currentUser + ' has entered the room.');
 
-    // Fire first batch of 5 after a short pause
+    // Fire first batch after a longer pause so entrance doesn't anchor responses
     crWaitingForUser = false;
-    crFireBatch(crPickNext5(), 0, function() {
-      crWaitingForUser = true;
-    });
+    setTimeout(function() {
+      crFireBatch(crPickNext5(), 0, function() {
+        crWaitingForUser = true;
+      });
+    }, 2500);
   }
 
   function closeChatroom() {
@@ -1288,21 +1286,27 @@
       cb(f);
       return;
     }
-    var systemPrompt = 'You are ' + name + ', a random person in an AOL chatroom called "The Bonfire" in 1998/1999. '
-      + 'You are a teenager or young adult. You type in classic AOL chatroom style: very short, casual, '
-      + 'lowercase, abbreviations (lol brb omg asl nm sup u ur r), occasional typos, slang. '
-      + 'Keep responses to ONE very short sentence or fragment — 2 to 8 words max. '
-      + 'IMPORTANT: Always react specifically to what is currently being discussed in the chat. '
-      + 'Read what other people just said and respond to the actual topic or thread. '
-      + 'Do not start a new random topic. Engage with the conversation that is already happening. '
-      + 'Never break character. Never write more than one sentence.';
+    var systemPrompt = 'You are ' + name + ', one of many people in an AOL chatroom called "The Bonfire" in 1998/1999. '
+      + 'You are a teenager or young adult having an organic group conversation. '
+      + 'Type in classic AOL chatroom style: very short, casual, lowercase, abbreviations (lol brb omg asl nm sup u ur r), occasional typos. '
+      + 'ONE sentence or fragment only — 2 to 8 words max. '
+      + 'CRITICAL: Do NOT address or repeat what the very first person said. '
+      + 'Read the ENTIRE conversation and respond naturally to what is most recently being discussed, '
+      + 'OR make a totally new organic comment about something else happening in the room. '
+      + 'Vary your responses — ask a question, make a joke, agree with someone recent, change the subject naturally. '
+      + 'Act like a real person in a busy chatroom, not a bot echoing one message. '
+      + 'Never say the same thing as another person in the chat. Never break character.';
 
-    // Build context from full chat history (capped at last 20 to avoid token bloat)
+    // Build context from full chat history (capped at last 20)
     var recent = crHistory.slice(-20);
     var contextText = recent.map(function(m){ return m.content; }).join('\n');
+
+    // Point Claude specifically at the most recent 3 messages as the "current thread"
+    var lastThree = crHistory.slice(-3).map(function(m){ return m.content; }).join('\n');
+
     var prompt = contextText
-      ? 'This is the ongoing chat in "The Bonfire" AOL chatroom:\n\n' + contextText + '\n\nYou are ' + name + '. React naturally to what is being discussed in the room right now. Write ONE short chatroom message (2-8 words max) as ' + name + ':'
-      : 'You are ' + name + ' in "The Bonfire" AOL chatroom. Start a casual conversation with ONE short message (2-8 words max):';
+      ? 'Full chat so far:\n' + contextText + '\n\nMost recent messages:\n' + lastThree + '\n\nYou are ' + name + '. Write ONE organic chatroom response (2-8 words). React to the recent thread OR start something new — do NOT just repeat or address "' + (crHistory[0] ? crHistory[0].content.split(':')[0] : '') + '":'
+      : 'You are ' + name + ' in "The Bonfire" AOL chatroom. Start casual small talk with ONE short message (2-8 words):';
 
     try {
       var r = await fetch('https://api.anthropic.com/v1/messages', {
