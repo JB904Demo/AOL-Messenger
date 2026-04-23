@@ -95,7 +95,7 @@
   ════════════════════════════════════════ */
   #signin-window {
     position: absolute;
-    top: 264px; left: 212px;
+    top: 240px; left: 212px;
     width: 580px;
     background: #c8c8b8;
     border: 2px solid;
@@ -212,7 +212,7 @@
   ════════════════════════════════════════ */
   #buddy-list-window {
     position: absolute;
-    top: 204px; right: 20px;
+    top: 180px; right: 20px;
     width: 200px;
     background: #c0c0c0;
     border: 2px solid; border-color: #ffffff #808080 #808080 #ffffff;
@@ -355,8 +355,14 @@
   ════════════════════════════════════════ */
   #chat-launch-btn {
     position: absolute;
-    bottom: 148px; left: 63px;
-    width: 90px; height: 68px;
+    /* Align with the sidebar column of icon buttons in Constant_Background.png.
+       The sidebar is ~210px wide. Icon buttons are centered around x=108.
+       Chat button sits at the bottom of the icon stack, approx y=680 from top
+       of the 768px canvas. Width matches the other sidebar icons (~90px). */
+    bottom: 52px;
+    left: 18px;
+    width: 190px;
+    height: 72px;
     cursor: pointer;
     display: none;
     z-index: 50;
@@ -366,6 +372,7 @@
   #chat-launch-btn img {
     width: 100%; height: 100%;
     object-fit: contain;
+    object-position: center bottom;
   }
   #chat-launch-btn:hover { filter: brightness(1.15); }
 
@@ -1275,22 +1282,27 @@
 
   async function getChatroomReply(name, cb) {
     if (!apiKey) {
-      // Fallback lines if no API key
       var fallbacks = ['lol','no way','for real?','haha yeah','omg','brb','lmao','tru','word','nice'];
-      cb(fallbacks[Math.floor(Math.random() * fallbacks.length)]);
+      var f = fallbacks[Math.floor(Math.random() * fallbacks.length)];
+      crHistory.push({ role: 'assistant', content: name + ': ' + f });
+      cb(f);
       return;
     }
     var systemPrompt = 'You are ' + name + ', a random person in an AOL chatroom called "The Bonfire" in 1998/1999. '
       + 'You are a teenager or young adult. You type in classic AOL chatroom style: very short, casual, '
       + 'lowercase, abbreviations (lol brb omg asl nm sup u ur r), occasional typos, slang. '
       + 'Keep responses to ONE very short sentence or fragment — 2 to 8 words max. '
-      + 'React naturally to what others said, make small talk, ask questions, joke around. '
+      + 'IMPORTANT: Always react specifically to what is currently being discussed in the chat. '
+      + 'Read what other people just said and respond to the actual topic or thread. '
+      + 'Do not start a new random topic. Engage with the conversation that is already happening. '
       + 'Never break character. Never write more than one sentence.';
 
-    // Build context from recent history (last 8 messages)
-    var recent = crHistory.slice(-8);
+    // Build context from full chat history (capped at last 20 to avoid token bloat)
+    var recent = crHistory.slice(-20);
     var contextText = recent.map(function(m){ return m.content; }).join('\n');
-    var prompt = contextText ? 'Recent chat:\n' + contextText + '\n\nNow write ONE short chatroom message as ' + name + ':' : 'Write ONE short chatroom message as ' + name + ' to start a conversation:';
+    var prompt = contextText
+      ? 'This is the ongoing chat in "The Bonfire" AOL chatroom:\n\n' + contextText + '\n\nYou are ' + name + '. React naturally to what is being discussed in the room right now. Write ONE short chatroom message (2-8 words max) as ' + name + ':'
+      : 'You are ' + name + ' in "The Bonfire" AOL chatroom. Start a casual conversation with ONE short message (2-8 words max):';
 
     try {
       var r = await fetch('https://api.anthropic.com/v1/messages', {
@@ -1315,7 +1327,9 @@
       crHistory.push({ role: 'assistant', content: name + ': ' + reply });
       cb(reply);
     } catch(e) {
-      cb('lol');
+      var fallback = 'lol';
+      crHistory.push({ role: 'assistant', content: name + ': ' + fallback });
+      cb(fallback);
     }
   }
 
