@@ -147,7 +147,7 @@
   ════════════════════════════════════════ */
   #signin-window {
     position: absolute;
-    top: 240px; left: 212px;
+    top: 210px; left: 212px;
     width: 580px;
     background: #c8c8b8;
     border: 2px solid;
@@ -422,15 +422,17 @@
     align-items: center; justify-content: center;
   }
   .profile-overlay.open { display: flex; }
+
+  /* Matches AOL Member Profile window — wider, taller */
   .profile-dialog {
-    width: 205px;
+    width: 480px;
     background: #d4d0c8;
     border: 2px solid; border-color: #ffffff #808080 #808080 #ffffff;
     box-shadow: 3px 3px 6px rgba(0,0,0,0.5);
   }
   .profile-titlebar {
-    background: linear-gradient(to bottom, #2a7a8c, #1a5a6c);
-    color: #c8f0ff; font-size: 12px; font-weight: bold;
+    background: #000080;
+    color: white; font-size: 12px; font-weight: bold;
     padding: 2px 5px; display: flex; align-items: center;
     justify-content: space-between; height: 20px;
   }
@@ -441,40 +443,71 @@
     font-size: 8px; display: flex; align-items: center; justify-content: center;
     cursor: pointer; color: #000; font-weight: bold;
   }
-  .profile-body { padding: 10px; }
-  .profile-grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 6px 10px;
-    margin-bottom: 10px;
+
+  /* Header band: "Profile for:" + screen name large */
+  .profile-header {
+    background: #d4d0c8; padding: 10px 14px 8px;
+    border-bottom: 1px solid #808080;
+    display: flex; align-items: flex-start; justify-content: space-between;
   }
-  .profile-field { display: flex; flex-direction: column; gap: 2px; }
-  .profile-label { font-size: 10px; color: #000; font-weight: bold; }
-  .profile-input {
-    height: 20px; width: 100%;
+  .profile-header-text { display: flex; flex-direction: column; gap: 2px; }
+  .profile-for-label { font-size: 16px; font-weight: bold; color: #000; }
+  .profile-sn-large  { font-size: 22px; font-weight: bold; color: #000; letter-spacing: 1px; }
+
+  /* Info box — sunken, full width, two-column rows */
+  .profile-infobox {
+    margin: 8px 10px;
+    border: 2px solid; border-color: #808080 #fff #fff #808080;
+    background: #fff; padding: 6px 10px;
+    font-size: 12px; font-family: 'Tahoma', Arial;
+    min-height: 200px;
+  }
+  .profile-row {
+    display: flex; align-items: flex-start;
+    padding: 2px 0; line-height: 1.5;
+  }
+  .profile-row-label {
+    width: 130px; flex-shrink: 0; color: #000; font-weight: normal;
+  }
+  .profile-row-value { color: #000; flex: 1; word-break: break-word; }
+
+  /* Entry form — same width, fields stacked in two-col grid */
+  .profile-entry-body { padding: 8px 10px; }
+  .profile-entry-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 6px 16px;
+    margin-bottom: 8px;
+  }
+  .profile-entry-field { display: flex; flex-direction: column; gap: 2px; }
+  .profile-entry-label { font-size: 11px; color: #000; font-weight: bold; }
+  .profile-entry-input {
+    height: 22px; width: 100%;
     border-top: 2px solid #808080; border-left: 2px solid #808080;
     border-right: 2px solid #fff; border-bottom: 2px solid #fff;
     background: #fff; font-family: 'Tahoma', Arial; font-size: 11px;
-    padding: 0 3px; outline: none; color: #000; user-select: text;
+    padding: 0 4px; outline: none; color: #000; user-select: text;
   }
-  .profile-value { font-size: 11px; color: #000; padding: 2px 0; min-height: 18px; word-break: break-word; }
-  .profile-divider { border: none; border-top: 1px solid #808080; border-bottom: 1px solid #fff; margin: 8px 0; }
-  .profile-footer { display: flex; justify-content: flex-end; gap: 6px; }
-  .profile-btn {
+
+  /* Blue button row at bottom — matches screenshot */
+  .profile-btn-bar {
+    background: #d4d0c8; border-top: 1px solid #808080;
+    padding: 6px 10px; display: flex; gap: 6px; justify-content: center;
+  }
+  .profile-bar-btn {
     background: #4a7ab0; border: 2px solid;
     border-color: #8ab4e0 #2a5a90 #2a5a90 #8ab4e0;
     color: white; font-family: 'Tahoma', Arial; font-size: 11px;
-    font-weight: bold; padding: 3px 12px; cursor: pointer;
+    font-weight: bold; padding: 3px 0; cursor: pointer;
+    min-width: 80px; text-align: center; letter-spacing: 0.3px;
   }
-  .profile-btn:active { border-color: #2a5a90 #8ab4e0 #8ab4e0 #2a5a90; }
-  .profile-btn.cancel {
-    background: #c0c0c0; border-color: #fff #808080 #808080 #fff; color: #000;
-  }
+  .profile-bar-btn:active { border-color: #2a5a90 #8ab4e0 #8ab4e0 #2a5a90; }
+  .profile-bar-btn.wide { min-width: 110px; }
 
   /* ════════════════════════════════════════
      CHAT BUTTON (on desktop background)
   ════════════════════════════════════════ */
   #chat-launch-btn {
     position: absolute;
-    top: 556px;
+    top: 551px;
     left: 30px;
     width: 162px;
     height: 61px;
@@ -884,48 +917,57 @@
             <svg width="11" height="11" viewBox="0 0 20 26"><circle cx="10" cy="3" r="3" fill="#ffcc00"/><line x1="10" y1="6" x2="10" y2="16" stroke="#ffcc00" stroke-width="2.5"/><line x1="10" y1="10" x2="3" y2="14" stroke="#ffcc00" stroke-width="2"/><line x1="10" y1="10" x2="17" y2="13" stroke="#ffcc00" stroke-width="2"/><line x1="10" y1="16" x2="5" y2="24" stroke="#ffcc00" stroke-width="2"/><line x1="10" y1="16" x2="15" y2="24" stroke="#ffcc00" stroke-width="2"/></svg>
             Add a Buddy
           </div>
-          <div class="profile-close-btn" onclick="closeAddBuddy()">✕</div>
+          <div style="display:flex;gap:2px;">
+            <div style="width:14px;height:12px;background:#c0c0c0;border:1px solid;border-color:#fff #808080 #808080 #fff;font-size:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#000;font-weight:bold;">_</div>
+            <div style="width:14px;height:12px;background:#c0c0c0;border:1px solid;border-color:#fff #808080 #808080 #fff;font-size:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#000;font-weight:bold;">□</div>
+            <div class="profile-close-btn" onclick="closeAddBuddy()">✕</div>
+          </div>
         </div>
-        <div class="profile-body">
-          <div class="profile-grid">
-            <div class="profile-field">
-              <div class="profile-label">Screen Name *</div>
-              <input class="profile-input" id="ab-screenname" type="text" placeholder="Required">
+        <div class="profile-header">
+          <div class="profile-header-text">
+            <div class="profile-for-label">Add a Buddy:</div>
+            <div class="profile-sn-large" id="ab-preview-sn" style="font-size:16px;color:#000080;">Enter screen name below</div>
+          </div>
+        </div>
+        <div class="profile-entry-body">
+          <div class="profile-entry-grid">
+            <div class="profile-entry-field">
+              <div class="profile-entry-label">Screen Name *</div>
+              <input class="profile-entry-input" id="ab-screenname" type="text" placeholder="Required" oninput="document.getElementById('ab-preview-sn').textContent=this.value||'Enter screen name below'">
             </div>
-            <div class="profile-field">
-              <div class="profile-label">Name</div>
-              <input class="profile-input" id="ab-name" type="text">
+            <div class="profile-entry-field">
+              <div class="profile-entry-label">Name</div>
+              <input class="profile-entry-input" id="ab-name" type="text">
             </div>
-            <div class="profile-field">
-              <div class="profile-label">Age</div>
-              <input class="profile-input" id="ab-age" type="text">
+            <div class="profile-entry-field">
+              <div class="profile-entry-label">Age</div>
+              <input class="profile-entry-input" id="ab-age" type="text">
             </div>
-            <div class="profile-field">
-              <div class="profile-label">Location</div>
-              <input class="profile-input" id="ab-location" type="text">
+            <div class="profile-entry-field">
+              <div class="profile-entry-label">Location</div>
+              <input class="profile-entry-input" id="ab-location" type="text">
             </div>
-            <div class="profile-field">
-              <div class="profile-label">Hobbies</div>
-              <input class="profile-input" id="ab-hobbies" type="text">
+            <div class="profile-entry-field">
+              <div class="profile-entry-label">Hobbies</div>
+              <input class="profile-entry-input" id="ab-hobbies" type="text">
             </div>
-            <div class="profile-field">
-              <div class="profile-label">Music</div>
-              <input class="profile-input" id="ab-music" type="text">
+            <div class="profile-entry-field">
+              <div class="profile-entry-label">Music</div>
+              <input class="profile-entry-input" id="ab-music" type="text">
             </div>
-            <div class="profile-field">
-              <div class="profile-label">TV / Movies</div>
-              <input class="profile-input" id="ab-tv" type="text">
+            <div class="profile-entry-field">
+              <div class="profile-entry-label">TV / Movies</div>
+              <input class="profile-entry-input" id="ab-tv" type="text">
             </div>
-            <div class="profile-field">
-              <div class="profile-label">Personality</div>
-              <input class="profile-input" id="ab-personality" type="text">
+            <div class="profile-entry-field">
+              <div class="profile-entry-label">Personality</div>
+              <input class="profile-entry-input" id="ab-personality" type="text">
             </div>
           </div>
-          <hr class="profile-divider">
-          <div class="profile-footer">
-            <button class="profile-btn cancel" onclick="closeAddBuddy()">Cancel</button>
-            <button class="profile-btn" onclick="submitAddBuddy()">Add Buddy</button>
-          </div>
+        </div>
+        <div class="profile-btn-bar">
+          <button class="profile-bar-btn" onclick="closeAddBuddy()" style="background:#c0c0c0;border-color:#fff #808080 #808080 #fff;color:#000;">Cancel</button>
+          <button class="profile-bar-btn" onclick="submitAddBuddy()">Add Buddy</button>
         </div>
       </div>
     </div>
@@ -936,18 +978,29 @@
         <div class="profile-titlebar">
           <div class="profile-titlebar-left">
             <svg width="11" height="11" viewBox="0 0 20 26"><circle cx="10" cy="3" r="3" fill="#ffcc00"/><line x1="10" y1="6" x2="10" y2="16" stroke="#ffcc00" stroke-width="2.5"/><line x1="10" y1="10" x2="3" y2="14" stroke="#ffcc00" stroke-width="2"/><line x1="10" y1="10" x2="17" y2="13" stroke="#ffcc00" stroke-width="2"/><line x1="10" y1="16" x2="5" y2="24" stroke="#ffcc00" stroke-width="2"/><line x1="10" y1="16" x2="15" y2="24" stroke="#ffcc00" stroke-width="2"/></svg>
-            <span id="profile-title-name">Member Profile</span>
+            Member Profile
           </div>
-          <div class="profile-close-btn" onclick="closeProfile()">✕</div>
+          <div style="display:flex;gap:2px;">
+            <div style="width:14px;height:12px;background:#c0c0c0;border:1px solid;border-color:#fff #808080 #808080 #fff;font-size:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-weight:bold;">_</div>
+            <div style="width:14px;height:12px;background:#c0c0c0;border:1px solid;border-color:#fff #808080 #808080 #fff;font-size:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-weight:bold;">□</div>
+            <div class="profile-close-btn" onclick="closeProfile()">✕</div>
+          </div>
         </div>
-        <div class="profile-body">
-          <div class="profile-grid" id="profile-view-grid">
-            <!-- populated by JS -->
+        <div class="profile-header">
+          <div class="profile-header-text">
+            <div class="profile-for-label">Profile for:</div>
+            <div class="profile-sn-large" id="profile-sn-display">—</div>
           </div>
-          <hr class="profile-divider">
-          <div class="profile-footer">
-            <button class="profile-btn" onclick="closeProfile()">Close</button>
-          </div>
+        </div>
+        <div class="profile-infobox" id="profile-view-grid">
+          <!-- populated by JS -->
+        </div>
+        <div class="profile-btn-bar">
+          <button class="profile-bar-btn" onclick="closeProfile()">Locate</button>
+          <button class="profile-bar-btn" onclick="closeProfile()">E-Mail</button>
+          <button class="profile-bar-btn wide" onclick="closeProfile()">Online Greetings</button>
+          <button class="profile-bar-btn" onclick="closeProfile()">Notify AOL</button>
+          <button class="profile-bar-btn wide" onclick="closeProfile()">Help &amp; Info</button>
         </div>
       </div>
     </div>
@@ -1060,6 +1113,28 @@
       document.getElementById('chat-launch-btn').style.display = 'block';
       setTimeout(function(){ playSound('gotMail'); }, 1000);
       startRotation();
+      // Random online buddy IMs you 10s after login
+      setTimeout(function() {
+        var onlineMembers = buddyData[0].members.filter(function(m){ return m.online; });
+        if (!onlineMembers.length) return;
+        var greeter = onlineMembers[Math.floor(Math.random() * onlineMembers.length)];
+        openChat(greeter.name);
+        var greetings = [
+          'hey! whats the plan for tonight?',
+          'yo whats going on tonight?',
+          'hey are u going out tonight?',
+          'sup! what r u doing later?',
+          'hey!! any plans 2nite?',
+          'dude what r we doing tonight lol'
+        ];
+        var msg = greetings[Math.floor(Math.random() * greetings.length)];
+        setTimeout(function() {
+          chatHistories[greeter.name] = chatHistories[greeter.name] || [];
+          chatHistories[greeter.name].push({ role: 'assistant', content: msg });
+          appendChatMsg(greeter.name, greeter.name, msg, false);
+          playSound('imTone');
+        }, 800);
+      }, 10000);
     }, 7000);
   }
 
@@ -1447,25 +1522,34 @@
     var member = buddyData[0].members.find(function(m){ return m.name === buddyName; });
     var profile = (member && member.profile) ? member.profile : null;
 
-    document.getElementById('profile-title-name').textContent =
-      (profile && profile.name) ? profile.name + ' (' + buddyName + ')' : buddyName + '\'s Profile';
+    document.getElementById('profile-sn-display').textContent = buddyName;
 
     var grid = document.getElementById('profile-view-grid');
     grid.innerHTML = '';
 
+    var fieldMap = [
+      { key: 'name',        label: 'Member Name:' },
+      { key: 'location',    label: 'Location:' },
+      { key: 'age',         label: 'Age:' },
+      { key: 'music',       label: 'Music:' },
+      { key: 'hobbies',     label: 'Hobbies:' },
+      { key: 'tv',          label: 'TV / Movies:' },
+      { key: 'personality', label: 'Personality:' }
+    ];
+
     if (!profile) {
-      var noData = document.createElement('div');
-      noData.style.cssText = 'grid-column:span 2;font-size:11px;color:#808080;padding:8px 0;';
-      noData.textContent = 'No profile info on file for ' + buddyName + '.';
-      grid.appendChild(noData);
+      var row = document.createElement('div');
+      row.className = 'profile-row';
+      row.innerHTML = '<span class="profile-row-label" style="width:auto;color:#808080;font-style:italic;">No profile on file for ' + esc(buddyName) + '.</span>';
+      grid.appendChild(row);
     } else {
-      PROFILE_FIELDS.forEach(function(f) {
-        if (f.id === 'screenname') return; // skip — shown in title
-        var cell = document.createElement('div');
-        cell.className = 'profile-field';
-        cell.innerHTML = '<div class="profile-label">' + esc(f.label) + '</div>'
-          + '<div class="profile-value">' + esc(profile[f.id] || '—') + '</div>';
-        grid.appendChild(cell);
+      fieldMap.forEach(function(f) {
+        var val = profile[f.key] || '...';
+        var row = document.createElement('div');
+        row.className = 'profile-row';
+        row.innerHTML = '<span class="profile-row-label">' + esc(f.label) + '</span>'
+          + '<span class="profile-row-value">' + esc(val) + '</span>';
+        grid.appendChild(row);
       });
     }
 
