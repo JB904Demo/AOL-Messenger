@@ -29,10 +29,62 @@
   .screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; }
 
   /* ════════════════════════════════════════
+     POWER ON SCREEN
+  ════════════════════════════════════════ */
+  #screen-poweron {
+    background: #008080;
+    align-items: center; justify-content: center;
+  }
+  .poweron-dialog {
+    background: #c0c0c0;
+    border: 2px solid; border-color: #ffffff #808080 #808080 #ffffff;
+    box-shadow: 2px 2px 0 #000;
+    width: 280px;
+  }
+  .poweron-titlebar {
+    background: #000080; color: white;
+    font-size: 12px; font-weight: bold;
+    padding: 3px 6px; display: flex; align-items: center;
+    justify-content: space-between; height: 20px;
+  }
+  .poweron-titlebar-left { display: flex; align-items: center; gap: 5px; }
+  .poweron-body {
+    padding: 20px 18px 14px;
+    display: flex; flex-direction: column; align-items: center; gap: 16px;
+  }
+  .poweron-msg {
+    display: flex; align-items: flex-start; gap: 12px;
+  }
+  .poweron-icon { font-size: 32px; line-height: 1; flex-shrink: 0; }
+  .poweron-text { font-size: 13px; color: #000; line-height: 1.5; font-family: 'Tahoma', Arial; }
+  .poweron-divider { border: none; border-top: 1px solid #808080; border-bottom: 1px solid #fff; width: 100%; }
+  .poweron-btns { display: flex; justify-content: center; gap: 10px; }
+  .poweron-btn {
+    background: #c0c0c0; border: 2px solid; border-color: #ffffff #808080 #808080 #ffffff;
+    padding: 4px 0; font-family: 'Tahoma', Arial; font-size: 12px;
+    cursor: pointer; color: #000; width: 80px; text-align: center;
+  }
+  .poweron-btn:active { border-color: #808080 #ffffff #ffffff #808080; }
+  .poweron-btn.default { outline: 2px solid #000; outline-offset: -4px; }
+
+  /* ════════════════════════════════════════
+     WINDOWS 95 BOOT SCREEN
+  ════════════════════════════════════════ */
+  #screen-win95 {
+    background: #000;
+  }
+  #screen-win95 img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+  }
+
+  /* ════════════════════════════════════════
      WIN95 API KEY DIALOG
   ════════════════════════════════════════ */
   #screen-apikey {
-    background: #008080;
+    background-image: url('wallpaper.png');
+    background-size: cover;
+    background-position: center;
+    background-color: #000033;
     align-items: center; justify-content: center;
   }
 
@@ -505,7 +557,42 @@
 <div id="canvas">
 
   <!-- ══════════════════════════════════════
-       API KEY — WIN95 STYLE
+       POWER ON SCREEN
+  ══════════════════════════════════════ -->
+  <div class="screen" id="screen-poweron">
+    <div class="poweron-dialog">
+      <div class="poweron-titlebar">
+        <div class="poweron-titlebar-left">
+          <span>🖥️</span>
+          Power On
+        </div>
+        <div style="display:flex;gap:2px;">
+          <div style="width:16px;height:14px;background:#c0c0c0;border:1px solid;border-color:#fff #808080 #808080 #fff;font-size:9px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-weight:bold;">✕</div>
+        </div>
+      </div>
+      <div class="poweron-body">
+        <div class="poweron-msg">
+          <span class="poweron-icon">💻</span>
+          <span class="poweron-text">Are you sure you want to turn on<br>your computer?</span>
+        </div>
+        <hr class="poweron-divider">
+        <div class="poweron-btns">
+          <button class="poweron-btn default" onclick="doPowerOn()">Yes</button>
+          <button class="poweron-btn" onclick="doPowerNo()">No</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       WINDOWS 95 BOOT SCREEN
+  ══════════════════════════════════════ -->
+  <div class="screen" id="screen-win95">
+    <img src="windows.png" alt="Microsoft Windows 95">
+  </div>
+
+  <!-- ══════════════════════════════════════
+       API KEY SCREEN
   ══════════════════════════════════════ -->
   <div class="screen" id="screen-apikey">
     <div class="w95-window" style="width:360px;">
@@ -726,7 +813,8 @@
     imTone  : new Audio('aol-im.mp3'),
     open    : new Audio('aol-open-1.mp3'),
     close   : new Audio('aol-close.mp3'),
-    modem   : new Audio('modem.mp3')
+    modem   : new Audio('modem.mp3'),
+    win95   : new Audio('windows.mp3')
   };
   function playSound(k) {
     try { var s=sounds[k]; s.currentTime=0; s.play().catch(function(){}); } catch(e){}
@@ -823,7 +911,33 @@
   }
 
   // Screens that need display:flex to center their content
-  var flexScreens = { 'screen-apikey': true, 'screen-loading': true };
+  var flexScreens = { 'screen-poweron': true, 'screen-apikey': true, 'screen-loading': true };
+
+  // ── Power On / Win95 boot ──
+  function doPowerOn() {
+    showScreen('screen-win95');
+    // Play Windows 95 startup sound immediately on click gesture
+    playSound('win95');
+    // After 9 seconds advance to API key screen
+    setTimeout(function() {
+      showScreen('screen-apikey');
+      setTimeout(function(){ document.getElementById('apikey-input').focus(); }, 100);
+    }, 9000);
+  }
+
+  function doPowerNo() {
+    // "No" — humorous: do nothing, just shake the dialog
+    var d = document.querySelector('.poweron-dialog');
+    d.style.transition = 'transform 0.05s';
+    var shakes = ['-6px','6px','-5px','5px','-3px','3px','0px'];
+    var i = 0;
+    function shake() {
+      if (i >= shakes.length) { d.style.transform = ''; return; }
+      d.style.transform = 'translateX(' + shakes[i++] + ')';
+      setTimeout(shake, 55);
+    }
+    shake();
+  }
 
   function showScreen(id) {
     document.querySelectorAll('.screen').forEach(function(s){
@@ -1345,8 +1459,7 @@
   });
 
   window.addEventListener('load', function(){
-    showScreen('screen-apikey');
-    setTimeout(function(){ document.getElementById('apikey-input').focus(); }, 100);
+    showScreen('screen-poweron');
   });
 </script>
 </body>
