@@ -402,15 +402,82 @@
 
   .typing-indicator { color: #808080; font-style: italic; font-size: 10px; }
 
+  /* ── Buddy list bottom bar ── */
+  .bl-bottom-bar {
+    background: #c0c0c0; border-top: 1px solid #808080;
+    padding: 3px 4px; display: flex; justify-content: center; flex-shrink: 0;
+  }
+  .bl-add-btn {
+    background: #4a7ab0; border: 2px solid;
+    border-color: #8ab4e0 #2a5a90 #2a5a90 #8ab4e0;
+    color: white; font-family: 'Tahoma', Arial; font-size: 11px;
+    font-weight: bold; padding: 2px 14px; cursor: pointer; letter-spacing: 0.5px;
+  }
+  .bl-add-btn:active { border-color: #2a5a90 #8ab4e0 #8ab4e0 #2a5a90; }
+
+  /* ── Profile / Add Buddy overlay ── */
+  .profile-overlay {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.35); z-index: 500; display: none;
+    align-items: center; justify-content: center;
+  }
+  .profile-overlay.open { display: flex; }
+  .profile-dialog {
+    width: 205px;
+    background: #d4d0c8;
+    border: 2px solid; border-color: #ffffff #808080 #808080 #ffffff;
+    box-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+  }
+  .profile-titlebar {
+    background: linear-gradient(to bottom, #2a7a8c, #1a5a6c);
+    color: #c8f0ff; font-size: 12px; font-weight: bold;
+    padding: 2px 5px; display: flex; align-items: center;
+    justify-content: space-between; height: 20px;
+  }
+  .profile-titlebar-left { display: flex; align-items: center; gap: 4px; }
+  .profile-close-btn {
+    width: 14px; height: 12px; background: #c0c0c0;
+    border: 1px solid; border-color: #fff #808080 #808080 #fff;
+    font-size: 8px; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: #000; font-weight: bold;
+  }
+  .profile-body { padding: 10px; }
+  .profile-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 6px 10px;
+    margin-bottom: 10px;
+  }
+  .profile-field { display: flex; flex-direction: column; gap: 2px; }
+  .profile-label { font-size: 10px; color: #000; font-weight: bold; }
+  .profile-input {
+    height: 20px; width: 100%;
+    border-top: 2px solid #808080; border-left: 2px solid #808080;
+    border-right: 2px solid #fff; border-bottom: 2px solid #fff;
+    background: #fff; font-family: 'Tahoma', Arial; font-size: 11px;
+    padding: 0 3px; outline: none; color: #000; user-select: text;
+  }
+  .profile-value { font-size: 11px; color: #000; padding: 2px 0; min-height: 18px; word-break: break-word; }
+  .profile-divider { border: none; border-top: 1px solid #808080; border-bottom: 1px solid #fff; margin: 8px 0; }
+  .profile-footer { display: flex; justify-content: flex-end; gap: 6px; }
+  .profile-btn {
+    background: #4a7ab0; border: 2px solid;
+    border-color: #8ab4e0 #2a5a90 #2a5a90 #8ab4e0;
+    color: white; font-family: 'Tahoma', Arial; font-size: 11px;
+    font-weight: bold; padding: 3px 12px; cursor: pointer;
+  }
+  .profile-btn:active { border-color: #2a5a90 #8ab4e0 #8ab4e0 #2a5a90; }
+  .profile-btn.cancel {
+    background: #c0c0c0; border-color: #fff #808080 #808080 #fff; color: #000;
+  }
+
   /* ════════════════════════════════════════
      CHAT BUTTON (on desktop background)
   ════════════════════════════════════════ */
   #chat-launch-btn {
     position: absolute;
-    top: 628px;
-    left: 12px;
-    width: 190px;
-    height: 72px;
+    top: 556px;
+    left: 30px;
+    width: 162px;
+    height: 61px;
     cursor: pointer;
     display: none;
     z-index: 50;
@@ -471,11 +538,12 @@
     margin: 3px 3px 0 3px;
     user-select: text;
   }
-  .cr-msg-line { margin-bottom: 1px; }
-  .cr-name-user  { color: #cc0000; font-weight: bold; }
-  .cr-name-other { color: #0000cc; font-weight: bold; }
-  .cr-name-host  { color: #006600; font-weight: bold; }
-  .cr-msg-text   { color: #000; }
+  .cr-msg-line { margin-bottom: 1px; display: flex; }
+  .cr-msg-name { flex-shrink: 0; min-width: 130px; font-weight: bold; padding-right: 6px; }
+  .cr-name-user  { color: #cc0000; }
+  .cr-name-other { color: #0000cc; }
+  .cr-name-host  { color: #006600; }
+  .cr-msg-text   { color: #000; flex: 1; }
 
   /* Toolbar row */
   .cr-toolbar {
@@ -519,36 +587,42 @@
 
   /* Right: people panel */
   .cr-people-pane {
-    width: 190px; flex-shrink: 0; display: flex; flex-direction: column;
-    background: #c0c0c0;
+    width: 200px; flex-shrink: 0; display: flex; flex-direction: column;
+    background: #d4d0c8; border-left: 2px solid #808080;
   }
   .cr-people-header {
     background: #1a3a6a; color: white; font-size: 11px; font-weight: bold;
-    padding: 3px 6px; display: flex; align-items: center; gap: 6px;
-    flex-shrink: 0;
+    padding: 3px 8px; display: flex; align-items: center; gap: 8px;
+    flex-shrink: 0; letter-spacing: 2px; font-family: 'Tahoma', Arial;
   }
   .cr-people-count {
-    font-size: 11px; color: #000; padding: 4px 6px; font-weight: bold; flex-shrink: 0;
+    font-size: 12px; color: #000; padding: 5px 8px 3px;
+    font-weight: bold; flex-shrink: 0; letter-spacing: 1px;
   }
   .cr-people-list {
-    background: #fff; border: 2px solid; border-color: #808080 #fff #fff #808080;
-    margin: 0 4px; flex: 1; overflow-y: auto; font-size: 11px;
+    background: #fff;
+    border: 2px solid; border-color: #808080 #fff #fff #808080;
+    margin: 0 6px 3px 6px; flex: 1; overflow-y: auto; font-size: 11px;
+    font-family: 'Tahoma', Arial;
   }
   .cr-person {
-    padding: 2px 5px; cursor: default; color: #000;
+    padding: 1px 5px; cursor: default; color: #000;
   }
   .cr-person:hover { background: #000080; color: white; }
   .cr-person.is-me { color: #cc0000; font-weight: bold; }
-  .cr-dbl-note { font-size: 9px; color: #666; padding: 3px 5px; flex-shrink: 0; }
+  .cr-dbl-note { font-size: 9px; color: #444; padding: 2px 8px 4px; flex-shrink: 0; }
   .cr-people-btns {
     display: grid; grid-template-columns: 1fr 1fr;
-    gap: 3px; padding: 4px; flex-shrink: 0;
+    gap: 4px; padding: 4px 6px 6px; flex-shrink: 0;
   }
   .cr-ppl-btn {
-    background: #4a7ab0; border: 2px solid;
-    border-color: #8ab4e0 #2a5a90 #2a5a90 #8ab4e0;
-    color: white; font-size: 9px; font-weight: bold;
-    padding: 3px 2px; cursor: pointer; text-align: center; line-height: 1.2;
+    display: flex; align-items: center; gap: 4px;
+    font-size: 10px; color: #000; cursor: pointer; padding: 2px 0;
+    font-family: 'Tahoma', Arial; background: none; border: none;
+  }
+  .cr-ppl-bullet {
+    width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0;
+    border: 1px solid #808080; display: inline-block;
   }
 </style>
 </head>
@@ -742,6 +816,9 @@
         <div class="bl-tab">List Setup</div>
       </div>
       <div class="bl-list-area" id="bl-list-area"></div>
+      <div class="bl-bottom-bar">
+        <button class="bl-add-btn" onclick="openAddBuddy()">Add Buddy</button>
+      </div>
     </div>
 
     <!-- Chat launch button (sits over the static Chat icon in the background image) -->
@@ -781,25 +858,99 @@
         </div>
         <!-- Right: people panel -->
         <div class="cr-people-pane">
-          <div class="cr-people-header">
-            <svg width="16" height="12" viewBox="0 0 24 16"><path d="M4 8 Q12 2 20 8" stroke="#7ad4e8" stroke-width="2" fill="none"/></svg>
-            MAIN &nbsp; HELP
-          </div>
-          <div class="cr-people-count" id="cr-people-count">20 people here</div>
+          <div class="cr-people-header">&#9654; MAIN &nbsp; HELP</div>
+          <div class="cr-people-count" id="cr-people-count">21&nbsp; people here</div>
           <div class="cr-people-list" id="cr-people-list"></div>
           <div class="cr-dbl-note">double click on name for more info</div>
           <div class="cr-people-btns">
-            <div class="cr-ppl-btn">Find a Chat</div>
-            <div class="cr-ppl-btn">AOL LIVE</div>
-            <div class="cr-ppl-btn">Private Chat</div>
-            <div class="cr-ppl-btn">Chat Preferences</div>
-            <div class="cr-ppl-btn">Member Directory</div>
+            <div class="cr-ppl-btn"><span class="cr-ppl-bullet" style="background:#ff6600;"></span> More Chat</div>
+            <div class="cr-ppl-btn"><span class="cr-ppl-bullet" style="background:#ffaa00;"></span> ANT Chat</div>
+            <div class="cr-ppl-btn"><span class="cr-ppl-bullet" style="background:#ff6600;"></span> Private Chat</div>
+            <div class="cr-ppl-btn"><span class="cr-ppl-bullet" style="background:#ffdd00;"></span> Notify AOL</div>
+            <div class="cr-ppl-btn"><span class="cr-ppl-bullet" style="background:#ff6600;"></span> Chat Preferences</div>
+            <div class="cr-ppl-btn"><span class="cr-ppl-bullet" style="background:#ffdd00;"></span> Member Directory</div>
           </div>
         </div>
       </div>
     </div>
 
     <!-- Chat windows injected here by JS -->
+
+    <!-- Add Buddy overlay -->
+    <div class="profile-overlay" id="add-buddy-overlay">
+      <div class="profile-dialog">
+        <div class="profile-titlebar">
+          <div class="profile-titlebar-left">
+            <svg width="11" height="11" viewBox="0 0 20 26"><circle cx="10" cy="3" r="3" fill="#ffcc00"/><line x1="10" y1="6" x2="10" y2="16" stroke="#ffcc00" stroke-width="2.5"/><line x1="10" y1="10" x2="3" y2="14" stroke="#ffcc00" stroke-width="2"/><line x1="10" y1="10" x2="17" y2="13" stroke="#ffcc00" stroke-width="2"/><line x1="10" y1="16" x2="5" y2="24" stroke="#ffcc00" stroke-width="2"/><line x1="10" y1="16" x2="15" y2="24" stroke="#ffcc00" stroke-width="2"/></svg>
+            Add a Buddy
+          </div>
+          <div class="profile-close-btn" onclick="closeAddBuddy()">✕</div>
+        </div>
+        <div class="profile-body">
+          <div class="profile-grid">
+            <div class="profile-field">
+              <div class="profile-label">Screen Name *</div>
+              <input class="profile-input" id="ab-screenname" type="text" placeholder="Required">
+            </div>
+            <div class="profile-field">
+              <div class="profile-label">Name</div>
+              <input class="profile-input" id="ab-name" type="text">
+            </div>
+            <div class="profile-field">
+              <div class="profile-label">Age</div>
+              <input class="profile-input" id="ab-age" type="text">
+            </div>
+            <div class="profile-field">
+              <div class="profile-label">Location</div>
+              <input class="profile-input" id="ab-location" type="text">
+            </div>
+            <div class="profile-field">
+              <div class="profile-label">Hobbies</div>
+              <input class="profile-input" id="ab-hobbies" type="text">
+            </div>
+            <div class="profile-field">
+              <div class="profile-label">Music</div>
+              <input class="profile-input" id="ab-music" type="text">
+            </div>
+            <div class="profile-field">
+              <div class="profile-label">TV / Movies</div>
+              <input class="profile-input" id="ab-tv" type="text">
+            </div>
+            <div class="profile-field">
+              <div class="profile-label">Personality</div>
+              <input class="profile-input" id="ab-personality" type="text">
+            </div>
+          </div>
+          <hr class="profile-divider">
+          <div class="profile-footer">
+            <button class="profile-btn cancel" onclick="closeAddBuddy()">Cancel</button>
+            <button class="profile-btn" onclick="submitAddBuddy()">Add Buddy</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- My Profile overlay -->
+    <div class="profile-overlay" id="my-profile-overlay">
+      <div class="profile-dialog">
+        <div class="profile-titlebar">
+          <div class="profile-titlebar-left">
+            <svg width="11" height="11" viewBox="0 0 20 26"><circle cx="10" cy="3" r="3" fill="#ffcc00"/><line x1="10" y1="6" x2="10" y2="16" stroke="#ffcc00" stroke-width="2.5"/><line x1="10" y1="10" x2="3" y2="14" stroke="#ffcc00" stroke-width="2"/><line x1="10" y1="10" x2="17" y2="13" stroke="#ffcc00" stroke-width="2"/><line x1="10" y1="16" x2="5" y2="24" stroke="#ffcc00" stroke-width="2"/><line x1="10" y1="16" x2="15" y2="24" stroke="#ffcc00" stroke-width="2"/></svg>
+            <span id="profile-title-name">Member Profile</span>
+          </div>
+          <div class="profile-close-btn" onclick="closeProfile()">✕</div>
+        </div>
+        <div class="profile-body">
+          <div class="profile-grid" id="profile-view-grid">
+            <!-- populated by JS -->
+          </div>
+          <hr class="profile-divider">
+          <div class="profile-footer">
+            <button class="profile-btn" onclick="closeProfile()">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
   </div>
 
@@ -907,7 +1058,7 @@
       renderBuddyList();
       document.getElementById('buddy-list-window').classList.add('visible');
       document.getElementById('chat-launch-btn').style.display = 'block';
-      playSound('gotMail');
+      setTimeout(function(){ playSound('gotMail'); }, 1000);
       startRotation();
     }, 7000);
   }
@@ -1068,7 +1219,7 @@
           <div class="chat-icon-btn"><span>🚫</span><span>Block</span></div>
           <div style="width:10px;"></div>
           <div class="chat-icon-btn"><span>➕</span><span>Add</span></div>
-          <div class="chat-icon-btn"><span>ℹ️</span><span>Info</span></div>
+          <div class="chat-icon-btn" onclick="showProfile('${name}')"><span>ℹ️</span><span>Info</span></div>
         </div>
         <button class="chat-send-btn" data-name="${name}">SEND</button>
       </div>
@@ -1209,6 +1360,125 @@
   }
 
   // ── Draggable windows ──
+  // ════════════════════════════════════════
+  // BUDDY MANAGEMENT — localStorage + Profiles
+  // ════════════════════════════════════════
+
+  var PROFILE_FIELDS = [
+    { id: 'screenname', label: 'Screen Name' },
+    { id: 'name',       label: 'Name' },
+    { id: 'age',        label: 'Age' },
+    { id: 'location',   label: 'Location' },
+    { id: 'hobbies',    label: 'Hobbies' },
+    { id: 'music',      label: 'Music' },
+    { id: 'tv',         label: 'TV / Movies' },
+    { id: 'personality',label: 'Personality' }
+  ];
+
+  function loadSavedBuddies() {
+    try {
+      var raw = localStorage.getItem('aim_buddies');
+      if (!raw) return;
+      var saved = JSON.parse(raw);
+      saved.forEach(function(b) {
+        var already = buddyData[0].members.find(function(m){ return m.name === b.screenname; });
+        if (!already && b.screenname) {
+          buddyData[0].members.push({
+            name: b.screenname,
+            online: Math.random() > 0.5,
+            profile: b
+          });
+        }
+      });
+    } catch(e) {}
+  }
+
+  function saveBuddiesToStorage() {
+    try {
+      var profiles = buddyData[0].members
+        .filter(function(m){ return m.profile; })
+        .map(function(m){ return m.profile; });
+      localStorage.setItem('aim_buddies', JSON.stringify(profiles));
+    } catch(e) {}
+  }
+
+  function openAddBuddy() {
+    PROFILE_FIELDS.forEach(function(f) {
+      var el = document.getElementById('ab-' + f.id);
+      if (el) el.value = '';
+    });
+    document.getElementById('add-buddy-overlay').classList.add('open');
+    setTimeout(function(){ document.getElementById('ab-screenname').focus(); }, 100);
+  }
+
+  function closeAddBuddy() {
+    document.getElementById('add-buddy-overlay').classList.remove('open');
+  }
+
+  function submitAddBuddy() {
+    var sn = document.getElementById('ab-screenname').value.trim();
+    if (!sn) { document.getElementById('ab-screenname').focus(); return; }
+
+    var profile = {};
+    PROFILE_FIELDS.forEach(function(f) {
+      var el = document.getElementById('ab-' + f.id);
+      profile[f.id] = el ? el.value.trim() : '';
+    });
+    profile.screenname = sn;
+
+    // Check for duplicate
+    var existing = buddyData[0].members.find(function(m){ return m.name === sn; });
+    if (existing) {
+      existing.profile = profile; // update profile if already exists
+    } else {
+      buddyData[0].members.push({
+        name: sn,
+        online: Math.random() > 0.5,
+        profile: profile
+      });
+    }
+
+    saveBuddiesToStorage();
+    renderBuddyList();
+    closeAddBuddy();
+  }
+
+  function showProfile(buddyName) {
+    var member = buddyData[0].members.find(function(m){ return m.name === buddyName; });
+    var profile = (member && member.profile) ? member.profile : null;
+
+    document.getElementById('profile-title-name').textContent =
+      (profile && profile.name) ? profile.name + ' (' + buddyName + ')' : buddyName + '\'s Profile';
+
+    var grid = document.getElementById('profile-view-grid');
+    grid.innerHTML = '';
+
+    if (!profile) {
+      var noData = document.createElement('div');
+      noData.style.cssText = 'grid-column:span 2;font-size:11px;color:#808080;padding:8px 0;';
+      noData.textContent = 'No profile info on file for ' + buddyName + '.';
+      grid.appendChild(noData);
+    } else {
+      PROFILE_FIELDS.forEach(function(f) {
+        if (f.id === 'screenname') return; // skip — shown in title
+        var cell = document.createElement('div');
+        cell.className = 'profile-field';
+        cell.innerHTML = '<div class="profile-label">' + esc(f.label) + '</div>'
+          + '<div class="profile-value">' + esc(profile[f.id] || '—') + '</div>';
+        grid.appendChild(cell);
+      });
+    }
+
+    document.getElementById('my-profile-overlay').classList.add('open');
+  }
+
+  function closeProfile() {
+    document.getElementById('my-profile-overlay').classList.remove('open');
+  }
+
+  // Load saved buddies on startup (called after buddyData is defined)
+  loadSavedBuddies();
+
   function makeDraggable(win, handle) {
     var dx=0, dy=0, startX=0, startY=0;
     handle.addEventListener('mousedown', function(e) {
@@ -1261,11 +1531,12 @@
     'GroovyTimes9','DirtBike247','WaveRider66','CheezWiz2000','PalmTree99'
   ];
   var crOpen = false;
-  var crWaitingForUser = false;   // true = paused, waiting for user to send
-  var crRotateIndex = 0;          // round-robin pointer through shuffled names
-  var crShuffled = [];            // shuffled copy of CR_NAMES for this session
-  var crHistory = [];             // conversation history for the chatroom Claude call
-  var crPendingResponders = [];   // queue of 5 names for current batch
+  var crWaitingForUser = false;
+  var crRotateIndex = 0;
+  var crShuffled = [];
+  var crHistory = [];
+  var crPendingResponders = [];
+  var crBatchEpoch = 0;  // incremented on each new batch to cancel stale ones
 
   // Shuffle helper
   function crShuffle(arr) {
@@ -1322,10 +1593,11 @@
     // Entrance message
     crAppendHost('OnlineHost', currentUser + ' has entered the room.');
 
-    // Fire first batch after a longer pause so entrance doesn't anchor responses
     crWaitingForUser = false;
+    crBatchEpoch++;
+    var epoch = crBatchEpoch;
     setTimeout(function() {
-      crFireBatch(crPickNext5(), 0, function() {
+      crFireBatch(crPickNext5(), 0, epoch, function() {
         crWaitingForUser = true;
       });
     }, 2500);
@@ -1342,7 +1614,7 @@
     var msgs = document.getElementById('cr-messages');
     var div = document.createElement('div');
     div.className = 'cr-msg-line';
-    div.innerHTML = '<span class="cr-name-host">'+esc(name)+':</span>\t<span class="cr-msg-text">'+esc(text)+'</span>';
+    div.innerHTML = '<span class="cr-msg-name cr-name-host">'+esc(name)+':</span><span class="cr-msg-text">'+esc(text)+'</span>';
     msgs.appendChild(div);
     msgs.scrollTop = msgs.scrollHeight;
   }
@@ -1352,22 +1624,25 @@
     var div = document.createElement('div');
     div.className = 'cr-msg-line';
     var cls = isMe ? 'cr-name-user' : 'cr-name-other';
-    div.innerHTML = '<span class="'+cls+'">'+esc(name)+':</span>\t<span class="cr-msg-text">'+esc(text)+'</span>';
+    div.innerHTML = '<span class="cr-msg-name '+cls+'">'+esc(name)+':</span><span class="cr-msg-text">'+esc(text)+'</span>';
     msgs.appendChild(div);
     msgs.scrollTop = msgs.scrollHeight;
   }
 
   // Fire a batch of responses with 2s delay between each
-  function crFireBatch(names, idx, onDone) {
+  function crFireBatch(names, idx, epoch, onDone) {
+    if (epoch !== crBatchEpoch) return; // stale batch — user sent a new message
     if (idx >= names.length) {
       if (onDone) onDone();
       return;
     }
     setTimeout(function() {
+      if (epoch !== crBatchEpoch) return; // cancelled mid-batch
       var name = names[idx];
       getChatroomReply(name, function(text) {
+        if (epoch !== crBatchEpoch) return; // cancelled after API call
         crAppendMsg(name, text, false);
-        crFireBatch(names, idx + 1, onDone);
+        crFireBatch(names, idx + 1, epoch, onDone);
       });
     }, idx === 0 ? 1200 : 2000);
   }
@@ -1377,19 +1652,21 @@
   }
 
   function crSend() {
-    if (!crWaitingForUser) return;
     var inp = document.getElementById('cr-input');
     var text = inp.value.trim();
     if (!text) return;
     inp.value = '';
-    crWaitingForUser = false;
 
-    // Show user message
+    // Cancel any in-progress batch by incrementing epoch
+    crBatchEpoch++;
+
+    // Show user message immediately regardless of batch state
     crAppendMsg(currentUser, text, true);
     crHistory.push({ role: 'user', content: currentUser + ': ' + text });
 
-    // Fire next batch of 5, then wait again
-    crFireBatch(crPickNext5(), 0, function() {
+    // Always fire a fresh batch of 5 after user sends
+    crWaitingForUser = false;
+    crFireBatch(crPickNext5(), 0, crBatchEpoch, function() {
       crWaitingForUser = true;
     });
   }
