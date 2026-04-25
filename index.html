@@ -264,7 +264,7 @@
   ════════════════════════════════════════ */
   #buddy-list-window {
     position: absolute;
-    top: 180px; right: 20px;
+    top: 177px; right: 2px;
     width: 200px;
     background: #c0c0c0;
     border: 2px solid; border-color: #ffffff #808080 #808080 #ffffff;
@@ -402,7 +402,224 @@
 
   .typing-indicator { color: #808080; font-style: italic; font-size: 10px; }
 
-  /* ── Buddy list bottom bar ── */
+  /* ── Mail & Write launch buttons ── */
+  #mail-launch-btn, #write-launch-btn {
+    position: absolute;
+    top: 66px;
+    width: 72px; height: 72px;
+    cursor: pointer; display: none; z-index: 50;
+    background: transparent; border: none; padding: 0;
+  }
+  #mail-launch-btn  { left: 6px; }
+  #write-launch-btn { left: 82px; }
+  #mail-launch-btn img, #write-launch-btn img {
+    width: 100%; height: 100%; object-fit: contain;
+  }
+  #mail-launch-btn:hover, #write-launch-btn:hover { filter: brightness(1.15); }
+
+  /* ── AOL Inbox window ── */
+  #inbox-window {
+    position: absolute;
+    top: 120px; left: 150px;
+    width: 620px;
+    background: #d4d0c8;
+    border: 2px solid; border-color: #ffffff #808080 #808080 #ffffff;
+    box-shadow: 2px 2px 0 #000;
+    display: none; flex-direction: column;
+    z-index: 250;
+  }
+  #inbox-window.open { display: flex; }
+
+  .inbox-titlebar {
+    background: linear-gradient(to bottom, #2a7a8c, #1a5a6c);
+    color: #c8f0ff; font-size: 12px; font-weight: bold;
+    padding: 2px 5px; display: flex; align-items: center;
+    justify-content: space-between; height: 20px; cursor: grab; flex-shrink: 0;
+  }
+  .inbox-titlebar:active { cursor: grabbing; }
+  .inbox-titlebar-left { display: flex; align-items: center; gap: 4px; }
+  .inbox-win-btns { display: flex; gap: 2px; }
+  .inbox-win-btn {
+    width: 14px; height: 12px; background: #c0c0c0;
+    border: 1px solid; border-color: #fff #808080 #808080 #fff;
+    font-size: 8px; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: #000; font-weight: bold;
+  }
+
+  .inbox-header {
+    background: #d4d0c8; padding: 6px 10px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid #808080; flex-shrink: 0;
+  }
+  .inbox-header-left { display: flex; align-items: center; gap: 10px; }
+  .inbox-mailbox-icon { font-size: 28px; line-height: 1; }
+  .inbox-mailbox-title { font-size: 20px; font-weight: bold; color: #000; font-family: Arial; }
+  .inbox-reminder { font-size: 10px; color: #333; max-width: 200px; line-height: 1.3; }
+  .inbox-radio-banner {
+    background: #000; color: #fff; font-size: 13px; font-weight: bold;
+    padding: 4px 10px; text-align: center; width: 140px; line-height: 1.3;
+    border: 2px solid #4488cc;
+  }
+
+  .inbox-tabs { display: flex; border-bottom: 2px solid #1a5a8a; background: #d4d0c8; padding-top: 3px; flex-shrink: 0; }
+  .inbox-tab {
+    padding: 3px 14px; font-size: 11px; font-weight: bold;
+    border: 1px solid #808080; border-bottom: none;
+    cursor: pointer; background: #b8d4e8; color: #000;
+    margin-right: 2px; margin-left: 3px;
+  }
+  .inbox-tab.active {
+    background: #1a5a8a; color: white;
+    border-bottom: 2px solid #1a5a8a; margin-bottom: -2px; position: relative; z-index: 1;
+  }
+
+  .inbox-list-area {
+    flex: 1; margin: 4px;
+    border: 3px solid #1a6aaa;
+    background: #f0f4f8;
+    overflow-y: auto; min-height: 220px;
+  }
+  .inbox-email-row {
+    display: flex; align-items: center; padding: 3px 6px;
+    border-bottom: 1px solid #d0d8e0; cursor: pointer; font-size: 11px;
+    font-family: 'Tahoma', Arial;
+  }
+  .inbox-email-row:hover, .inbox-email-row.selected { background: #1a5a8a; color: white; }
+  .inbox-email-icon { font-size: 14px; margin-right: 6px; flex-shrink: 0; }
+  .inbox-email-date { width: 72px; flex-shrink: 0; font-weight: bold; }
+  .inbox-email-from { width: 150px; flex-shrink: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .inbox-email-subj { flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+
+  .inbox-btn-bar {
+    background: #d4d0c8; border-top: 1px solid #808080;
+    padding: 5px 8px; display: flex; gap: 5px; align-items: center; flex-shrink: 0;
+  }
+  .inbox-bar-btn {
+    background: #4a7ab0; border: 2px solid;
+    border-color: #8ab4e0 #2a5a90 #2a5a90 #8ab4e0;
+    color: white; font-family: 'Tahoma', Arial; font-size: 11px;
+    font-weight: bold; padding: 2px 10px; cursor: pointer; min-width: 60px; text-align: center;
+  }
+  .inbox-bar-btn:active { border-color: #2a5a90 #8ab4e0 #8ab4e0 #2a5a90; }
+  .inbox-bar-spacer { flex: 1; }
+
+  /* ── Write Mail window ── */
+  #writemail-window {
+    position: absolute;
+    top: 100px; left: 120px;
+    width: 580px;
+    background: #d4d0c8;
+    border: 2px solid; border-color: #ffffff #808080 #808080 #ffffff;
+    box-shadow: 2px 2px 0 #000;
+    display: none; flex-direction: column;
+    z-index: 260;
+  }
+  #writemail-window.open { display: flex; }
+
+  .wm-titlebar {
+    background: linear-gradient(to bottom, #2a7a8c, #1a5a6c);
+    color: #c8f0ff; font-size: 12px; font-weight: bold;
+    padding: 2px 5px; display: flex; align-items: center;
+    justify-content: space-between; height: 20px; cursor: grab; flex-shrink: 0;
+  }
+  .wm-titlebar:active { cursor: grabbing; }
+  .wm-titlebar-left { display: flex; align-items: center; gap: 4px; }
+  .wm-win-btns { display: flex; gap: 2px; }
+  .wm-win-btn {
+    width: 14px; height: 12px; background: #c0c0c0;
+    border: 1px solid; border-color: #fff #808080 #808080 #fff;
+    font-size: 8px; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: #000; font-weight: bold;
+  }
+
+  .wm-body { display: flex; flex: 1; overflow: hidden; }
+
+  .wm-main { flex: 1; display: flex; flex-direction: column; padding: 6px; gap: 4px; }
+
+  .wm-field-row { display: flex; align-items: flex-start; gap: 4px; }
+  .wm-field-label { font-size: 11px; font-weight: bold; color: #000; flex-shrink: 0; padding-top: 2px; min-width: 42px; }
+
+  .wm-addr-box {
+    flex: 1; height: 42px;
+    border-top: 2px solid #808080; border-left: 2px solid #808080;
+    border-right: 2px solid #fff; border-bottom: 2px solid #fff;
+    background: #fff; font-family: 'Tahoma', Arial; font-size: 11px;
+    padding: 2px 4px; outline: none; color: #000; resize: none;
+    user-select: text;
+  }
+  .wm-subject-input {
+    flex: 1; height: 22px;
+    border-top: 2px solid #808080; border-left: 2px solid #808080;
+    border-right: 2px solid #fff; border-bottom: 2px solid #fff;
+    background: #fff; font-family: 'Tahoma', Arial; font-size: 11px;
+    padding: 0 4px; outline: none; color: #000;
+    user-select: text;
+  }
+
+  .wm-toolbar {
+    display: flex; align-items: center; gap: 3px;
+    background: #d4d0c8; padding: 2px 0; flex-shrink: 0;
+  }
+  .wm-font-select {
+    height: 20px; width: 90px; font-size: 10px;
+    border: 2px solid; border-color: #808080 #fff #fff #808080;
+    background: #fff; font-family: 'Tahoma', Arial; outline: none;
+  }
+  .wm-size-select {
+    height: 20px; width: 46px; font-size: 10px;
+    border: 2px solid; border-color: #808080 #fff #fff #808080;
+    background: #fff; font-family: 'Tahoma', Arial; outline: none;
+  }
+  .wm-fmt-btn {
+    width: 22px; height: 20px; background: #c0c0c0;
+    border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    font-size: 11px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; color: #000;
+  }
+  .wm-fmt-btn:active { border-color: #808080 #fff #fff #808080; }
+
+  .wm-body-area {
+    flex: 1; min-height: 160px;
+    border-top: 2px solid #808080; border-left: 2px solid #808080;
+    border-right: 2px solid #fff; border-bottom: 2px solid #fff;
+    background: #fff; padding: 4px;
+    font-family: 'Comic Sans MS', Comic Sans, cursive;
+    font-size: 12px; font-weight: bold; color: #660099;
+    outline: none; resize: none; width: 100%;
+    user-select: text;
+  }
+
+  .wm-bottom-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 4px 6px; background: #d4d0c8; border-top: 1px solid #808080; flex-shrink: 0;
+  }
+  .wm-attach-btn {
+    background: #4a7ab0; border: 2px solid;
+    border-color: #8ab4e0 #2a5a90 #2a5a90 #8ab4e0;
+    color: white; font-family: 'Tahoma', Arial; font-size: 11px;
+    font-weight: bold; padding: 2px 10px; cursor: pointer;
+  }
+  .wm-return-receipt { font-size: 10px; color: #000; display: flex; align-items: center; gap: 4px; }
+  .wm-help-btn {
+    background: #4a7ab0; border: 2px solid;
+    border-color: #8ab4e0 #2a5a90 #2a5a90 #8ab4e0;
+    color: white; font-family: 'Tahoma', Arial; font-size: 11px;
+    font-weight: bold; padding: 2px 12px; cursor: pointer;
+  }
+
+  /* Write Mail right sidebar */
+  .wm-sidebar {
+    width: 82px; flex-shrink: 0; background: #d4d0c8;
+    border-left: 1px solid #808080;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 6px 4px; gap: 6px;
+  }
+  .wm-side-btn {
+    width: 70px; display: flex; flex-direction: column; align-items: center;
+    gap: 2px; cursor: pointer;
+  }
+  .wm-side-icon { font-size: 24px; line-height: 1; }
+  .wm-side-label { font-size: 10px; font-weight: bold; color: #000; text-align: center; line-height: 1.2; }
   .bl-bottom-bar {
     background: #c0c0c0; border-top: 1px solid #808080;
     padding: 3px 4px; display: flex; justify-content: center; flex-shrink: 0;
@@ -907,6 +1124,152 @@
       </div>
     </div>
 
+    <!-- Mail launch button -->
+    <button id="mail-launch-btn" onclick="openInbox()" title="Read Mail">
+      <img src="mail.png" alt="Read Mail">
+    </button>
+
+    <!-- Write launch button -->
+    <button id="write-launch-btn" onclick="openWriteMail()" title="Write Mail">
+      <img src="write.png" alt="Write Mail">
+    </button>
+
+    <!-- Inbox window -->
+    <div id="inbox-window">
+      <div class="inbox-titlebar" id="inbox-titlebar">
+        <div class="inbox-titlebar-left">
+          <svg width="11" height="11" viewBox="0 0 20 20"><rect x="2" y="5" width="16" height="12" fill="none" stroke="#7ad4e8" stroke-width="2"/><polyline points="2,5 10,12 18,5" stroke="#7ad4e8" stroke-width="2" fill="none"/></svg>
+          <span id="inbox-title-name">VANILA242's Online Mailbox</span>
+        </div>
+        <div class="inbox-win-btns">
+          <div class="inbox-win-btn">_</div>
+          <div class="inbox-win-btn">□</div>
+          <div class="inbox-win-btn" onclick="closeInbox()">✕</div>
+        </div>
+      </div>
+      <div class="inbox-header">
+        <div class="inbox-header-left">
+          <span class="inbox-mailbox-icon">📬</span>
+          <span class="inbox-mailbox-title">Mailbox</span>
+          <span class="inbox-reminder">REMINDER: AOL Staff will never ask for<br>your password or billing information.</span>
+        </div>
+        <div class="inbox-radio-banner">AoL Radio.<br>🔊 Toolbar</div>
+      </div>
+      <div class="inbox-tabs">
+        <div class="inbox-tab active">New Mail</div>
+        <div class="inbox-tab">Old Mail</div>
+        <div class="inbox-tab">Sent Mail</div>
+      </div>
+      <div class="inbox-list-area" id="inbox-list-area">
+        <div class="inbox-email-row">
+          <span class="inbox-email-icon">📧</span>
+          <span class="inbox-email-date">4/24/1999</span>
+          <span class="inbox-email-from">CEMac16</span>
+          <span class="inbox-email-subj">key club meeting...</span>
+        </div>
+        <div class="inbox-email-row">
+          <span class="inbox-email-icon">📧</span>
+          <span class="inbox-email-date">4/24/1999</span>
+          <span class="inbox-email-from">Herb17272</span>
+          <span class="inbox-email-subj">Fw: Fw: Fw: al gore eats babies...</span>
+        </div>
+        <div class="inbox-email-row">
+          <span class="inbox-email-icon">📧</span>
+          <span class="inbox-email-date">4/24/1999</span>
+          <span class="inbox-email-from">Webmaster</span>
+          <span class="inbox-email-subj">Welcome to The Wrestleboard</span>
+        </div>
+      </div>
+      <div class="inbox-btn-bar">
+        <button class="inbox-bar-btn">Read</button>
+        <button class="inbox-bar-btn">Status</button>
+        <div class="inbox-bar-spacer"></div>
+        <button class="inbox-bar-btn">Keep As New</button>
+        <button class="inbox-bar-btn">Delete</button>
+        <div class="inbox-bar-spacer"></div>
+        <button class="inbox-bar-btn">Help</button>
+      </div>
+    </div>
+
+    <!-- Write Mail window -->
+    <div id="writemail-window">
+      <div class="wm-titlebar" id="wm-titlebar">
+        <div class="wm-titlebar-left">
+          <svg width="11" height="11" viewBox="0 0 20 20"><rect x="3" y="2" width="12" height="15" fill="none" stroke="#7ad4e8" stroke-width="2"/><line x1="6" y1="7" x2="14" y2="7" stroke="#7ad4e8" stroke-width="1.5"/><line x1="6" y1="10" x2="14" y2="10" stroke="#7ad4e8" stroke-width="1.5"/><line x1="6" y1="13" x2="11" y2="13" stroke="#7ad4e8" stroke-width="1.5"/><line x1="13" y1="12" x2="18" y2="17" stroke="#ffcc00" stroke-width="2.5"/></svg>
+          Write Mail
+        </div>
+        <div class="wm-win-btns">
+          <div class="wm-win-btn">_</div>
+          <div class="wm-win-btn">□</div>
+          <div class="wm-win-btn" onclick="closeWriteMail()">✕</div>
+        </div>
+      </div>
+      <div class="wm-body">
+        <div class="wm-main">
+          <!-- To / Copy row -->
+          <div style="display:flex;gap:6px;align-items:flex-start;">
+            <div style="display:flex;flex-direction:column;flex:1;gap:2px;">
+              <div class="wm-field-row">
+                <span class="wm-field-label" style="min-width:50px;">Send<br>To:</span>
+                <textarea class="wm-addr-box" id="wm-to" placeholder=""></textarea>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;flex:1;gap:2px;">
+              <div class="wm-field-row">
+                <span class="wm-field-label" style="min-width:50px;">Copy<br>To:</span>
+                <textarea class="wm-addr-box" id="wm-cc" placeholder=""></textarea>
+              </div>
+            </div>
+          </div>
+          <!-- Subject -->
+          <div class="wm-field-row">
+            <span class="wm-field-label" style="font-size:12px;">Subject:</span>
+            <input class="wm-subject-input" id="wm-subject" type="text">
+          </div>
+          <!-- Toolbar -->
+          <div class="wm-toolbar">
+            <select class="wm-font-select"><option>Arial</option><option>Times New Roman</option><option selected>Comic Sans MS</option><option>Verdana</option></select>
+            <select class="wm-size-select"><option>10</option><option>12</option><option>14</option><option>16</option></select>
+            <div class="wm-fmt-btn" style="font-weight:bold;">B</div>
+            <div class="wm-fmt-btn" style="font-style:italic;">I</div>
+            <div class="wm-fmt-btn" style="text-decoration:underline;">U</div>
+            <div class="wm-fmt-btn">≡</div>
+            <div class="wm-fmt-btn">≡</div>
+            <div class="wm-fmt-btn">≡</div>
+            <div class="wm-fmt-btn" style="color:#cc0000;">A</div>
+            <div class="wm-fmt-btn" style="background:#aaa;">A</div>
+          </div>
+          <!-- Body -->
+          <textarea class="wm-body-area" id="wm-body"></textarea>
+          <!-- Bottom bar -->
+          <div class="wm-bottom-bar">
+            <button class="wm-attach-btn">Attachments</button>
+            <div class="wm-return-receipt"><input type="checkbox" style="width:12px;height:12px;"> Request "Return Receipt" from AOL members</div>
+            <button class="wm-help-btn">Help</button>
+          </div>
+        </div>
+        <!-- Right sidebar -->
+        <div class="wm-sidebar">
+          <div class="wm-side-btn" onclick="closeWriteMail()">
+            <span class="wm-side-icon">📨</span>
+            <span class="wm-side-label">Send Now</span>
+          </div>
+          <div class="wm-side-btn">
+            <span class="wm-side-icon">📩</span>
+            <span class="wm-side-label">Send Later</span>
+          </div>
+          <div class="wm-side-btn">
+            <span class="wm-side-icon">📖</span>
+            <span class="wm-side-label">Address Book</span>
+          </div>
+          <div class="wm-side-btn">
+            <span class="wm-side-icon">✨</span>
+            <span class="wm-side-label">Mail Extras</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Chat windows injected here by JS -->
 
     <!-- Add Buddy overlay -->
@@ -1017,7 +1380,8 @@
     open    : new Audio('aol-open-1.mp3'),
     close   : new Audio('aol-close.mp3'),
     modem   : new Audio('modem.mp3'),
-    win95   : new Audio('windows.mp3')
+    win95   : new Audio('windows.mp3'),
+    welcome : new Audio('welcome.mp3')
   };
   function playSound(k) {
     try { var s=sounds[k]; s.currentTime=0; s.play().catch(function(){}); } catch(e){}
@@ -1111,7 +1475,10 @@
       renderBuddyList();
       document.getElementById('buddy-list-window').classList.add('visible');
       document.getElementById('chat-launch-btn').style.display = 'block';
-      setTimeout(function(){ playSound('gotMail'); }, 1000);
+      document.getElementById('mail-launch-btn').style.display = 'block';
+      document.getElementById('write-launch-btn').style.display = 'block';
+      playSound('welcome');
+      setTimeout(function(){ playSound('gotMail'); }, 1100);
       startRotation();
       // Random online buddy IMs you 10s after login
       setTimeout(function() {
@@ -1563,6 +1930,46 @@
   // Load saved buddies on startup (called after buddyData is defined)
   loadSavedBuddies();
 
+  // ════════════════════════════════════════
+  // INBOX
+  // ════════════════════════════════════════
+  function openInbox() {
+    var win = document.getElementById('inbox-window');
+    document.getElementById('inbox-title-name').textContent = currentUser + "'s Online Mailbox";
+    win.classList.add('open');
+    win.style.zIndex = ++chatZBase;
+  }
+  function closeInbox() {
+    document.getElementById('inbox-window').classList.remove('open');
+  }
+
+  // Email row highlight
+  document.querySelectorAll('.inbox-email-row').forEach(function(row) {
+    row.addEventListener('click', function() {
+      document.querySelectorAll('.inbox-email-row').forEach(function(r){ r.classList.remove('selected'); });
+      row.classList.add('selected');
+    });
+  });
+
+  // ════════════════════════════════════════
+  // WRITE MAIL
+  // ════════════════════════════════════════
+  function openWriteMail(toAddress) {
+    var win = document.getElementById('writemail-window');
+    if (toAddress) document.getElementById('wm-to').value = toAddress;
+    win.classList.add('open');
+    win.style.zIndex = ++chatZBase;
+    setTimeout(function(){ document.getElementById('wm-to').focus(); }, 100);
+  }
+  function closeWriteMail() {
+    document.getElementById('writemail-window').classList.remove('open');
+    // Clear fields on close
+    document.getElementById('wm-to').value = '';
+    document.getElementById('wm-cc').value = '';
+    document.getElementById('wm-subject').value = '';
+    document.getElementById('wm-body').value = '';
+  }
+
   function makeDraggable(win, handle) {
     var dx=0, dy=0, startX=0, startY=0;
     handle.addEventListener('mousedown', function(e) {
@@ -1817,6 +2224,11 @@
   // Wire up chatroom close and drag
   document.getElementById('cr-close-btn').addEventListener('click', closeChatroom);
   makeDraggable(document.getElementById('chatroom-window'), document.getElementById('cr-titlebar'));
+  makeDraggable(document.getElementById('inbox-window'),    document.getElementById('inbox-titlebar'));
+  makeDraggable(document.getElementById('writemail-window'),document.getElementById('wm-titlebar'));
+
+  document.getElementById('inbox-window').addEventListener('mousedown',    function(){ document.getElementById('inbox-window').style.zIndex    = ++chatZBase; });
+  document.getElementById('writemail-window').addEventListener('mousedown', function(){ document.getElementById('writemail-window').style.zIndex = ++chatZBase; });
   document.getElementById('chatroom-window').addEventListener('mousedown', function() {
     document.getElementById('chatroom-window').style.zIndex = ++chatZBase + 100;
   });
