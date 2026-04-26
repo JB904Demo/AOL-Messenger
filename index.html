@@ -78,8 +78,115 @@
   }
 
   /* ════════════════════════════════════════
-     WIN95 API KEY DIALOG
+     WINDOWS 95 DESKTOP SCREEN
   ════════════════════════════════════════ */
+  #screen-windesktop {
+    background: #000;
+  }
+  #screen-windesktop img.desktop-bg {
+    width: 100%; height: calc(100% - 28px);
+    display: block; object-fit: cover; position: absolute; top: 0; left: 0;
+  }
+  /* Invisible hotspot overlays on desktop image */
+  .desktop-hotspot {
+    position: absolute; cursor: pointer; z-index: 10;
+  }
+  .desktop-hotspot:hover { outline: 2px dashed rgba(255,255,255,0.4); }
+
+  /* Win95 Taskbar */
+  #win95-taskbar {
+    position: absolute; bottom: 0; left: 0; width: 100%; height: 28px;
+    background: #c0c0c0;
+    border-top: 2px solid #fff;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 4px; z-index: 20;
+  }
+  #start-btn {
+    display: flex; align-items: center; gap: 4px;
+    background: #c0c0c0; border: 2px solid;
+    border-color: #fff #808080 #808080 #fff;
+    padding: 2px 8px; cursor: pointer; font-weight: bold;
+    font-size: 12px; font-family: 'Tahoma', Arial; color: #000;
+    height: 22px;
+  }
+  #start-btn:active { border-color: #808080 #fff #fff #808080; }
+  #win95-clock {
+    background: #c0c0c0; border: 2px solid;
+    border-color: #808080 #fff #fff #808080;
+    padding: 2px 8px; font-size: 11px; font-family: 'Tahoma', Arial;
+    color: #000; height: 22px; display: flex; align-items: center;
+    min-width: 56px; text-align: center;
+  }
+
+  /* Start Menu */
+  #start-menu {
+    position: absolute; bottom: 28px; left: 0;
+    width: 220px; background: #c0c0c0;
+    border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    box-shadow: 2px 2px 0 #000;
+    display: none; z-index: 30;
+  }
+  #start-menu.open { display: block; }
+  .start-menu-header {
+    background: #000080; color: #fff;
+    font-size: 16px; font-weight: bold; font-family: Arial;
+    writing-mode: vertical-rl; transform: rotate(180deg);
+    padding: 8px 4px; position: absolute; left: 0; top: 0; bottom: 0;
+    width: 28px; letter-spacing: 3px;
+  }
+  .start-menu-items { margin-left: 28px; }
+  .start-menu-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 5px 10px; font-size: 12px; font-family: 'Tahoma', Arial;
+    color: #000; cursor: pointer; border-bottom: 1px solid #d0d0d0;
+  }
+  .start-menu-item:hover { background: #000080; color: #fff; }
+  .start-menu-item .smi-icon { font-size: 18px; width: 22px; text-align: center; }
+  .start-menu-item .smi-label { font-weight: bold; }
+  .start-menu-item .smi-sub { font-size: 9px; color: #666; display: block; }
+  .start-menu-item:hover .smi-sub { color: #aac; }
+  .start-menu-divider { height: 1px; background: #808080; margin: 2px 0 2px 28px;
+    border-bottom: 1px solid #fff; }
+
+  /* ════════════════════════════════════════
+     NETSCAPE BROWSER SCREEN
+  ════════════════════════════════════════ */
+  #screen-netscape {
+    background: #c0c0c0; display: flex; flex-direction: column;
+  }
+  #screen-netscape.active { display: flex; }
+
+  /* Static Netscape header image */
+  #netscape-header-img {
+    width: 100%; display: block; flex-shrink: 0;
+    height: 110px; object-fit: cover; object-position: top;
+    border-bottom: 2px solid #808080;
+  }
+
+  /* Back button bar below header */
+  #netscape-nav-bar {
+    background: #c0c0c0; border-bottom: 1px solid #808080;
+    padding: 2px 6px; display: flex; align-items: center; gap: 8px;
+    flex-shrink: 0;
+  }
+  #netscape-back-btn {
+    background: #c0c0c0; border: 2px solid;
+    border-color: #fff #808080 #808080 #fff;
+    font-size: 11px; font-family: 'Tahoma', Arial;
+    padding: 2px 10px; cursor: pointer; color: #000; font-weight: bold;
+  }
+  #netscape-back-btn:active { border-color: #808080 #fff #fff #808080; }
+  #netscape-location-bar {
+    flex: 1; height: 20px; font-size: 11px; font-family: 'Tahoma', Arial;
+    border: 2px solid; border-color: #808080 #fff #fff #808080;
+    background: #fff; padding: 0 4px; color: #000; outline: none;
+  }
+
+  /* Wrestleboard content area */
+  #netscape-content {
+    flex: 1; overflow-y: auto; background: #000;
+    border-top: 2px solid #808080;
+  }
   #screen-apikey {
     background-image: url('wallpaper.png');
     background-size: cover;
@@ -915,6 +1022,115 @@
   </div>
 
   <!-- ══════════════════════════════════════
+       WINDOWS 95 DESKTOP SCREEN
+  ══════════════════════════════════════ -->
+  <div class="screen" id="screen-windesktop">
+    <!-- Desktop background image fills top portion -->
+    <img class="desktop-bg" src="icon_desktop.png" alt="Windows 95 Desktop">
+
+    <!-- AOL hotspot: lowest icon on right side of image (~ADL & Internet FREE TRIAL, bottom) -->
+    <!-- Estimated position from image: roughly x=105-205, y=298-348 in the 1024×768 canvas -->
+    <div class="desktop-hotspot" id="hotspot-aol"
+         style="left:105px; top:295px; width:110px; height:60px;"
+         onclick="launchAOL()" title="America Online"></div>
+
+    <!-- Netscape hotspot: top row, third from left -->
+    <!-- Estimated position: roughly x=270-330, y=15-75 -->
+    <div class="desktop-hotspot" id="hotspot-netscape"
+         style="left:268px; top:12px; width:80px; height:70px;"
+         onclick="launchNetscape()" title="Netscape Navigator"></div>
+
+    <!-- Win95 Taskbar -->
+    <div id="win95-taskbar">
+      <button id="start-btn" onclick="toggleStartMenu()">
+        <img src="windows.png" alt="" style="width:16px;height:16px;object-fit:contain;">
+        <span>Start</span>
+      </button>
+      <!-- Taskbar program buttons area -->
+      <div style="flex:1;"></div>
+      <!-- Clock -->
+      <div id="win95-clock">12:00 AM</div>
+    </div>
+
+    <!-- Start Menu -->
+    <div id="start-menu">
+      <div class="start-menu-header">Windows 95</div>
+      <div class="start-menu-items">
+        <div class="start-menu-item" onclick="launchNetscape()">
+          <span class="smi-icon">🌐</span>
+          <div><span class="smi-label">Netscape Navigator</span><span class="smi-sub">Browse the Web</span></div>
+        </div>
+        <div class="start-menu-item" onclick="launchAOL()">
+          <span class="smi-icon">📡</span>
+          <div><span class="smi-label">America Online</span><span class="smi-sub">AOL 4.0</span></div>
+        </div>
+        <div class="start-menu-divider"></div>
+        <div class="start-menu-item">
+          <span class="smi-icon">📁</span>
+          <div><span class="smi-label">My Documents</span></div>
+        </div>
+        <div class="start-menu-item">
+          <span class="smi-icon">🖥️</span>
+          <div><span class="smi-label">My Computer</span></div>
+        </div>
+        <div class="start-menu-item">
+          <span class="smi-icon">🖨️</span>
+          <div><span class="smi-label">Printers</span></div>
+        </div>
+        <div class="start-menu-item">
+          <span class="smi-icon">🎮</span>
+          <div><span class="smi-label">Games</span><span class="smi-sub">Minesweeper, Solitaire</span></div>
+        </div>
+        <div class="start-menu-item">
+          <span class="smi-icon">📝</span>
+          <div><span class="smi-label">Notepad</span></div>
+        </div>
+        <div class="start-menu-item">
+          <span class="smi-icon">🎨</span>
+          <div><span class="smi-label">Paint</span></div>
+        </div>
+        <div class="start-menu-item">
+          <span class="smi-icon">🔊</span>
+          <div><span class="smi-label">Volume Control</span></div>
+        </div>
+        <div class="start-menu-divider"></div>
+        <div class="start-menu-item">
+          <span class="smi-icon">🔍</span>
+          <div><span class="smi-label">Find</span><span class="smi-sub">Files or Folders...</span></div>
+        </div>
+        <div class="start-menu-item">
+          <span class="smi-icon">❓</span>
+          <div><span class="smi-label">Help</span></div>
+        </div>
+        <div class="start-menu-item">
+          <span class="smi-icon">⚙️</span>
+          <div><span class="smi-label">Settings</span><span class="smi-sub">Control Panel, Taskbar...</span></div>
+        </div>
+        <div class="start-menu-divider"></div>
+        <div class="start-menu-item" onclick="toggleStartMenu()">
+          <span class="smi-icon">🔌</span>
+          <div><span class="smi-label">Shut Down...</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       NETSCAPE BROWSER SCREEN
+  ══════════════════════════════════════ -->
+  <div class="screen" id="screen-netscape">
+    <img id="netscape-header-img" src="netscape.jpg" alt="Netscape Navigator">
+    <div id="netscape-nav-bar">
+      <button id="netscape-back-btn" onclick="showScreen('screen-windesktop')">◀ Back to Desktop</button>
+      <input id="netscape-location-bar" type="text" value="http://www.wrestleboard.com/" readonly>
+    </div>
+    <div id="netscape-content">
+      <!-- Wrestleboard page rendered inline -->
+      <div id="wb-page"></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
        API KEY SCREEN
   ══════════════════════════════════════ -->
   <div class="screen" id="screen-apikey">
@@ -1443,12 +1659,13 @@
   function submitApiKey() {
     var v = document.getElementById('apikey-input').value.trim();
     if (v) apiKey = v;
-    showScreen('screen-signin');
-    setTimeout(function(){ document.getElementById('pw-input').focus(); }, 100);
+    showScreen('screen-windesktop');
+    startClock();
+    setTimeout(function(){ document.getElementById('apikey-input').focus(); }, 100);
   }
   function skipApiKey() {
-    showScreen('screen-signin');
-    setTimeout(function(){ document.getElementById('pw-input').focus(); }, 100);
+    showScreen('screen-windesktop');
+    startClock();
   }
 
   // ── Sign In ──
@@ -1506,17 +1723,15 @@
   }
 
   // Screens that need display:flex to center their content
-  var flexScreens = { 'screen-poweron': true, 'screen-apikey': true, 'screen-loading': true };
+  var flexScreens = { 'screen-poweron': true, 'screen-apikey': true, 'screen-loading': true, 'screen-netscape': true };
 
   // ── Power On / Win95 boot ──
   function doPowerOn() {
     showScreen('screen-win95');
-    // Play Windows 95 startup sound immediately on click gesture
     playSound('win95');
-    // After 9 seconds advance to API key screen
     setTimeout(function() {
-      showScreen('screen-apikey');
-      setTimeout(function(){ document.getElementById('apikey-input').focus(); }, 100);
+      showScreen('screen-windesktop');
+      startClock();
     }, 9000);
   }
 
@@ -1968,6 +2183,270 @@
     document.getElementById('wm-cc').value = '';
     document.getElementById('wm-subject').value = '';
     document.getElementById('wm-body').value = '';
+  }
+
+  // ════════════════════════════════════════
+  // WINDOWS DESKTOP
+  // ════════════════════════════════════════
+
+  var clockInterval = null;
+  function startClock() {
+    if (clockInterval) return;
+    function tick() {
+      var now = new Date();
+      var h = now.getHours();
+      var m = now.getMinutes();
+      var ampm = h >= 12 ? 'PM' : 'AM';
+      h = h % 12; if (h === 0) h = 12;
+      var ms = m < 10 ? '0'+m : m;
+      var el = document.getElementById('win95-clock');
+      if (el) el.textContent = h + ':' + ms + ' ' + ampm;
+    }
+    tick();
+    clockInterval = setInterval(tick, 10000);
+  }
+
+  function toggleStartMenu() {
+    var m = document.getElementById('start-menu');
+    m.classList.toggle('open');
+  }
+
+  // Close start menu if clicking elsewhere on desktop
+  document.getElementById('screen-windesktop').addEventListener('click', function(e) {
+    if (!e.target.closest('#start-menu') && !e.target.closest('#start-btn')) {
+      document.getElementById('start-menu').classList.remove('open');
+    }
+  });
+
+  function launchAOL() {
+    document.getElementById('start-menu').classList.remove('open');
+    // If already have API key go straight to sign-in, else ask for key first
+    if (apiKey) {
+      showScreen('screen-signin');
+      setTimeout(function(){ document.getElementById('pw-input').focus(); }, 100);
+    } else {
+      showScreen('screen-apikey');
+      setTimeout(function(){ document.getElementById('apikey-input').focus(); }, 100);
+    }
+  }
+
+  function launchNetscape() {
+    document.getElementById('start-menu').classList.remove('open');
+    showScreen('screen-netscape');
+    renderWrestleboard();
+  }
+
+  // ════════════════════════════════════════
+  // WRESTLEBOARD — inline render
+  // ════════════════════════════════════════
+
+  var wbRendered = false;
+  function renderWrestleboard() {
+    if (wbRendered) return;
+    wbRendered = true;
+
+    // Build the Wrestleboard HTML as a string, with two modifications:
+    // 1) Replace the logo img + fallback with wrestleboard.jpg
+    // 2) Replace any hardcoded API key with the session apiKey variable
+    //    (the original file has no API key, but this future-proofs it)
+
+    var wb = document.getElementById('wb-page');
+
+    // Inject Wrestleboard styles scoped inside wb-page
+    var style = document.createElement('style');
+    style.textContent = `
+      #wb-page * { box-sizing: border-box; margin: 0; padding: 0; }
+      #wb-page { background:#000; color:#fff; font-family:Verdana,Arial,Helvetica,sans-serif; font-size:11px; min-width:900px; }
+      #wb-page a { color:#FC0; text-decoration:none; }
+      #wb-page a:hover { color:#FFF; text-decoration:underline; }
+      #wb-page .logo-area { text-align:center; padding:12px 0 8px; background:#000; }
+      #wb-page .logo-img { max-width:700px; width:90%; height:auto; display:inline-block; }
+      #wb-page .metal-bar { max-width:680px; margin:0 auto 4px; background:linear-gradient(180deg,#3a3a3a 0%,#666 8%,#999 20%,#bbb 35%,#d8d8d8 50%,#bbb 65%,#999 80%,#666 92%,#3a3a3a 100%); border-top:2px solid #FC0; border-bottom:2px solid #FC0; border-left:2px solid #777; border-right:2px solid #777; border-radius:4px; padding:6px 20px; text-align:center; color:#000; font-weight:bold; font-size:14px; box-shadow:0 2px 6px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.2); }
+      #wb-page .metal-bar a { color:#000; font-weight:bold; text-decoration:none; }
+      #wb-page .metal-bar a:hover { color:#333; text-decoration:underline; }
+      #wb-page .section-header { background:linear-gradient(180deg,#3a3a3a 0%,#666 8%,#999 20%,#bbb 35%,#d8d8d8 50%,#bbb 65%,#999 80%,#666 92%,#3a3a3a 100%); border-top:2px solid #FC0; border-bottom:2px solid #FC0; border-left:2px solid #777; border-right:2px solid #777; border-radius:4px; padding:5px 12px; text-align:center; color:#000; font-weight:bold; font-size:15px; font-family:Verdana,Arial,sans-serif; margin-bottom:8px; box-shadow:0 2px 4px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.2); }
+      #wb-page .main-layout { display:flex; max-width:1150px; margin:8px auto 0; gap:12px; padding:0 12px; align-items:flex-start; }
+      #wb-page .left-sidebar { width:195px; min-width:195px; }
+      #wb-page .center-content { flex:1; border-left:1px solid #222; border-right:1px solid #222; padding:0 12px; }
+      #wb-page .right-sidebar { width:245px; min-width:245px; }
+      #wb-page .sidebar-list { list-style:disc; padding-left:18px; margin-bottom:16px; }
+      #wb-page .sidebar-list li { margin:3px 0; color:#FC0; }
+      #wb-page .sidebar-list li::marker { color:#FC0; }
+      #wb-page .sidebar-list li a { font-size:11px; color:#FC0; }
+      #wb-page .headline-list { list-style:disc; padding-left:18px; }
+      #wb-page .headline-list li { margin:5px 0; color:#FC0; line-height:1.35; }
+      #wb-page .headline-list li::marker { color:#FC0; }
+      #wb-page .headline-list li a { font-size:12px; color:#FC0; }
+      #wb-page .headline-list li a:hover { color:#FFF; }
+      #wb-page .headline-list li.top-story a { color:#FF6600; font-weight:bold; font-size:13px; }
+      #wb-page .headline-list li.top-story::marker { color:#FF6600; }
+      #wb-page .wrestler-photo { width:140px; height:165px; border:3px solid #FC0; margin:10px auto; display:flex; align-items:center; justify-content:center; background:linear-gradient(145deg,#1a1a1a 0%,#2d2d2d 40%,#1a1a1a 100%); color:#FC0; font-size:10px; text-align:center; }
+      #wb-page .poll-section { background:#0a0a0a; border:1px solid #333; padding:12px; margin-bottom:10px; }
+      #wb-page .poll-question { color:#FFF; font-size:12px; font-weight:bold; margin-bottom:8px; }
+      #wb-page .poll-option { display:block; color:#FC0; font-size:11px; margin:4px 0; cursor:pointer; }
+      #wb-page .poll-btn { background:#FC0; border:none; color:#000; font-weight:bold; font-size:11px; padding:5px 12px; cursor:pointer; margin-top:8px; width:100%; }
+      #wb-page .poll-results { display:none; margin-top:8px; }
+      #wb-page .poll-results.show { display:block; }
+      #wb-page .poll-bar-container { margin-bottom:6px; }
+      #wb-page .poll-bar-label { color:#FC0; font-size:10px; margin-bottom:2px; }
+      #wb-page .poll-bar-track { background:#1a1a1a; height:14px; position:relative; }
+      #wb-page .poll-bar-fill { background:#FC0; height:100%; transition:width 0.6s ease; }
+      #wb-page .poll-bar-pct { position:absolute; right:4px; top:0; font-size:9px; color:#000; line-height:14px; }
+      #wb-page .snap-title { color:#FC0; font-weight:bold; font-size:13px; text-align:center; margin-bottom:6px; }
+      #wb-page .snap-photo { width:140px; height:165px; border:3px solid #FC0; margin:0 auto; display:flex; align-items:center; justify-content:center; background:linear-gradient(145deg,#1a1a1a,#2d2d2d,#1a1a1a); color:#FC0; font-size:10px; text-align:center; }
+      #wb-page .snap-link { text-align:center; margin-top:4px; }
+      #wb-page .fan-reaction { text-align:center; margin-top:20px; padding-top:12px; border-top:1px solid #222; }
+      #wb-page .fan-reaction .title { color:#FF0000; font-weight:bold; font-size:18px; font-family:Impact,'Arial Black',sans-serif; letter-spacing:1px; }
+      #wb-page .fan-reaction .question { color:#FFF; font-size:11px; margin:6px 0; line-height:1.4; }
+      #wb-page .footer { text-align:center; padding:15px; color:#555; font-size:10px; border-top:1px solid #1a1a1a; margin-top:20px; }
+      #wb-page .footer a { color:#888; }
+      #wb-page .section-gap { height:16px; }
+      #wb-page .ticker-bar { background:#111; border-bottom:1px solid #FC0; padding:4px 0; overflow:hidden; white-space:nowrap; font-size:11px; }
+      #wb-page .ticker-content { display:inline-block; animation:wbticker 45s linear infinite; color:#FC0; }
+      #wb-page .ticker-content span { color:#FF0000; font-weight:bold; }
+      @keyframes wbticker { 0%{transform:translateX(100vw)} 100%{transform:translateX(-200%)} }
+    `;
+    document.head.appendChild(style);
+
+    wb.innerHTML = `
+      <div class="logo-area">
+        <img class="logo-img" src="wrestleboard.jpg" alt="WrestleBoard">
+      </div>
+      <div class="ticker-bar">
+        <div class="ticker-content">
+          <span>BREAKING:</span> WWE releases 25+ talents in post-WrestleMania cuts &bull;
+          Jacob Fatu conquers Solo Sikoa on SmackDown &bull;
+          Darby Allin retains AEW World Title, Brody King challenges &bull;
+          AEW x NJPW Forbidden Door announced for June 28 &bull;
+          Double or Nothing almost sold out in Queens, NY &bull;
+          WrestleMania 42 drew 106,000+ to Allegiant Stadium &bull;
+        </div>
+      </div>
+      <div style="text-align:center;padding:8px 0;">
+        <div class="metal-bar">
+          <a href="#">Top Story</a> &bull;
+          <a href="#">Headlines</a> &bull;
+          <a href="#">WWE</a> &bull;
+          <a href="#">AEW</a> &bull;
+          <a href="#">TNA</a> &bull;
+          <a href="#">PPV</a>
+        </div>
+      </div>
+      <div class="main-layout">
+        <div class="left-sidebar">
+          <div class="section-header">Updates</div>
+          <ul class="sidebar-list">
+            <li><a href="#">SmackDown Results</a></li>
+            <li><a href="#">Raw Results</a></li>
+            <li><a href="#">Dynamite Results</a></li>
+            <li><a href="#">Collision Results</a></li>
+            <li><a href="#">NJPW Results</a></li>
+          </ul>
+          <div class="section-header">Features</div>
+          <ul class="sidebar-list">
+            <li><a href="#">Top Stories</a></li>
+            <li><a href="#">Headlines</a></li>
+            <li><a href="#">WWE Pages</a></li>
+            <li><a href="#">AEW Pages</a></li>
+            <li><a href="#">TNA Pages</a></li>
+            <li><a href="#">NJPW Pages</a></li>
+            <li><a href="#">PPV Central</a></li>
+            <li><a href="#">Ratings Center</a></li>
+            <li><a href="#">International</a></li>
+            <li><a href="#">Bookmark Us</a></li>
+          </ul>
+          <div class="wrestler-photo"><span>[ Jacob Fatu ]</span></div>
+          <div class="section-header">Interactive</div>
+          <ul class="sidebar-list">
+            <li><a href="#">Message Board</a></li>
+            <li><a href="#">Chat Room</a></li>
+            <li><a href="#">Fantasy Booking</a></li>
+            <li><a href="#">Predict PPV Results</a></li>
+            <li><a href="#">Contact Us</a></li>
+          </ul>
+        </div>
+        <div class="center-content">
+          <ul class="headline-list">
+            <li class="top-story"><a href="#">BREAKING: WWE Releases 25+ Talents Including Wyatt Sicks, Motor City Machine Guns, Aleister Black, Kairi Sane, Santos Escobar</a></li>
+            <li><a href="#">SmackDown Results: Jacob Fatu Conquers Solo Sikoa Before Destroying The MFTs</a></li>
+            <li><a href="#">Tiffany Stratton Captures Women's United States Title from Giulia on SmackDown</a></li>
+            <li><a href="#">Fatal Influence Invades SmackDown, Attacks Rhea Ripley, Charlotte Flair, Alexa Bliss</a></li>
+            <li><a href="#">R-Truth &amp; Damian Priest Retain WWE Tag Titles Over Tama Tonga &amp; JC Mateo</a></li>
+            <li><a href="#">Full List of Post-WrestleMania WWE Releases: Zelina Vega, Bo Dallas, Nikki Cross, More</a></li>
+            <li><a href="#">AEW Collision Results: Jack Perry Retains National Title, Conglomeration Picks Up Win</a></li>
+            <li><a href="#">FTR Accepts I Quit Rules for Cope &amp; Cage Match at Double or Nothing</a></li>
+            <li><a href="#">AEW Dynamite: Darby Allin Successfully Defends World Title Against Tommaso Ciampa</a></li>
+            <li><a href="#">Brody King Challenges Darby Allin for AEW World Championship</a></li>
+            <li><a href="#">AEW x NJPW Forbidden Door PPV Officially Announced for June 28 in San Jose</a></li>
+            <li><a href="#">Kazuchika Okada vs. Konosuke Takeshita Set for AEW International Title at Double or Nothing</a></li>
+            <li><a href="#">Adam Copeland &amp; Christian Cage Face Retirement If FTR Wins at Double or Nothing</a></li>
+            <li><a href="#">Double or Nothing 2026 Almost Sold Out at Louis Armstrong Stadium, Queens NY</a></li>
+            <li><a href="#">WrestleMania 42 Recap: Roman Reigns Defeats CM Punk for World Heavyweight Championship</a></li>
+            <li><a href="#">WrestleMania 42: Cody Rhodes Retains Undisputed WWE Title Over Randy Orton in Instant Classic</a></li>
+            <li><a href="#">Oba Femi Conquers Brock Lesnar in WrestleMania Showcase Match</a></li>
+            <li><a href="#">Rhea Ripley Overcomes Jade Cargill to Win WWE Women's Championship at WrestleMania</a></li>
+            <li><a href="#">Penta Retains Intercontinental Championship in Six-Man WrestleMania Ladder Match</a></li>
+            <li><a href="#">Trick Williams Captures United States Title from Sami Zayn at WrestleMania</a></li>
+            <li><a href="#">Liv Morgan Captures Women's World Championship Over Stephanie Vaquer at WrestleMania</a></li>
+            <li><a href="#">Becky Lynch Reclaims Women's Intercontinental Title from AJ Lee at WrestleMania</a></li>
+            <li><a href="#">Paige Makes Shocking Return at WrestleMania, Wins Women's Tag Titles with Brie Bella</a></li>
+            <li><a href="#">Jacob Fatu Defeats Drew McIntyre in Brutal Unsanctioned Match at WrestleMania</a></li>
+            <li><a href="#">WrestleMania 42 Draws Record 106,000+ Fans to Allegiant Stadium in Las Vegas</a></li>
+            <li><a href="#">NJPW x CMLL Fantasticamania Announced for June 19 at Arena M&eacute;xico</a></li>
+            <li><a href="#">Seth Rollins Makes Surprise Return to AAW Wrestling After 15+ Years</a></li>
+            <li><a href="#">Orange Cassidy &amp; The Conglomeration Defeat Archer, Hechicero &amp; Andrade on AEW Collision</a></li>
+          </ul>
+        </div>
+        <div class="right-sidebar">
+          <div class="section-header">Daily Poll</div>
+          <div class="poll-section">
+            <div class="poll-question">Who will leave Double or Nothing as AEW World Champion?</div>
+            <label class="poll-option"><input type="radio" name="wbpoll" value="darby"> Darby Allin (retains)</label>
+            <label class="poll-option"><input type="radio" name="wbpoll" value="brody"> Brody King</label>
+            <label class="poll-option"><input type="radio" name="wbpoll" value="other"> Someone Else</label>
+            <label class="poll-option"><input type="radio" name="wbpoll" value="none"> Don't Care</label>
+            <br>
+            <button class="poll-btn" id="wb-pollBtn">Results</button>
+            <div class="poll-results" id="wb-pollResults">
+              <div class="poll-bar-container"><div class="poll-bar-label">Darby Allin - 42%</div><div class="poll-bar-track"><div class="poll-bar-fill" style="width:0%" data-w="42%"></div><span class="poll-bar-pct">42%</span></div></div>
+              <div class="poll-bar-container"><div class="poll-bar-label">Brody King - 31%</div><div class="poll-bar-track"><div class="poll-bar-fill" style="width:0%" data-w="31%"></div><span class="poll-bar-pct">31%</span></div></div>
+              <div class="poll-bar-container"><div class="poll-bar-label">Someone Else - 20%</div><div class="poll-bar-track"><div class="poll-bar-fill" style="width:0%" data-w="20%"></div><span class="poll-bar-pct">20%</span></div></div>
+              <div class="poll-bar-container"><div class="poll-bar-label">Don't Care - 7%</div><div class="poll-bar-track"><div class="poll-bar-fill" style="width:0%" data-w="7%"></div><span class="poll-bar-pct">7%</span></div></div>
+              <div style="color:#666;font-size:9px;margin-top:6px;text-align:center;">1,247 total votes</div>
+            </div>
+          </div>
+          <div class="snap-title">The Daily Snap</div>
+          <div class="snap-photo"><span>[ Rhea Ripley<br>WWE Women's<br>Champion ]</span></div>
+          <div class="snap-link"><a href="#">Full Picture &gt;&gt;</a></div>
+          <div class="fan-reaction">
+            <div class="title">Fan ReAxTion</div>
+            <div class="question">How do you feel about the post-WrestleMania 42 WWE roster cuts?</div>
+            <a href="#">999 Responses &gt;&gt;</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer">
+        WrestleBoard 2026 &mdash; Your #1 Source for Pro Wrestling News<br>
+        Updated throughout the day &bull; <a href="#">Contact</a> &bull; <a href="#">Advertise</a> &bull; <a href="#">Privacy Policy</a><br><br>
+        <span style="color:#333;">A loving recreation of the original WrestleBoard (circa 2001)</span>
+      </div>
+    `;
+
+    // Wire up poll button
+    document.getElementById('wb-pollBtn').addEventListener('click', function() {
+      var results = document.getElementById('wb-pollResults');
+      results.classList.toggle('show');
+      if (results.classList.contains('show')) {
+        setTimeout(function() {
+          results.querySelectorAll('.poll-bar-fill').forEach(function(b){ b.style.width = b.getAttribute('data-w'); });
+        }, 50);
+      } else {
+        results.querySelectorAll('.poll-bar-fill').forEach(function(b){ b.style.width = '0%'; });
+      }
+    });
+    document.querySelectorAll('input[name="wbpoll"]').forEach(function(r) {
+      r.addEventListener('change', function(){ document.getElementById('wb-pollBtn').textContent = 'See Results'; });
+    });
   }
 
   function makeDraggable(win, handle) {
