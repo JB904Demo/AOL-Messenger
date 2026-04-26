@@ -1371,29 +1371,12 @@
         <div class="inbox-radio-banner">AoL Radio.<br>🔊 Toolbar</div>
       </div>
       <div class="inbox-tabs">
-        <div class="inbox-tab active">New Mail</div>
-        <div class="inbox-tab">Old Mail</div>
-        <div class="inbox-tab">Sent Mail</div>
+        <div class="inbox-tab active" onclick="switchInboxTab('new',this)">New Mail</div>
+        <div class="inbox-tab" onclick="switchInboxTab('old',this)">Old Mail</div>
+        <div class="inbox-tab" onclick="switchInboxTab('sent',this)">Sent Mail</div>
       </div>
       <div class="inbox-list-area" id="inbox-list-area">
-        <div class="inbox-email-row">
-          <span class="inbox-email-icon">📧</span>
-          <span class="inbox-email-date">4/24/1999</span>
-          <span class="inbox-email-from">CEMac16</span>
-          <span class="inbox-email-subj">key club meeting...</span>
-        </div>
-        <div class="inbox-email-row">
-          <span class="inbox-email-icon">📧</span>
-          <span class="inbox-email-date">4/24/1999</span>
-          <span class="inbox-email-from">Herb17272</span>
-          <span class="inbox-email-subj">Fw: Fw: Fw: al gore eats babies...</span>
-        </div>
-        <div class="inbox-email-row">
-          <span class="inbox-email-icon">📧</span>
-          <span class="inbox-email-date">4/24/1999</span>
-          <span class="inbox-email-from">Webmaster</span>
-          <span class="inbox-email-subj">Welcome to The Wrestleboard</span>
-        </div>
+        <!-- populated by JS -->
       </div>
       <div class="inbox-btn-bar">
         <button class="inbox-bar-btn">Read</button>
@@ -1403,6 +1386,43 @@
         <button class="inbox-bar-btn">Delete</button>
         <div class="inbox-bar-spacer"></div>
         <button class="inbox-bar-btn">Help</button>
+      </div>
+    </div>
+
+    <!-- Email Read Popup -->
+    <div id="email-read-window" style="position:absolute;top:80px;left:180px;width:600px;display:none;flex-direction:column;background:#d4d0c8;border:2px solid;border-color:#fff #808080 #808080 #fff;box-shadow:2px 2px 0 #000;z-index:400;">
+      <div id="email-read-titlebar" style="background:linear-gradient(to bottom,#1a3a8a,#000080);color:#c8f0ff;font-size:12px;font-weight:bold;padding:2px 5px;display:flex;align-items:center;justify-content:space-between;height:20px;cursor:grab;flex-shrink:0;">
+        <div style="display:flex;align-items:center;gap:4px;">
+          <svg width="11" height="11" viewBox="0 0 20 20"><rect x="2" y="5" width="16" height="12" fill="none" stroke="#ffcc00" stroke-width="2"/><polyline points="2,5 10,12 18,5" stroke="#ffcc00" stroke-width="2" fill="none"/></svg>
+          <span id="email-read-title">Email</span>
+        </div>
+        <div style="display:flex;gap:2px;">
+          <div style="width:14px;height:12px;background:#c0c0c0;border:1px solid;border-color:#fff #808080 #808080 #fff;font-size:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;">_</div>
+          <div style="width:14px;height:12px;background:#c0c0c0;border:1px solid;border-color:#fff #808080 #808080 #fff;font-size:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;">□</div>
+          <div style="width:14px;height:12px;background:#c0c0c0;border:1px solid;border-color:#fff #808080 #808080 #fff;font-size:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-weight:bold;" onclick="closeEmailRead()">✕</div>
+        </div>
+      </div>
+      <!-- Header block -->
+      <div style="display:flex;gap:6px;flex-shrink:0;">
+        <div style="flex:1;border:2px solid;border-color:#808080 #fff #fff #808080;background:#fff;margin:4px 4px 0 4px;padding:8px 10px;font-size:13px;font-family:'Times New Roman',serif;line-height:1.8;">
+          <div id="email-read-to"></div>
+          <div id="email-read-from"></div>
+          <div id="email-read-subj"></div>
+        </div>
+        <!-- Reply button sidebar -->
+        <div style="width:70px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;padding-top:6px;gap:4px;">
+          <div onclick="replyToEmail()" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;">
+            <div style="width:48px;height:40px;background:linear-gradient(135deg,#1a3a8a,#2a5ab0);border:2px solid;border-color:#fff #808080 #808080 #fff;display:flex;align-items:center;justify-content:center;font-size:22px;">📨</div>
+            <span style="font-size:12px;font-weight:bold;color:#000;font-family:'Times New Roman',serif;">Reply</span>
+          </div>
+        </div>
+      </div>
+      <!-- Body -->
+      <div id="email-read-body" style="flex:1;border:2px solid;border-color:#808080 #fff #fff #808080;background:#fff;margin:4px;padding:10px;overflow-y:auto;min-height:200px;max-height:320px;font-size:13px;font-family:'Times New Roman',serif;line-height:1.6;user-select:text;"></div>
+      <!-- Footer -->
+      <div style="display:flex;justify-content:space-between;padding:6px 4px;background:#d4d0c8;flex-shrink:0;">
+        <button onclick="closeEmailRead()" style="background:#1a3a8a;border:2px solid;border-color:#4a6ab0 #0a1a5a #0a1a5a #4a6ab0;color:#fff;font-family:Arial,sans-serif;font-size:13px;font-weight:bold;padding:4px 18px;cursor:pointer;min-width:90px;">Delete</button>
+        <button onclick="closeEmailRead()" style="background:#1a3a8a;border:2px solid;border-color:#4a6ab0 #0a1a5a #0a1a5a #4a6ab0;color:#fff;font-family:Arial,sans-serif;font-size:13px;font-weight:bold;padding:4px 18px;cursor:pointer;min-width:90px;">Help</button>
       </div>
     </div>
 
@@ -1465,7 +1485,7 @@
         </div>
         <!-- Right sidebar -->
         <div class="wm-sidebar">
-          <div class="wm-side-btn" onclick="closeWriteMail()">
+          <div class="wm-side-btn" onclick="closeWriteMail(true)">
             <span class="wm-side-icon">📨</span>
             <span class="wm-side-label">Send Now</span>
           </div>
@@ -2145,43 +2165,328 @@
   loadSavedBuddies();
 
   // ════════════════════════════════════════
-  // INBOX
+  // EMAIL SYSTEM
   // ════════════════════════════════════════
+
+  var currentInboxTab = 'new';
+  var currentEmailId  = null;
+
+  // Rainbow letter helper
+  function rainbowText(str) {
+    var colors = ['#ff0000','#ff6600','#ffcc00','#00bb00','#0000ff','#6600cc','#cc00cc'];
+    return str.split('').map(function(ch, i) {
+      if (ch === ' ') return ' ';
+      return '<span style="color:' + colors[i % colors.length] + '">' + esc(ch) + '</span>';
+    }).join('');
+  }
+
+  // Email definitions — body is a function so it can reference currentUser at read time
+  var INBOX_EMAILS = [
+    {
+      id: 'e1', date: '4/24/1999',
+      from: 'CEMac16', fromAddr: 'CEMac16',
+      subj: 'key club meeting...',
+      bodyFn: function() {
+        return '<span style="font-family:\'Comic Sans MS\',Comic Sans,cursive;font-size:16pt;font-weight:bold;color:#660099;">At 4pm don\'t be late Meagan and I will be running things :)</span>';
+      }
+    },
+    {
+      id: 'e2', date: '4/24/1999',
+      from: 'Herb17272', fromAddr: 'Herb17272',
+      subj: 'Fw: Fw: Fw: Fw: Fw: al gore eats babies...',
+      bodyFn: function() {
+        return [
+          '<div style="color:#808080;font-size:11px;margin-bottom:10px;">',
+          '-----Original Message-----<br>',
+          'From: DorothyM1946@aol.com<br>',
+          'To: BarbaraJean55@aol.com; TammyLou99@aol.com; BettyK@aol.com<br>',
+          'Subject: Fw: Fw: Fw: Fw: al gore eats babies...<br><br>',
+          '-----Original Message-----<br>',
+          'From: BigMike_Patriot@hotmail.com<br>',
+          'To: everyone_I_know@lists.com<br>',
+          'Subject: Fw: Fw: Fw: al gore eats babies...<br><br>',
+          '-----Original Message-----<br>',
+          'From: TruthSeeker1776@aol.com<br>',
+          'To: GodBlessAmerica@aol.com<br>',
+          'Subject: Fw: Fw: al gore eats babies...<br><br>',
+          '-----Original Message-----<br>',
+          'From: PastorBobWhite@churchmail.com<br>',
+          'To: PrayerChain@aol.com<br>',
+          'Subject: Fw: al gore eats babies...<br><br>',
+          '</div>',
+          '<div style="font-size:12px;">',
+          '<b>THIS IS 100% TRUE AND MY COUSIN WORKS FOR THE GOVERNMENT AND CONFIRMED IT!!!</b><br><br>',
+          'Friends,<br><br>',
+          'I don\'t usually forward these things but this one is REAL. A close personal friend of mine who works at the Pentagon (can\'t say who for safety reasons) has confirmed that Al Gore has been secretly eating babies at a underground facility beneath the Washington Monument since 1987.<br><br>',
+          'The mainstream media WON\'T cover this. Why? Because they\'re ALL IN ON IT.<br><br>',
+          '<b>HERE IS THE PROOF:</b><br>',
+          '1. Al Gore invented the internet. Why would someone invent the internet unless they needed to HIDE SOMETHING??<br>',
+          '2. His name has 7 letters. SEVEN. Think about it.<br>',
+          '3. He wears a tie EVERY DAY. What is he hiding under there???<br><br>',
+          'PLEASE FORWARD THIS TO EVERYONE YOU KNOW!!!! If you forward this to 10 people Bill Gates will send you $200 in the mail. This has been verified by Snopes.com and is definitely not a hoax.<br><br>',
+          'God Bless America,<br>',
+          'TruthSeeker1776<br><br>',
+          '<i>P.S. Do NOT delete this email or something bad will happen to you within 7 days. A little girl in Ohio deleted this and her cat exploded.</i>',
+          '</div>'
+        ].join('');
+      }
+    },
+    {
+      id: 'e3', date: '4/24/1999',
+      from: 'Webmaster', fromAddr: 'webmaster@wrestleboard.com',
+      subj: 'Welcome to The Wrestleboard',
+      bodyFn: function() {
+        return 'Welcome to The Wrestleboard.\n\nYour account has been created. You can now post on the message boards, vote in polls, and access member-only content.\n\nThanks for joining.';
+      }
+    },
+    {
+      id: 'e4', date: '4/24/1999',
+      from: 'info@BellTowerShops.com', fromAddr: 'info@BellTowerShops.com',
+      subj: 'Taste of New York $12.95 Specialty Pizza',
+      bodyFn: function() {
+        return [
+          '<div style="font-family:\'Courier New\',Courier,monospace;font-size:12px;line-height:1.4;">',
+          '<pre>',
+          '╔══════════════════════════════════════════════════════╗\n',
+          '║     TASTE OF NEW YORK PIZZA — BELL TOWER SHOPS       ║\n',
+          '║              Fort Myers, Florida 33907               ║\n',
+          '╠══════════════════════════════════════════════════════╣\n',
+          '║                                                      ║\n',
+          '║         *** PRINTABLE COUPON — SAVE THIS! ***        ║\n',
+          '║                                                      ║\n',
+          '║   ONE (1) SPECIALTY PIZZA — ANY TOPPINGS             ║\n',
+          '║                                                      ║\n',
+          '║              ONLY  $12.95  !!!                       ║\n',
+          '║                                                      ║\n',
+          '║   Valid for: Large 16" Specialty Pizza               ║\n',
+          '║   Dine-in or Carry-out — Not valid for delivery      ║\n',
+          '║   One coupon per visit — Expires 6/30/1999           ║\n',
+          '║                                                      ║\n',
+          '║   Code: BTSNY1295-A                                  ║\n',
+          '╚══════════════════════════════════════════════════════╝\n',
+          '\n\n',
+          '╔══════════════════════════════════════════════════════╗\n',
+          '║     TASTE OF NEW YORK PIZZA — BELL TOWER SHOPS       ║\n',
+          '║              Fort Myers, Florida 33907               ║\n',
+          '╠══════════════════════════════════════════════════════╣\n',
+          '║                                                      ║\n',
+          '║         *** PRINTABLE COUPON — SAVE THIS! ***        ║\n',
+          '║                                                      ║\n',
+          '║   ONE (1) SPECIALTY PIZZA — ANY TOPPINGS             ║\n',
+          '║                                                      ║\n',
+          '║              ONLY  $12.95  !!!                       ║\n',
+          '║                                                      ║\n',
+          '║   Valid for: Large 16" Specialty Pizza               ║\n',
+          '║   Dine-in or Carry-out — Not valid for delivery      ║\n',
+          '║   One coupon per visit — Expires 6/30/1999           ║\n',
+          '║                                                      ║\n',
+          '║   Code: BTSNY1295-B                                  ║\n',
+          '╚══════════════════════════════════════════════════════╝',
+          '</pre></div>'
+        ].join('');
+      }
+    },
+    {
+      id: 'e5', date: '4/24/1999',
+      from: 'tarasmith@aol.com', fromAddr: 'tarasmith@aol.com',
+      subj: 'picked up a shift at gadzooks come by =)',
+      bodyFn: function() {
+        var msg = 'we can go to Sbarro on break!!!!!!!!!!!!!!!';
+        return '<span style="font-family:Arial,sans-serif;font-size:22pt;">' + rainbowText(msg) + '</span>';
+      }
+    },
+    {
+      id: 'e6', date: '4/24/1999',
+      from: 'webmaster@idgames.com', fromAddr: 'webmaster@idgames.com',
+      subj: 'Your Doom II Registration Code',
+      bodyFn: function() {
+        return [
+          '<p><b>ID Code: 28374849374287349287</b></p><br>',
+          '<p>Dear Valued Customer,</p><br>',
+          '<p>Thank you for registering your copy of DOOM II: Hell on Earth. Your support ',
+          'directly fuels the demons we create to torment you. id Software is committed ',
+          'to delivering the finest first-person shooting experience available on the PC platform, ',
+          'and players like you make that possible. Keep that registration code in a safe place — ',
+          'you\'ll need it if you ever reinstall on a new machine or upgrade your 486 to a Pentium.</p><br>',
+          '<p>As a registered user you are now entitled to access the official id Software BBS, ',
+          'receive advance notice of future titles, and the knowledge that you are not, in fact, ',
+          'a software pirate. We appreciate your honesty in a world full of shareware abusers.</p><br>',
+          '<p>Frag \'em all,<br>',
+          'The id Software Team<br>',
+          'webmaster@idgames.com</p>'
+        ].join('');
+      }
+    },
+    {
+      id: 'e7', date: '4/24/1999',
+      from: 'RazorCrash@aol.com', fromAddr: 'RazorCrash@aol.com',
+      subj: 'new ride!!!',
+      bodyFn: function() {
+        return [
+          '<p style="margin-bottom:10px;">dude check it out!!!</p>',
+          '<div style="text-align:center;margin:8px 0;">',
+          '<img src="explorer.jpeg" alt="new ride" style="max-width:100%;max-height:220px;border:2px solid #808080;display:block;margin:0 auto;">',
+          '<div style="font-size:10px;color:#808080;margin-top:4px;">[Attachment: explorer.jpeg]</div>',
+          '</div>',
+          '<p style="margin-top:10px;">just got it!!! 1998 ford explorer sport 2 door, black, runs perfect. picked it up from some dude in lehigh for like nothing. gonna take it to the beach this weekend you in???</p>'
+        ].join('');
+      }
+    }
+  ];
+
+  var currentInboxTab = 'new';
+  var currentReadEmail = null;
+
+  function loadSentMail() {
+    try {
+      return JSON.parse(localStorage.getItem('aim_sent_mail') || '[]');
+    } catch(e) { return []; }
+  }
+  function saveSentMail(arr) {
+    try { localStorage.setItem('aim_sent_mail', JSON.stringify(arr)); } catch(e) {}
+  }
+
   function openInbox() {
     var win = document.getElementById('inbox-window');
     document.getElementById('inbox-title-name').textContent = currentUser + "'s Online Mailbox";
     win.classList.add('open');
     win.style.zIndex = ++chatZBase;
+    switchInboxTab('new', document.querySelector('.inbox-tab.active') || document.querySelectorAll('.inbox-tab')[0]);
   }
   function closeInbox() {
     document.getElementById('inbox-window').classList.remove('open');
   }
 
-  // Email row highlight
-  document.querySelectorAll('.inbox-email-row').forEach(function(row) {
-    row.addEventListener('click', function() {
-      document.querySelectorAll('.inbox-email-row').forEach(function(r){ r.classList.remove('selected'); });
-      row.classList.add('selected');
-    });
-  });
+  function switchInboxTab(tab, el) {
+    currentInboxTab = tab;
+    document.querySelectorAll('.inbox-tab').forEach(function(t){ t.classList.remove('active'); });
+    if (el) el.classList.add('active');
+    renderInboxList();
+  }
 
-  // ════════════════════════════════════════
-  // WRITE MAIL
-  // ════════════════════════════════════════
-  function openWriteMail(toAddress) {
+  function renderInboxList() {
+    var area = document.getElementById('inbox-list-area');
+    area.innerHTML = '';
+    var emails = [];
+    if (currentInboxTab === 'new' || currentInboxTab === 'old') {
+      emails = INBOX_EMAILS;
+    } else {
+      emails = loadSentMail();
+    }
+    if (!emails.length) {
+      area.innerHTML = '<div style="padding:12px;color:#808080;font-size:11px;font-style:italic;">No messages.</div>';
+      return;
+    }
+    emails.forEach(function(email, idx) {
+      var row = document.createElement('div');
+      row.className = 'inbox-email-row';
+      var fromDisplay = currentInboxTab === 'sent' ? ('To: ' + (email.to || '')) : (email.from || '');
+      var subjDisplay = email.subj || email.subject || '';
+      row.innerHTML =
+        '<span class="inbox-email-icon">📧</span>' +
+        '<span class="inbox-email-date">' + esc(email.date||'4/24/1999') + '</span>' +
+        '<span class="inbox-email-from">' + esc(fromDisplay) + '</span>' +
+        '<span class="inbox-email-subj">' + esc(subjDisplay) + '</span>';
+      row.addEventListener('click', function() {
+        document.querySelectorAll('.inbox-email-row').forEach(function(r){ r.classList.remove('selected'); });
+        row.classList.add('selected');
+      });
+      row.addEventListener('dblclick', function() {
+        openEmailRead(email, currentInboxTab === 'sent');
+      });
+      area.appendChild(row);
+    });
+  }
+
+  function openEmailRead(email, isSent) {
+    currentReadEmail = email;
+    var win = document.getElementById('email-read-window');
+    var toAddr = isSent ? (email.to || '') : currentUser;
+    var fromAddr = isSent ? currentUser : (email.fromAddr || email.from || '');
+    var subj = email.subj || email.subject || '';
+
+    document.getElementById('email-read-title').textContent = subj;
+    document.getElementById('email-read-to').innerHTML = '<b>To:</b>  ' + esc(toAddr);
+    document.getElementById('email-read-from').innerHTML = '<b>From:</b>  ' + esc(fromAddr);
+    document.getElementById('email-read-subj').innerHTML = '<b>Subj:</b>  ' + esc(subj);
+
+    var body = document.getElementById('email-read-body');
+    if (isSent) {
+      body.innerHTML = email.body || '';
+    } else if (typeof email.bodyFn === 'function') {
+      var result = email.bodyFn();
+      // Check if it looks like HTML
+      if (result.indexOf('<') !== -1) {
+        body.innerHTML = result;
+      } else {
+        body.innerHTML = result.replace(/\n/g, '<br>');
+      }
+    } else {
+      body.innerHTML = (email.body || '').replace(/\n/g, '<br>');
+    }
+
+    win.style.display = 'flex';
+    win.style.zIndex = ++chatZBase;
+  }
+
+  function closeEmailRead() {
+    document.getElementById('email-read-window').style.display = 'none';
+    currentReadEmail = null;
+  }
+
+  function replyToEmail() {
+    if (!currentReadEmail) return;
+    var replyTo = currentReadEmail.fromAddr || currentReadEmail.from || '';
+    var replySubj = 'Re: ' + (currentReadEmail.subj || currentReadEmail.subject || '');
+    closeEmailRead();
+    openWriteMail(replyTo, replySubj, currentReadEmail);
+  }
+
+  // Override openWriteMail to accept reply context
+  function openWriteMail(toAddress, subject, replyContext) {
     var win = document.getElementById('writemail-window');
-    if (toAddress) document.getElementById('wm-to').value = toAddress;
+    document.getElementById('wm-to').value = toAddress || '';
+    document.getElementById('wm-subject').value = subject || '';
+    document.getElementById('wm-cc').value = '';
+    document.getElementById('wm-body').value = '';
+    win._replyContext = replyContext || null;
     win.classList.add('open');
     win.style.zIndex = ++chatZBase;
     setTimeout(function(){ document.getElementById('wm-to').focus(); }, 100);
   }
-  function closeWriteMail() {
-    document.getElementById('writemail-window').classList.remove('open');
-    // Clear fields on close
+
+  // Override closeWriteMail (Send Now) to save to sent mail
+  function closeWriteMail(send) {
+    var win = document.getElementById('writemail-window');
+    if (send) {
+      var to      = document.getElementById('wm-to').value.trim();
+      var subject = document.getElementById('wm-subject').value.trim();
+      var body    = document.getElementById('wm-body').value.trim();
+      if (to || subject || body) {
+        var sent = loadSentMail();
+        var now  = new Date();
+        var mo = now.getMonth()+1;
+        var d  = now.getDate();
+        var yr = now.getFullYear();
+        sent.unshift({
+          id: 'sent_' + Date.now(),
+          date: mo + '/' + d + '/' + yr,
+          to: to,
+          from: currentUser,
+          fromAddr: currentUser,
+          subj: subject,
+          subject: subject,
+          body: body.replace(/\n/g,'<br>')
+        });
+        saveSentMail(sent);
+      }
+    }
+    win.classList.remove('open');
     document.getElementById('wm-to').value = '';
     document.getElementById('wm-cc').value = '';
     document.getElementById('wm-subject').value = '';
     document.getElementById('wm-body').value = '';
+    win._replyContext = null;
   }
 
   // ════════════════════════════════════════
@@ -2704,9 +3009,11 @@
   makeDraggable(document.getElementById('chatroom-window'), document.getElementById('cr-titlebar'));
   makeDraggable(document.getElementById('inbox-window'),    document.getElementById('inbox-titlebar'));
   makeDraggable(document.getElementById('writemail-window'),document.getElementById('wm-titlebar'));
+  makeDraggable(document.getElementById('email-read-window'), document.getElementById('email-read-titlebar'));
 
   document.getElementById('inbox-window').addEventListener('mousedown',    function(){ document.getElementById('inbox-window').style.zIndex    = ++chatZBase; });
   document.getElementById('writemail-window').addEventListener('mousedown', function(){ document.getElementById('writemail-window').style.zIndex = ++chatZBase; });
+  document.getElementById('email-read-window').addEventListener('mousedown', function(){ document.getElementById('email-read-window').style.zIndex = ++chatZBase; });
   document.getElementById('chatroom-window').addEventListener('mousedown', function() {
     document.getElementById('chatroom-window').style.zIndex = ++chatZBase + 100;
   });
