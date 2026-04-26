@@ -1390,37 +1390,54 @@
     </div>
 
     <!-- Email Read Popup -->
-    <div id="email-read-window" style="position:absolute;top:80px;left:180px;width:600px;display:none;flex-direction:column;background:#d4d0c8;border:2px solid;border-color:#fff #808080 #808080 #fff;box-shadow:2px 2px 0 #000;z-index:400;">
+    <div id="email-read-window" style="position:absolute;top:80px;left:150px;width:750px;display:none;flex-direction:column;background:#d4d0c8;border:2px solid;border-color:#fff #808080 #808080 #fff;box-shadow:2px 2px 0 #000;z-index:400;">
       <div id="email-read-titlebar" style="background:linear-gradient(to bottom,#1a3a8a,#000080);color:#c8f0ff;font-size:12px;font-weight:bold;padding:2px 5px;display:flex;align-items:center;justify-content:space-between;height:20px;cursor:grab;flex-shrink:0;">
         <div style="display:flex;align-items:center;gap:4px;">
           <svg width="11" height="11" viewBox="0 0 20 20"><rect x="2" y="5" width="16" height="12" fill="none" stroke="#ffcc00" stroke-width="2"/><polyline points="2,5 10,12 18,5" stroke="#ffcc00" stroke-width="2" fill="none"/></svg>
           <span id="email-read-title">Email</span>
         </div>
         <div style="display:flex;gap:2px;">
-          <div style="width:14px;height:12px;background:#c0c0c0;border:1px solid;border-color:#fff #808080 #808080 #fff;font-size:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;">_</div>
-          <div style="width:14px;height:12px;background:#c0c0c0;border:1px solid;border-color:#fff #808080 #808080 #fff;font-size:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;">□</div>
-          <div style="width:14px;height:12px;background:#c0c0c0;border:1px solid;border-color:#fff #808080 #808080 #fff;font-size:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-weight:bold;" onclick="closeEmailRead()">✕</div>
+          <div style="width:14px;height:12px;background:#c0c0c0;border:1px solid;border-color:#fff #808080 #808080 #fff;font-size:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#000;font-weight:bold;">_</div>
+          <div style="width:14px;height:12px;background:#c0c0c0;border:1px solid;border-color:#fff #808080 #808080 #fff;font-size:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#000;font-weight:bold;">□</div>
+          <div style="width:14px;height:12px;background:#c0c0c0;border:1px solid;border-color:#fff #808080 #808080 #fff;font-size:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#000;font-weight:bold;font-weight:bold;" onclick="closeEmailRead()">✕</div>
         </div>
       </div>
-      <!-- Header block -->
-      <div style="display:flex;gap:6px;flex-shrink:0;">
-        <div style="flex:1;border:2px solid;border-color:#808080 #fff #fff #808080;background:#fff;margin:4px 4px 0 4px;padding:8px 10px;font-size:13px;font-family:'Times New Roman',serif;line-height:1.8;">
-          <div id="email-read-to"></div>
-          <div id="email-read-from"></div>
-          <div id="email-read-subj"></div>
+
+      <!-- Main content row: single unified box + reply sidebar -->
+      <div style="display:flex;gap:0;flex:1;margin:4px 4px 2px 4px;">
+
+        <!-- Single box: header + divider + body + tan right frame -->
+        <div style="flex:1;display:flex;border:2px solid;border-color:#808080 #fff #fff #808080;background:#fff;overflow:hidden;">
+
+          <!-- Left white content area -->
+          <div style="flex:1;display:flex;flex-direction:column;overflow:hidden;">
+            <!-- To/From/Subj header in Tahoma -->
+            <div style="padding:8px 10px 6px;font-size:13px;font-family:'Tahoma','MS Sans Serif',Arial,sans-serif;line-height:1.9;flex-shrink:0;">
+              <div id="email-read-to"></div>
+              <div id="email-read-from"></div>
+              <div id="email-read-subj"></div>
+            </div>
+            <!-- Divider line -->
+            <div style="height:1px;background:#808080;margin:0 8px;flex-shrink:0;"></div>
+            <!-- Body -->
+            <div id="email-read-body" style="flex:1;padding:10px;overflow-y:auto;min-height:200px;max-height:400px;font-size:13px;font-family:'Times New Roman',serif;line-height:1.6;user-select:text;"></div>
+          </div>
+
+          <!-- Tan right frame (scrollbar area aesthetic) -->
+          <div style="width:18px;flex-shrink:0;background:#c8bfa8;border-left:1px solid #a09080;"></div>
         </div>
+
         <!-- Reply button sidebar -->
-        <div style="width:70px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;padding-top:6px;gap:4px;">
+        <div style="width:76px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;padding-top:6px;gap:4px;background:#d4d0c8;">
           <div onclick="replyToEmail()" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;">
-            <div style="width:48px;height:40px;background:linear-gradient(135deg,#1a3a8a,#2a5ab0);border:2px solid;border-color:#fff #808080 #808080 #fff;display:flex;align-items:center;justify-content:center;font-size:22px;">📨</div>
-            <span style="font-size:12px;font-weight:bold;color:#000;font-family:'Times New Roman',serif;">Reply</span>
+            <div style="width:50px;height:42px;background:linear-gradient(135deg,#1a3a8a,#2a5ab0);border:2px solid;border-color:#fff #808080 #808080 #fff;display:flex;align-items:center;justify-content:center;font-size:24px;">📨</div>
+            <span style="font-size:12px;font-weight:bold;color:#000;font-family:'Tahoma',Arial,sans-serif;">Reply</span>
           </div>
         </div>
       </div>
-      <!-- Body -->
-      <div id="email-read-body" style="flex:1;border:2px solid;border-color:#808080 #fff #fff #808080;background:#fff;margin:4px;padding:10px;overflow-y:auto;min-height:200px;max-height:320px;font-size:13px;font-family:'Times New Roman',serif;line-height:1.6;user-select:text;"></div>
+
       <!-- Footer -->
-      <div style="display:flex;justify-content:space-between;padding:6px 4px;background:#d4d0c8;flex-shrink:0;">
+      <div style="display:flex;justify-content:space-between;padding:5px 4px;background:#d4d0c8;flex-shrink:0;">
         <button onclick="closeEmailRead()" style="background:#1a3a8a;border:2px solid;border-color:#4a6ab0 #0a1a5a #0a1a5a #4a6ab0;color:#fff;font-family:Arial,sans-serif;font-size:13px;font-weight:bold;padding:4px 18px;cursor:pointer;min-width:90px;">Delete</button>
         <button onclick="closeEmailRead()" style="background:#1a3a8a;border:2px solid;border-color:#4a6ab0 #0a1a5a #0a1a5a #4a6ab0;color:#fff;font-family:Arial,sans-serif;font-size:13px;font-weight:bold;padding:4px 18px;cursor:pointer;min-width:90px;">Help</button>
       </div>
