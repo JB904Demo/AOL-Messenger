@@ -152,9 +152,11 @@
      NETSCAPE BROWSER SCREEN
   ════════════════════════════════════════ */
   #screen-netscape {
-    background: #c0c0c0; display: flex; flex-direction: column;
+    background: #c0c0c0;
   }
-  #screen-netscape.active { display: flex; }
+  #screen-netscape .netscape-inner {
+    display: flex; flex-direction: column; width: 100%; height: 100%;
+  }
 
   /* Static Netscape header image */
   #netscape-header-img {
@@ -184,7 +186,8 @@
 
   /* Wrestleboard content area */
   #netscape-content {
-    flex: 1; overflow-y: auto; background: #000;
+    height: calc(768px - 160px - 28px);
+    overflow-y: auto; background: #000;
     border-top: 2px solid #808080;
   }
   #screen-apikey {
@@ -1244,14 +1247,15 @@
        NETSCAPE BROWSER SCREEN
   ══════════════════════════════════════ -->
   <div class="screen" id="screen-netscape">
-    <img id="netscape-header-img" src="netscape.jpg" alt="Netscape Navigator">
-    <div id="netscape-nav-bar">
-      <button id="netscape-back-btn" onclick="showScreen('screen-windesktop')">◀ Back to Desktop</button>
-      <input id="netscape-location-bar" type="text" value="http://www.wrestleboard.com/" readonly>
-    </div>
-    <div id="netscape-content">
-      <!-- Wrestleboard page rendered inline -->
-      <div id="wb-page"></div>
+    <div class="netscape-inner">
+      <img id="netscape-header-img" src="netscape.jpg" alt="Netscape Navigator">
+      <div id="netscape-nav-bar">
+        <button id="netscape-back-btn" onclick="showScreen('screen-windesktop')">◀ Back to Desktop</button>
+        <input id="netscape-location-bar" type="text" value="http://www.wrestleboard.com/" readonly>
+      </div>
+      <div id="netscape-content">
+        <div id="wb-page"></div>
+      </div>
     </div>
   </div>
 
@@ -1973,7 +1977,7 @@
   }
 
   // Screens that need display:flex to center their content
-  var flexScreens = { 'screen-poweron': true, 'screen-apikey': true, 'screen-loading': true, 'screen-netscape': true };
+  var flexScreens = { 'screen-poweron': true, 'screen-apikey': true, 'screen-loading': true };
 
   // ── Power On / Win95 boot ──
   function doPowerOn() {
@@ -2787,7 +2791,7 @@
   function launchNetscape() {
     document.getElementById('start-menu').classList.remove('open');
     showScreen('screen-netscape');
-    renderWrestleboard();
+    setTimeout(renderWrestleboard, 50);
   }
 
   // ════════════════════════════════════════
@@ -2796,15 +2800,10 @@
 
   var wbRendered = false;
   function renderWrestleboard() {
-    if (wbRendered) return;
-    wbRendered = true;
-
-    // Build the Wrestleboard HTML as a string, with two modifications:
-    // 1) Replace the logo img + fallback with wrestleboard.jpg
-    // 2) Replace any hardcoded API key with the session apiKey variable
-    //    (the original file has no API key, but this future-proofs it)
-
     var wb = document.getElementById('wb-page');
+    if (!wb) return;
+    if (wbRendered && wb.children.length > 0) return;
+    wbRendered = true;
 
     // Inject Wrestleboard styles scoped inside wb-page
     var style = document.createElement('style');
