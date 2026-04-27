@@ -920,6 +920,76 @@
   }
   #chatroom-window.open { display: flex; }
 
+  /* ════ ROOM SELECTOR ════ */
+  #room-selector {
+    position: absolute; top: 120px; left: 160px;
+    width: 640px; height: 440px;
+    background: #d4d0c8;
+    border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    box-shadow: 2px 2px 0 #000;
+    display: none; flex-direction: column; z-index: 310;
+  }
+  #room-selector.open { display: flex; }
+  .rs-titlebar {
+    background: linear-gradient(to bottom, #2a7a8c, #1a5a6c);
+    color: #c8f0ff; font-size: 12px; font-weight: bold;
+    padding: 2px 5px; display: flex; align-items: center;
+    justify-content: space-between; height: 20px; cursor: grab; flex-shrink: 0;
+  }
+  .rs-titlebar:active { cursor: grabbing; }
+  .rs-titlebar-left { display: flex; align-items: center; gap: 4px; }
+  .rs-win-btn {
+    width: 14px; height: 12px; background: #c0c0c0;
+    border: 1px solid; border-color: #fff #808080 #808080 #fff;
+    font-size: 8px; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: #000; font-weight: bold;
+  }
+  .rs-body { display: flex; flex: 1; overflow: hidden; padding: 6px; gap: 6px; }
+  .rs-left {
+    width: 180px; flex-shrink: 0; display: flex; flex-direction: column;
+    border: 2px solid; border-color: #808080 #fff #fff #808080;
+    background: #fff; overflow-y: auto;
+  }
+  .rs-category {
+    padding: 4px 8px; font-size: 12px; font-family: 'Tahoma', Arial;
+    cursor: pointer; color: #000; border-bottom: 1px solid #e8e8e8;
+    white-space: nowrap;
+  }
+  .rs-category:hover { background: #000080; color: #fff; }
+  .rs-category.selected { background: #1a5a8a; color: #fff; font-weight: bold; }
+  .rs-right { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .rs-right-label {
+    font-size: 11px; font-family: 'Tahoma', Arial; color: #000;
+    font-weight: bold; flex-shrink: 0;
+  }
+  .rs-rooms {
+    flex: 1; border: 2px solid; border-color: #808080 #fff #fff #808080;
+    background: #fff; overflow-y: auto;
+  }
+  .rs-room-row {
+    display: flex; align-items: center; padding: 3px 8px;
+    font-size: 12px; font-family: 'Tahoma', Arial; color: #000;
+    cursor: pointer; border-bottom: 1px solid #eee; gap: 10px;
+  }
+  .rs-room-row:hover { background: #000080; color: #fff; }
+  .rs-room-row.selected { background: #1a5a8a; color: #fff; }
+  .rs-room-name { flex: 1; }
+  .rs-room-count { width: 30px; text-align: right; color: #808080; font-size: 11px; }
+  .rs-room-row.selected .rs-room-count { color: #aac; }
+  .rs-room-row:hover .rs-room-count { color: #aac; }
+  .rs-footer {
+    flex-shrink: 0; display: flex; justify-content: flex-end; gap: 6px;
+    padding: 4px 2px 0;
+  }
+  .rs-btn {
+    background: #4a7ab0; border: 2px solid;
+    border-color: #8ab4e0 #2a5a90 #2a5a90 #8ab4e0;
+    color: #fff; font-family: 'Tahoma', Arial; font-size: 11px;
+    font-weight: bold; padding: 3px 14px; cursor: pointer; min-width: 80px;
+  }
+  .rs-btn:active { border-color: #2a5a90 #8ab4e0 #8ab4e0 #2a5a90; }
+  .rs-btn.cancel { background: #c0c0c0; border-color: #fff #808080 #808080 #fff; color: #000; }
+
   .cr-titlebar {
     background: linear-gradient(to bottom, #2a7a8c, #1a5a6c);
     color: #c8f0ff; font-size: 12px; font-weight: bold;
@@ -1344,16 +1414,46 @@
     </div>
 
     <!-- Chat launch button (sits over the static Chat icon in the background image) -->
-    <button id="chat-launch-btn" onclick="openChatroom()" title="Chat">
+    <button id="chat-launch-btn" onclick="openRoomSelector()" title="Chat">
       <img src="chat_button.png" alt="Chat">
     </button>
+
+    <!-- Room Selector -->
+    <div id="room-selector">
+      <div class="rs-titlebar" id="rs-titlebar">
+        <div class="rs-titlebar-left">
+          <svg width="11" height="11" viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="none" stroke="#7ad4e8" stroke-width="2"/><path d="M7 10 Q10 6 13 10 Q10 14 7 10" fill="#7ad4e8"/></svg>
+          AOL Chat — Find a Chat Room
+        </div>
+        <div style="display:flex;gap:2px;">
+          <div class="rs-win-btn">_</div>
+          <div class="rs-win-btn">□</div>
+          <div class="rs-win-btn" onclick="closeRoomSelector()">✕</div>
+        </div>
+      </div>
+      <div class="rs-body">
+        <div class="rs-left" id="rs-cat-list">
+          <!-- categories populated by JS -->
+        </div>
+        <div class="rs-right">
+          <div class="rs-right-label" id="rs-room-label">Select a category to see rooms</div>
+          <div class="rs-rooms" id="rs-room-list">
+            <!-- rooms populated by JS -->
+          </div>
+          <div class="rs-footer">
+            <button class="rs-btn cancel" onclick="closeRoomSelector()">Cancel</button>
+            <button class="rs-btn" onclick="goChat()">Go Chat</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Chatroom window -->
     <div id="chatroom-window">
       <div class="cr-titlebar" id="cr-titlebar">
         <div class="cr-titlebar-left">
           <svg width="11" height="11" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8" fill="none" stroke="#7ad4e8" stroke-width="2"/><text x="10" y="14" text-anchor="middle" font-size="9" fill="#7ad4e8">A</text></svg>
-          The Bonfire
+          <span id="cr-room-name">The Bonfire</span>
         </div>
         <div class="cr-win-btns">
           <div class="cr-win-btn">_</div>
@@ -3005,9 +3105,484 @@
   }
 
   // ════════════════════════════════════════
-  // CHATROOM — The Bonfire
+  // ROOM SELECTOR
+  // ════════════════════════════════════════
+
+  var RS_CATEGORIES = [
+    { name: 'Towns',       icon: '🏘️' },
+    { name: 'Romance',     icon: '💕' },
+    { name: 'Friends',     icon: '👫' },
+    { name: 'Games',       icon: '🎮' },
+    { name: 'Sports',      icon: '🏈' },
+    { name: 'Wrestling',   icon: '🤼' },
+    { name: 'TV',          icon: '📺' },
+    { name: 'Music',       icon: '🎵' },
+    { name: 'Teens',       icon: '🧢' },
+    { name: 'College',     icon: '🎓' },
+    { name: 'News',        icon: '📰' },
+    { name: 'Sci-Fi',      icon: '🚀' }
+  ];
+
+  var RS_ROOMS = {
+    'Towns': [
+      { name: 'New York City Chat',     count: 34 },
+      { name: 'LA Hangout',             count: 21 },
+      { name: 'Chicago Friends',        count: 18 },
+      { name: 'Texas Talk',             count: 29 },
+      { name: 'Florida Lounge',         count: 15 },
+      { name: 'Midwest Meeting',        count: 11 },
+      { name: 'Boston Buddies',         count: 8  },
+      { name: 'Southern Chat',          count: 23 }
+    ],
+    'Romance': [
+      { name: 'Flirting 101',           count: 41 },
+      { name: 'Singles Lounge',         count: 37 },
+      { name: 'Hopeless Romantics',     count: 22 },
+      { name: 'Looking 4 Love',         count: 19 },
+      { name: 'Teen Romance',           count: 16 },
+      { name: 'Sweetheart Chat',        count: 12 },
+      { name: 'Crush Central',          count: 28 },
+      { name: 'Secret Admirer',         count: 9  }
+    ],
+    'Friends': [
+      { name: 'Best Friends',           count: 17 },
+      { name: 'Friends Forever',        count: 13 },
+      { name: 'Hang Out Room',          count: 25 },
+      { name: 'The Chill Zone',         count: 20 },
+      { name: 'Just Talking',           count: 31 },
+      { name: 'Good Vibes',             count: 14 },
+      { name: 'Bored Club',             count: 8  },
+      { name: 'Late Night Chat',        count: 22 }
+    ],
+    'Games': [
+      { name: 'Nintendo 64 Fans',       count: 27 },
+      { name: 'PlayStation Nation',     count: 33 },
+      { name: 'PC Gamers',              count: 19 },
+      { name: 'Goldeneye Fans',         count: 24 },
+      { name: 'RPG Quest',              count: 11 },
+      { name: 'Zelda Fans',             count: 16 },
+      { name: 'Final Fantasy VIII',     count: 21 },
+      { name: 'Quake & Doom',           count: 14 }
+    ],
+    'Sports': [
+      { name: 'NFL Talk',               count: 38 },
+      { name: 'NBA Chat',               count: 29 },
+      { name: 'MLB Fans',               count: 17 },
+      { name: 'College Football',       count: 22 },
+      { name: 'Soccer World',           count: 13 },
+      { name: 'March Madness',          count: 26 },
+      { name: 'NASCAR Nation',          count: 11 },
+      { name: 'ESPN Addicts',           count: 19 }
+    ],
+    'Wrestling': [
+      { name: 'WWF Attitude Era',       count: 44 },
+      { name: 'WCW Monday Nitro',       count: 31 },
+      { name: 'Stone Cold Steve Austin',count: 38 },
+      { name: 'The Rock Says...',       count: 29 },
+      { name: 'D-Generation X',         count: 22 },
+      { name: 'Mankind & Foley',        count: 17 },
+      { name: 'WCW vs WWF War',         count: 35 },
+      { name: 'Goldberg Undefeated',    count: 19 }
+    ],
+    'TV': [
+      { name: 'General TV Talk',        count: 28 },
+      { name: 'Dawsons Creek Fans',     count: 33 },
+      { name: 'Buffy The Vampire',      count: 26 },
+      { name: 'The Sopranos',           count: 21 },
+      { name: 'Friends Fan Club',       count: 41 },
+      { name: 'The Simpsons',           count: 35 },
+      { name: 'South Park Nation',      count: 29 },
+      { name: 'ER & Hospital Shows',    count: 14 }
+    ],
+    'Music': [
+      { name: 'Pop Music Fans',         count: 24 },
+      { name: 'Alternative Nation',     count: 19 },
+      { name: 'Hip Hop Chat',           count: 31 },
+      { name: 'Metal Heads',            count: 16 },
+      { name: 'Backstreet Boys',        count: 27 },
+      { name: 'Britney Spears Fans',    count: 22 },
+      { name: 'Punk Not Dead',          count: 13 },
+      { name: 'TRL Addicts',            count: 18 }
+    ],
+    'Teens': [
+      { name: 'Teen Chat 1',            count: 37 },
+      { name: 'High School Life',       count: 29 },
+      { name: 'Homework Help',          count: 12 },
+      { name: 'Teen Lounge',            count: 24 },
+      { name: 'Prom 1999',              count: 18 },
+      { name: 'Teen Advice',            count: 15 },
+      { name: 'College Prep',           count: 11 },
+      { name: 'Teen Hangout 2',         count: 33 }
+    ],
+    'College': [
+      { name: 'College Life',           count: 21 },
+      { name: 'Dorm Room Chat',         count: 17 },
+      { name: 'Study Break',            count: 14 },
+      { name: 'Greek Life',             count: 19 },
+      { name: 'Campus Talk',            count: 22 },
+      { name: 'Freshman Year',          count: 16 },
+      { name: 'Spring Break 99',        count: 28 },
+      { name: 'Internships',            count: 8  }
+    ],
+    'News': [
+      { name: 'Current Events',         count: 16 },
+      { name: 'Politics Talk',          count: 23 },
+      { name: 'Kosovo Crisis',          count: 11 },
+      { name: 'Y2K Survival',           count: 34 },
+      { name: 'Columbine Aftermath',    count: 19 },
+      { name: 'Clinton Impeachment',    count: 14 },
+      { name: 'World News',             count: 9  },
+      { name: 'Election 2000 Prep',     count: 12 }
+    ],
+    'Sci-Fi': [
+      { name: 'Star Wars Episode I',    count: 38 },
+      { name: 'X-Files Fanatics',       count: 26 },
+      { name: 'Stargate SG-1',          count: 13 },
+      { name: 'Babylon 5',              count: 9  },
+      { name: 'Star Trek Fans',         count: 21 },
+      { name: 'Matrix Reloaded Hype',   count: 17 },
+      { name: 'UFO & Aliens',           count: 24 },
+      { name: 'Sci-Fi General',         count: 15 }
+    ]
+  };
+
+  // Topic context per room name (subset — falls back to category if not found)
+  var ROOM_TOPIC_CONTEXT = {
+    // Wrestling rooms
+    'WWF Attitude Era':        'The year is 1999. You are in an AOL chatroom about WWF Attitude Era wrestling. Talk about Stone Cold Steve Austin, The Rock, Mankind/Mick Foley, Triple H, D-Generation X, The Undertaker, Kane, Jeff Hardy, Edge, Christian, Kurt Angle. Reference recent Raw and SmackDown storylines from 1999. Use wrestling fan slang like "heel", "face", "pop", "kayfabe", "work". Talk about pay-per-views like WrestleMania XV, Backlash, Over the Edge, SummerSlam, Unforgiven.',
+    'WCW Monday Nitro':        'The year is 1999. You are in an AOL chatroom about WCW Monday Nitro. Talk about Goldberg\'s undefeated streak finally ending, Hulk Hogan, Sting, Ric Flair, DDP, Bret Hart, the nWo (Hollywood and Wolfpac), Lex Luger, Randy Savage. Reference the Monday Night Wars — WCW is losing to WWF in ratings. Talk about WCW pay-per-views like Starrcade, SuperBrawl, Uncensored.',
+    'Stone Cold Steve Austin':  'The year is 1999. You are in an AOL chatroom dedicated to Stone Cold Steve Austin. Talk about his feud with Vince McMahon, the beer bashes, the stunner, "Austin 3:16", his alliance and betrayal with Vince, his battle with The Rock. Reference his merchandise, his truck, his catchphrases.',
+    'The Rock Says...':         'The year is 1999. You are in an AOL chatroom dedicated to The Rock. Talk about "Know your role and shut your mouth", the Corporate Rock era, the People\'s Elbow, the Rock Bottom, his feud with Stone Cold and Mankind. Quote his catchphrases. Reference his WWF Championship runs in 1999.',
+    'D-Generation X':           'The year is 1999. You are in an AOL chatroom about DX (D-Generation X). Talk about Triple H, X-Pac, The New Age Outlaws (Road Dogg and Billy Gunn), Chyna. Reference their antics, the crotch chops, "Are you ready?", their invasion of WCW. Talk about Triple H\'s rise as a singles main eventer.',
+    'Mankind & Foley':          'The year is 1999. You are in an AOL chatroom about Mankind/Mick Foley. Talk about the Hell in a Cell fall from 1998, his three personas (Mankind, Cactus Jack, Dude Love), winning the WWF Championship on Raw, his friendship with Al Snow, his book "Have a Nice Day". Reference the thumbtacks match.',
+    'WCW vs WWF War':           'The year is 1999. You are in an AOL chatroom about the Monday Night Wars between WWF and WCW. WWF has been winning for over a year now after WCW dominated 1996-1997. Debate who is better, which shows are better, DX vs nWo, Stone Cold vs Goldberg. Reference the ratings battles on Monday nights.',
+    'Goldberg Undefeated':      'The year is 1999. You are in an AOL chatroom about Goldberg. His undefeated streak ended in late 1998 when Kevin Nash beat him with a taser. Talk about his 173-0 streak, his spear and jackhammer, his WCW World Heavyweight Title reign, whether his streak should have ended, where WCW goes from here.',
+    // TV rooms
+    'General TV Talk':          'The year is 1999. You are in an AOL chatroom for general TV discussion. Topics could include anything on TV right now: Friends, ER, Frasier, The Simpsons, South Park, Buffy, Dawsons Creek, The Sopranos (just started), Who Wants to Be a Millionaire, WWF wrestling, NYPD Blue. Talk about cliffhangers, actors, favorite episodes.',
+    'Dawsons Creek Fans':       'The year is 1999. You are in an AOL chatroom for Dawsons Creek fans. It\'s Season 2-3 right now. Talk about Dawson and Joey\'s relationship, Pacey, Andie, Jack coming out as gay, the love triangle drama. Reference specific episodes and plotlines. Debate Team Dawson vs Team Pacey. Everyone is obsessed with this show.',
+    'Buffy The Vampire':        'The year is 1999. You are in an AOL chatroom for Buffy the Vampire Slayer fans. Season 3 just ended with the Mayor as the villain and graduation day battle, Season 4 just started with Buffy at UC Sunnydale. Talk about Angel leaving for his own show, Spike, Willow and Oz, the Scooby Gang. Debate favorite episodes.',
+    'The Sopranos':             'The year is 1999. You are in an AOL chatroom about The Sopranos which just premiered on HBO in January 1999. Everyone is blown away by it. Talk about Tony Soprano, Carmela, Christopher, Paulie Walnuts, Big Pussy, Dr. Melfi. Reference early Season 1 storylines. Some people don\'t have HBO and are jealous.',
+    'Friends Fan Club':         'The year is 1999. You are in an AOL chatroom for Friends fans. The show is in Season 5. Ross and Rachel are off and on, Monica and Chandler are secretly dating, Joey is still trying to make it as an actor, Phoebe is quirky as ever. Talk about favorite moments, quotes, which character you are most like.',
+    'The Simpsons':             'The year is 1999. You are in an AOL chatroom for Simpsons fans. The show is in Season 10-11. Talk about classic episodes, favorite characters, best quotes. Reference episodes like "Bart Gets an Elephant", "Homer at the Bat", Steamed Hams. Debate whether newer seasons are as good as old ones.',
+    'South Park Nation':        'The year is 1999. You are in an AOL chatroom for South Park fans. The show just aired its Season 3 and the movie "Bigger Longer & Uncut" came out in June 1999. Talk about Cartman, Kenny dying, Chef, Mr. Garrison, the movie songs. Quote lines and reference controversial episodes. Parents hate this show.',
+    'ER & Hospital Shows':      'The year is 1999. You are in an AOL chatroom for ER fans. The show is in its massive Season 5-6 peak. Talk about Dr. Greene, Dr. Ross (George Clooney just left), Dr. Carter, Carol Hathaway, the intense medical cases. Reference shocking moments. Also discuss other hospital shows like Chicago Hope.'
+  };
+
+  // Category fallback context
+  var CATEGORY_CONTEXT = {
+    'Wrestling': 'The year is 1999. You are in an AOL chatroom about pro wrestling. Talk about WWF and WCW, the Monday Night Wars, Stone Cold, The Rock, Goldberg, Mankind, DX, nWo, pay-per-views. Use wrestling fan vocabulary.',
+    'TV':        'The year is 1999. You are in an AOL chatroom about TV shows. Talk about popular shows from 1999 like Friends, ER, The Sopranos, Buffy, Dawsons Creek, The Simpsons, South Park. Discuss plotlines, characters, and episodes.',
+    'Games':     'The year is 1999. You are in an AOL chatroom about video games. Talk about N64, PlayStation, PC games. Zelda Ocarina of Time, Goldeneye, Final Fantasy VIII, Metal Gear Solid, Quake, StarCraft. Debate console wars.',
+    'Sports':    'The year is 1999. You are in an AOL chatroom about sports. Talk about the NFL, NBA, MLB, college sports. Reference 1999 storylines — the Rams surprising Super Bowl run, the Lakers dynasty forming with Shaq and Kobe, Mark McGwire and Sosa home run records.',
+    'Music':     'The year is 1999. You are in an AOL chatroom about music. Talk about current hits — Backstreet Boys, NSYNC, Britney Spears, TLC, Eminem, Limp Bizkit, Ricky Martin, Lauryn Hill. Reference TRL on MTV, new albums dropping.',
+    'Teens':     'The year is 1999. You are in an AOL chatroom for teenagers. Talk about high school life, classes, friends, relationships, summer plans, senior year, prom, college applications, part-time jobs.',
+    'Towns':     'The year is 1999. You are in an AOL chatroom meeting people from different cities. Ask where people are from, talk about your city, local hangouts, the weather, what there is to do.',
+    'Romance':   'The year is 1999. You are in an AOL chatroom for romance and meeting new people. Be flirty but appropriate. Ask a/s/l, talk about relationships, dating, what you look for in someone.',
+    'Friends':   'The year is 1999. You are in an AOL chatroom just hanging out and making friends. Casual small talk, what you\'re doing, weekend plans, school, work.',
+    'College':   'The year is 1999. You are in an AOL chatroom for college students. Talk about dorm life, classes, professors, parties, spring break, roommates, majors, college football.',
+    'News':      'The year is 1999. You are in an AOL chatroom discussing current events. Topics include Y2K fears, the Kosovo war, Columbine aftermath, Clinton impeachment, the upcoming 2000 election.',
+    'Sci-Fi':    'The year is 1999. You are in an AOL chatroom about sci-fi. Star Wars Episode I just came out (and divided fans), X-Files is huge, The Matrix just blew everyone away, Star Trek is on TV.'
+  };
+
+  var rsSelectedCategory = null;
+  var rsSelectedRoom = null;
+
+  function openRoomSelector() {
+    var sel = document.getElementById('room-selector');
+    if (sel.classList.contains('open')) return;
+    sel.classList.add('open');
+    sel.style.zIndex = ++chatZBase;
+    rsSelectedCategory = null;
+    rsSelectedRoom = null;
+    renderRSCategories();
+    document.getElementById('rs-room-list').innerHTML = '';
+    document.getElementById('rs-room-label').textContent = 'Select a category to see rooms';
+  }
+
+  function closeRoomSelector() {
+    document.getElementById('room-selector').classList.remove('open');
+  }
+
+  function renderRSCategories() {
+    var list = document.getElementById('rs-cat-list');
+    list.innerHTML = '';
+    RS_CATEGORIES.forEach(function(cat) {
+      var el = document.createElement('div');
+      el.className = 'rs-category';
+      el.innerHTML = cat.icon + '&nbsp; ' + cat.name;
+      if (rsSelectedCategory === cat.name) el.classList.add('selected');
+      el.addEventListener('click', function() {
+        rsSelectedCategory = cat.name;
+        rsSelectedRoom = null;
+        renderRSCategories();
+        renderRSRooms(cat.name);
+      });
+      list.appendChild(el);
+    });
+  }
+
+  function renderRSRooms(catName) {
+    var rooms = RS_ROOMS[catName] || [];
+    document.getElementById('rs-room-label').textContent = catName + ' — ' + rooms.length + ' rooms';
+    var list = document.getElementById('rs-room-list');
+    list.innerHTML = '';
+    rooms.forEach(function(room) {
+      var row = document.createElement('div');
+      row.className = 'rs-room-row';
+      if (rsSelectedRoom === room.name) row.classList.add('selected');
+      row.innerHTML = '<span class="rs-room-name">' + esc(room.name) + '</span><span class="rs-room-count">' + room.count + '</span>';
+      row.addEventListener('click', function() {
+        rsSelectedRoom = room.name;
+        document.querySelectorAll('.rs-room-row').forEach(function(r){ r.classList.remove('selected'); });
+        row.classList.add('selected');
+      });
+      row.addEventListener('dblclick', function() {
+        rsSelectedRoom = room.name;
+        goChat();
+      });
+      list.appendChild(row);
+    });
+  }
+
+  function goChat() {
+    if (!rsSelectedRoom) return;
+    closeRoomSelector();
+    // Get topic context for this room
+    var topic = ROOM_TOPIC_CONTEXT[rsSelectedRoom]
+      || CATEGORY_CONTEXT[rsSelectedCategory]
+      || 'The year is 1999. You are in an AOL chatroom. Make casual conversation about whatever comes up.';
+    openChatroom(rsSelectedRoom, rsSelectedCategory, topic);
+  }
+
+  // ════════════════════════════════════════
+  // CHATROOM
   // ════════════════════════════════════════
   var CR_NAMES = [
+    'MHouse123','GXGX171717','CookieLife4Me','SurfDog99','FLBeachBum',
+    'NightOwl2112','SkaterKid88','PizzaKing404','DawnPatrol77','CoolBreeze11',
+    'MallRat1999','TacoTuesday5','SunsetVibes7','BoardShorts42','NeonSign88',
+    'GroovyTimes9','DirtBike247','WaveRider66','CheezWiz2000','PalmTree99'
+  ];
+  var crOpen = false;
+  var crWaitingForUser = false;
+  var crRotateIndex = 0;
+  var crShuffled = [];
+  var crHistory = [];
+  var crBatchEpoch = 0;
+  var crRoomName = 'The Bonfire';
+  var crTopicContext = '';
+
+  function crShuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length-1; i > 0; i--) {
+      var j = Math.floor(Math.random()*(i+1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  function crPickNext5() {
+    var picks = [];
+    for (var i = 0; i < 5; i++) {
+      picks.push(crShuffled[crRotateIndex % crShuffled.length]);
+      crRotateIndex++;
+    }
+    return picks;
+  }
+
+  // Detect a/s/l question and generate realistic responses
+  var crAslPending = false;
+
+  function isAslQuestion(text) {
+    return /^\s*a\s*\/\s*s\s*\/\s*l\s*\??\s*$/i.test(text.trim())
+      || /a\/s\/l/i.test(text) || /asl\?/i.test(text);
+  }
+
+  var ASL_AGES   = ['14','15','16','17','18','19','20','21','22','16','17','15'];
+  var ASL_SEXES  = ['m','f','m','f','f','m','m','f','m','f'];
+  var ASL_LOCS   = [
+    'NY','CA','TX','FL','OH','PA','IL','MI','GA','NC',
+    'WA','CO','AZ','NJ','VA','MN','TN','MO','WI','OR'
+  ];
+
+  function generateAslResponse(name) {
+    var age = ASL_AGES[Math.floor(Math.random()*ASL_AGES.length)];
+    var sex = ASL_SEXES[Math.floor(Math.random()*ASL_SEXES.length)];
+    var loc = ASL_LOCS[Math.floor(Math.random()*ASL_LOCS.length)];
+    return age + '/' + sex + '/' + loc;
+  }
+
+  function openChatroom(roomName, category, topicContext) {
+    crRoomName = roomName || 'The Bonfire';
+    crTopicContext = topicContext || '';
+
+    if (crOpen) {
+      // Reset for new room
+      crHistory = [];
+      crBatchEpoch++;
+      document.getElementById('cr-messages').innerHTML = '';
+    }
+
+    crOpen = true;
+    crShuffled = crShuffle(CR_NAMES);
+    crRotateIndex = 0;
+    crHistory = [];
+    crWaitingForUser = false;
+    crAslPending = false;
+
+    // Update titlebar room name
+    document.getElementById('cr-room-name').textContent = crRoomName;
+
+    var win = document.getElementById('chatroom-window');
+    win.classList.add('open');
+    win.style.zIndex = 350;
+
+    // Populate people list
+    var list = document.getElementById('cr-people-list');
+    list.innerHTML = '';
+    var meEl = document.createElement('div');
+    meEl.className = 'cr-person is-me';
+    meEl.textContent = currentUser;
+    list.appendChild(meEl);
+    crShuffled.forEach(function(n) {
+      var el = document.createElement('div');
+      el.className = 'cr-person';
+      el.textContent = n;
+      list.appendChild(el);
+    });
+    document.getElementById('cr-people-count').textContent = '21\u00a0 people here';
+
+    crAppendHost('OnlineHost', currentUser + ' has entered the room.');
+
+    crBatchEpoch++;
+    var epoch = crBatchEpoch;
+    setTimeout(function() {
+      crFireBatch(crPickNext5(), 0, epoch, function() {
+        crWaitingForUser = true;
+      });
+    }, 2500);
+  }
+
+  function closeChatroom() {
+    crOpen = false;
+    crWaitingForUser = false;
+    document.getElementById('chatroom-window').classList.remove('open');
+    document.getElementById('cr-messages').innerHTML = '';
+  }
+
+  function crAppendHost(name, text) {
+    var msgs = document.getElementById('cr-messages');
+    var div = document.createElement('div');
+    div.className = 'cr-msg-line';
+    div.innerHTML = '<span class="cr-msg-name cr-name-host">'+esc(name)+':</span><span class="cr-msg-text">'+esc(text)+'</span>';
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  function crAppendMsg(name, text, isMe) {
+    var msgs = document.getElementById('cr-messages');
+    var div = document.createElement('div');
+    div.className = 'cr-msg-line';
+    var cls = isMe ? 'cr-name-user' : 'cr-name-other';
+    div.innerHTML = '<span class="cr-msg-name '+cls+'">'+esc(name)+':</span><span class="cr-msg-text">'+esc(text)+'</span>';
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  function crFireBatch(names, idx, epoch, onDone) {
+    if (epoch !== crBatchEpoch) return;
+    if (idx >= names.length) { if (onDone) onDone(); return; }
+    setTimeout(function() {
+      if (epoch !== crBatchEpoch) return;
+      var name = names[idx];
+      // If previous user message was a/s/l, respond with asl
+      if (crAslPending) {
+        var aslReply = generateAslResponse(name);
+        crHistory.push({ role: 'assistant', content: name + ': ' + aslReply });
+        crAppendMsg(name, aslReply, false);
+        crFireBatch(names, idx+1, epoch, onDone);
+      } else {
+        getChatroomReply(name, function(text) {
+          if (epoch !== crBatchEpoch) return;
+          crAppendMsg(name, text, false);
+          crFireBatch(names, idx+1, epoch, onDone);
+        });
+      }
+    }, idx === 0 ? 1200 : 2000);
+  }
+
+  function crKeydown(e) {
+    if (e.key === 'Enter') { e.preventDefault(); crSend(); }
+  }
+
+  function crSend() {
+    var inp = document.getElementById('cr-input');
+    var text = inp.value.trim();
+    if (!text) return;
+    inp.value = '';
+    crBatchEpoch++;
+    crAslPending = isAslQuestion(text);
+    crAppendMsg(currentUser, text, true);
+    crHistory.push({ role: 'user', content: currentUser + ': ' + text });
+    crWaitingForUser = false;
+    crFireBatch(crPickNext5(), 0, crBatchEpoch, function() {
+      crAslPending = false;
+      crWaitingForUser = true;
+    });
+  }
+
+  async function getChatroomReply(name, cb) {
+    if (!apiKey) {
+      var fallbacks = ['lol','no way','for real?','haha yeah','omg','brb','lmao','tru','word','nice'];
+      var f = fallbacks[Math.floor(Math.random()*fallbacks.length)];
+      crHistory.push({ role: 'assistant', content: name + ': ' + f });
+      cb(f); return;
+    }
+
+    var topicLine = crTopicContext
+      ? crTopicContext
+      : 'The year is 1999. You are in an AOL chatroom called "' + crRoomName + '". Make casual conversation.';
+
+    var systemPrompt = 'You are ' + name + ', a teenager or young adult from somewhere in the US in 1999. '
+      + topicLine + ' '
+      + 'Type in classic AOL chatroom style: very short, casual, lowercase, abbreviations (lol brb omg nm sup u ur r), occasional typos. '
+      + 'ONE sentence or fragment only — 2 to 10 words max. '
+      + 'React organically to the most recent messages. Vary your responses — agree, disagree, joke, ask a question. '
+      + 'Do not all say the same thing. Never break character. Never reference anything after 1999.';
+
+    var recent = crHistory.slice(-20);
+    var contextText = recent.map(function(m){ return m.content; }).join('\n');
+    var lastThree  = crHistory.slice(-3).map(function(m){ return m.content; }).join('\n');
+    var prompt = contextText
+      ? 'Chat so far:\n' + contextText + '\n\nMost recent:\n' + lastThree + '\n\nYou are ' + name + '. Write ONE short chatroom message (2-10 words):'
+      : 'You just entered "' + crRoomName + '". Write ONE short opening chatroom message as ' + name + ' (2-8 words):';
+
+    try {
+      var r = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 60,
+          system: systemPrompt,
+          messages: [{ role: 'user', content: prompt }]
+        })
+      });
+      var d = await r.json();
+      var reply = (d.content && d.content[0]) ? d.content[0].text.trim().replace(/^["']|["']$/g,'') : 'lol';
+      crHistory.push({ role: 'assistant', content: name + ': ' + reply });
+      cb(reply);
+    } catch(e) {
+      var fb = 'lol';
+      crHistory.push({ role: 'assistant', content: name + ': ' + fb });
+      cb(fb);
+    }
+  }
     'MHouse123','GXGX171717','CookieLife4Me','SurfDog99','FLBeachBum',
     'NightOwl2112','SkaterKid88','PizzaKing404','DawnPatrol77','CoolBreeze11',
     'MallRat1999','TacoTuesday5','SunsetVibes7','BoardShorts42','NeonSign88',
@@ -3216,6 +3791,8 @@
   // Wire up chatroom close and drag
   document.getElementById('cr-close-btn').addEventListener('click', closeChatroom);
   makeDraggable(document.getElementById('chatroom-window'), document.getElementById('cr-titlebar'));
+  makeDraggable(document.getElementById('room-selector'),   document.getElementById('rs-titlebar'));
+  document.getElementById('room-selector').addEventListener('mousedown', function(){ document.getElementById('room-selector').style.zIndex = ++chatZBase; });
   makeDraggable(document.getElementById('inbox-window'),    document.getElementById('inbox-titlebar'));
   makeDraggable(document.getElementById('writemail-window'),document.getElementById('wm-titlebar'));
   makeDraggable(document.getElementById('email-read-window'), document.getElementById('email-read-titlebar'));
