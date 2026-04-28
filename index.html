@@ -923,75 +923,180 @@
   }
   #chatroom-window.open { display: flex; }
 
-  /* ════ ROOM SELECTOR ════ */
+  /* ════ ROOM SELECTOR — AOL Chat Room Listings ════ */
   #room-selector {
-    position: absolute; top: 120px; left: 160px;
-    width: 640px; height: 440px;
-    background: #d4d0c8;
+    position: absolute; top: 60px; left: 80px;
+    width: 720px; height: 580px;
+    background: #e8f0f8;
     border: 2px solid; border-color: #fff #808080 #808080 #fff;
-    box-shadow: 2px 2px 0 #000;
+    box-shadow: 3px 3px 6px rgba(0,0,0,0.4);
     display: none; flex-direction: column; z-index: 310;
+    font-family: 'Tahoma', Arial, sans-serif;
   }
   #room-selector.open { display: flex; }
+
+  /* Titlebar */
   .rs-titlebar {
-    background: linear-gradient(to bottom, #2a7a8c, #1a5a6c);
-    color: #c8f0ff; font-size: 12px; font-weight: bold;
-    padding: 2px 5px; display: flex; align-items: center;
-    justify-content: space-between; height: 20px; cursor: grab; flex-shrink: 0;
+    background: linear-gradient(to bottom, #4a90d0, #2a70b0);
+    color: white; font-size: 12px; font-weight: bold;
+    padding: 2px 6px; display: flex; align-items: center;
+    justify-content: space-between; height: 22px; cursor: grab; flex-shrink: 0;
   }
   .rs-titlebar:active { cursor: grabbing; }
-  .rs-titlebar-left { display: flex; align-items: center; gap: 4px; }
+  .rs-titlebar-left { display: flex; align-items: center; gap: 5px; font-size: 12px; }
+  .rs-win-btns { display: flex; gap: 2px; }
   .rs-win-btn {
-    width: 14px; height: 12px; background: #c0c0c0;
+    width: 16px; height: 14px; background: #c0c0c0;
     border: 1px solid; border-color: #fff #808080 #808080 #fff;
-    font-size: 8px; display: flex; align-items: center; justify-content: center;
+    font-size: 9px; display: flex; align-items: center; justify-content: center;
     cursor: pointer; color: #000; font-weight: bold;
   }
-  .rs-body { display: flex; flex: 1; overflow: hidden; padding: 6px; gap: 6px; }
-  .rs-left {
-    width: 180px; flex-shrink: 0; display: flex; flex-direction: column;
+
+  /* Menu bar */
+  .rs-menubar {
+    background: #d4e4f0; border-bottom: 1px solid #a0b8cc;
+    padding: 1px 6px; display: flex; gap: 16px; flex-shrink: 0;
+    font-size: 11px;
+  }
+  .rs-menu-item { color: #000; cursor: pointer; padding: 1px 2px; }
+  .rs-menu-item:hover { text-decoration: underline; }
+
+  /* Big header */
+  .rs-big-header {
+    background: linear-gradient(to bottom, #c8ddf0, #a8c8e8);
+    padding: 8px 12px 6px; display: flex; align-items: center;
+    justify-content: space-between; flex-shrink: 0;
+    border-bottom: 1px solid #80a8c8;
+  }
+  .rs-big-title { font-size: 22px; font-weight: bold; color: #000; }
+  .rs-big-title span { color: #cc0000; font-style: italic; }
+  .rs-header-btns { display: flex; gap: 6px; }
+  .rs-header-btn {
+    background: linear-gradient(to bottom, #e8e8e8, #c8c8c8);
+    border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    font-size: 11px; font-weight: bold; padding: 3px 14px;
+    cursor: pointer; color: #000;
+  }
+
+  /* Search bar */
+  .rs-search-bar {
+    background: #d4e4f0; padding: 6px 12px; flex-shrink: 0;
+    border-bottom: 1px solid #a0b8cc;
+  }
+  .rs-search-label { font-size: 11px; font-weight: bold; color: #000; margin-bottom: 3px; }
+  .rs-search-row { display: flex; align-items: center; gap: 6px; }
+  .rs-search-input {
+    width: 200px; height: 22px;
     border: 2px solid; border-color: #808080 #fff #fff #808080;
-    background: #fff; overflow-y: auto;
+    background: #fff; font-size: 11px; padding: 0 4px; outline: none;
+  }
+  .rs-search-btn {
+    background: #44aa44; border: 2px solid; border-color: #88dd88 #226622 #226622 #88dd88;
+    color: #fff; font-size: 11px; font-weight: bold; padding: 2px 10px; cursor: pointer;
+  }
+
+  /* Tabs */
+  .rs-tabs { display: flex; padding: 4px 12px 0; gap: 2px; flex-shrink: 0; }
+  .rs-tab {
+    padding: 4px 18px; font-size: 11px; font-weight: bold; cursor: pointer;
+    border-radius: 4px 4px 0 0; border: 1px solid #80a8c8;
+  }
+  .rs-tab.active { background: #5090c8; color: #fff; border-color: #3070a8; }
+  .rs-tab.inactive { background: #a8c8e8; color: #000; border-color: #80a8c8; }
+
+  /* Main body */
+  .rs-main-body {
+    flex: 1; display: flex; gap: 0; overflow: hidden;
+    padding: 0 12px 8px; margin-top: 4px;
+  }
+
+  /* Left: category + room picker */
+  .rs-picker-area {
+    flex: 1; display: flex; flex-direction: column; overflow: hidden;
+    background: #c0d8ee; border: 2px solid #6090b8; border-radius: 4px;
+    padding: 6px; gap: 4px;
+  }
+  .rs-step-row { display: flex; gap: 6px; align-items: flex-start; overflow: hidden; flex: 1; }
+  .rs-step {
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+  .rs-step-1 { width: 170px; flex-shrink: 0; }
+  .rs-step-2 { flex: 1; }
+  .rs-step-header {
+    display: flex; align-items: flex-start; gap: 5px; margin-bottom: 4px; font-size: 11px;
+  }
+  .rs-step-num {
+    background: #2a6090; color: #fff; font-weight: bold;
+    border-radius: 50%; width: 18px; height: 18px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; flex-shrink: 0;
+  }
+  .rs-step-desc { font-size: 11px; color: #000; line-height: 1.3; }
+  .rs-col-header {
+    background: #2a6090; color: #fff; font-size: 11px; font-weight: bold;
+    padding: 2px 5px; flex-shrink: 0;
+  }
+  .rs-col-subheader {
+    background: #5090c0; color: #fff; font-size: 10px;
+    padding: 1px 5px; flex-shrink: 0; display: flex; gap: 12px;
+  }
+  .rs-list-box {
+    flex: 1; background: #fff; overflow-y: auto;
+    border: 1px solid #5080a0;
   }
   .rs-category {
-    padding: 4px 8px; font-size: 12px; font-family: 'Tahoma', Arial;
-    cursor: pointer; color: #000; border-bottom: 1px solid #e8e8e8;
-    white-space: nowrap;
+    padding: 2px 6px; font-size: 12px; font-family: 'Tahoma', Arial;
+    cursor: pointer; color: #000; white-space: nowrap;
   }
-  .rs-category:hover { background: #000080; color: #fff; }
-  .rs-category.selected { background: #1a5a8a; color: #fff; font-weight: bold; }
-  .rs-right { flex: 1; display: flex; flex-direction: column; gap: 6px; }
-  .rs-right-label {
-    font-size: 11px; font-family: 'Tahoma', Arial; color: #000;
-    font-weight: bold; flex-shrink: 0;
-  }
-  .rs-rooms {
-    flex: 1; border: 2px solid; border-color: #808080 #fff #fff #808080;
-    background: #fff; overflow-y: auto;
-  }
+  .rs-category:hover { background: #3a70b0; color: #fff; }
+  .rs-category.selected { background: #5090c8; color: #fff; }
   .rs-room-row {
-    display: flex; align-items: center; padding: 3px 8px;
+    display: flex; align-items: center; padding: 2px 6px;
     font-size: 12px; font-family: 'Tahoma', Arial; color: #000;
-    cursor: pointer; border-bottom: 1px solid #eee; gap: 10px;
+    cursor: pointer; gap: 0;
   }
-  .rs-room-row:hover { background: #000080; color: #fff; }
-  .rs-room-row.selected { background: #1a5a8a; color: #fff; }
+  .rs-room-row:hover { background: #3a70b0; color: #fff; }
+  .rs-room-row.selected { background: #5090c8; color: #fff; }
+  .rs-room-count { width: 38px; flex-shrink: 0; font-size: 11px; color: #666; }
+  .rs-room-row:hover .rs-room-count, .rs-room-row.selected .rs-room-count { color: #cce; }
   .rs-room-name { flex: 1; }
-  .rs-room-count { width: 30px; text-align: right; color: #808080; font-size: 11px; }
-  .rs-room-row.selected .rs-room-count { color: #aac; }
-  .rs-room-row:hover .rs-room-count { color: #aac; }
-  .rs-footer {
-    flex-shrink: 0; display: flex; justify-content: flex-end; gap: 6px;
-    padding: 4px 2px 0;
+
+  /* Bottom Go Chat bar */
+  .rs-go-bar {
+    display: flex; gap: 6px; padding-top: 5px; flex-shrink: 0;
   }
-  .rs-btn {
-    background: #4a7ab0; border: 2px solid;
-    border-color: #8ab4e0 #2a5a90 #2a5a90 #8ab4e0;
-    color: #fff; font-family: 'Tahoma', Arial; font-size: 11px;
-    font-weight: bold; padding: 3px 14px; cursor: pointer; min-width: 80px;
+  .rs-go-btn {
+    background: linear-gradient(to bottom, #5cb85c, #3a923a);
+    border: 2px solid; border-color: #88dd88 #226622 #226622 #88dd88;
+    color: #fff; font-size: 12px; font-weight: bold; padding: 3px 14px; cursor: pointer;
   }
-  .rs-btn:active { border-color: #2a5a90 #8ab4e0 #8ab4e0 #2a5a90; }
-  .rs-btn.cancel { background: #c0c0c0; border-color: #fff #808080 #808080 #fff; color: #000; }
+  .rs-go-btn:active { border-color: #226622 #88dd88 #88dd88 #226622; }
+  .rs-grey-btn {
+    background: linear-gradient(to bottom, #e0e0e0, #b8b8b8);
+    border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    color: #000; font-size: 12px; font-weight: bold; padding: 3px 14px; cursor: default;
+  }
+
+  /* Right sidebar */
+  .rs-sidebar {
+    width: 195px; flex-shrink: 0; margin-left: 10px;
+    display: flex; flex-direction: column; gap: 8px; overflow-y: auto;
+  }
+  .rs-sidebar-box {
+    background: #fff; border: 1px solid #80a8c8; padding: 7px 9px; font-size: 11px;
+  }
+  .rs-sidebar-title { font-size: 12px; font-weight: bold; color: #cc0000; margin-bottom: 4px; }
+  .rs-sidebar-link { color: #0000cc; text-decoration: underline; cursor: pointer; display: block; font-size: 11px; line-height: 1.8; }
+  .rs-sidebar-link:hover { color: #cc0000; }
+  .rs-sidebar-num { color: #000; font-size: 11px; line-height: 1.8; }
+  .rs-sidebar-bullet { color: #555; margin-right: 3px; }
+  .rs-gwpa-img {
+    width: 60px; height: 55px; float: left; margin-right: 7px;
+    background: linear-gradient(135deg, #d4a080, #c08060);
+    border: 1px solid #808080; display: flex; align-items: center;
+    justify-content: center; font-size: 22px;
+  }
+  .rs-gwpa-text { font-size: 10px; color: #000; line-height: 1.4; overflow: hidden; }
 
   .cr-titlebar {
     background: linear-gradient(to bottom, #2a7a8c, #1a5a6c);
@@ -1422,32 +1527,137 @@
       <img src="chat_button.png" alt="Chat">
     </button>
 
-    <!-- Room Selector -->
+    <!-- Room Selector — AOL Chat Room Listings -->
     <div id="room-selector">
       <div class="rs-titlebar" id="rs-titlebar">
         <div class="rs-titlebar-left">
-          <svg width="11" height="11" viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="none" stroke="#7ad4e8" stroke-width="2"/><path d="M7 10 Q10 6 13 10 Q10 14 7 10" fill="#7ad4e8"/></svg>
-          AOL Chat — Find a Chat Room
+          <span style="color:#ffcc00;font-size:14px;">✦</span>
+          AOL Chat Room Listings
         </div>
-        <div style="display:flex;gap:2px;">
+        <div class="rs-win-btns">
           <div class="rs-win-btn">_</div>
           <div class="rs-win-btn">□</div>
           <div class="rs-win-btn" onclick="closeRoomSelector()">✕</div>
         </div>
       </div>
-      <div class="rs-body">
-        <div class="rs-left" id="rs-cat-list">
-          <!-- categories populated by JS -->
+
+      <!-- Menu bar -->
+      <div class="rs-menubar">
+        <span class="rs-menu-item"><u>F</u>ile</span>
+        <span class="rs-menu-item"><u>E</u>dit</span>
+      </div>
+
+      <!-- Big header -->
+      <div class="rs-big-header">
+        <div class="rs-big-title"><span>AOL</span> Chat Room Listings</div>
+        <div class="rs-header-btns">
+          <button class="rs-header-btn">Main</button>
+          <button class="rs-header-btn">Help</button>
         </div>
-        <div class="rs-right">
-          <div class="rs-right-label" id="rs-room-label">Select a category to see rooms</div>
-          <div class="rs-rooms" id="rs-room-list">
-            <!-- rooms populated by JS -->
+      </div>
+
+      <!-- Search bar -->
+      <div class="rs-search-bar">
+        <div class="rs-search-label">Search All Chats by Topic:</div>
+        <div class="rs-search-row">
+          <input class="rs-search-input" type="text" placeholder="">
+          <button class="rs-search-btn">Search</button>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="rs-tabs">
+        <div class="rs-tab active">Created by People Connection</div>
+        <div class="rs-tab inactive">Created by AOL Members</div>
+      </div>
+
+      <!-- Main body -->
+      <div class="rs-main-body">
+
+        <!-- Left: picker area -->
+        <div class="rs-picker-area">
+          <div class="rs-step-row">
+
+            <!-- Category column -->
+            <div class="rs-step rs-step-1">
+              <div class="rs-step-header">
+                <div class="rs-step-num">1</div>
+                <div class="rs-step-desc">Double-click to<br>choose a category:</div>
+              </div>
+              <div class="rs-col-header">Category</div>
+              <div class="rs-list-box" id="rs-cat-list" style="height:300px;"></div>
+            </div>
+
+            <!-- Room column -->
+            <div class="rs-step rs-step-2">
+              <div class="rs-step-header">
+                <div class="rs-step-num">2</div>
+                <div class="rs-step-desc" id="rs-room-label">Double-click to enter a room:</div>
+              </div>
+              <div class="rs-col-header">
+                <span id="rs-col-header-text">Rooms</span>
+              </div>
+              <div class="rs-col-subheader">
+                <span>People</span>
+                <span id="rs-col-subheader-name">Select a category</span>
+              </div>
+              <div class="rs-list-box" id="rs-room-list" style="height:281px;"></div>
+            </div>
           </div>
-          <div class="rs-footer">
-            <button class="rs-btn cancel" onclick="closeRoomSelector()">Cancel</button>
-            <button class="rs-btn" onclick="goChat()">Go Chat</button>
+
+          <!-- Go Chat bar -->
+          <div class="rs-go-bar">
+            <button class="rs-go-btn" onclick="goChat()">Go Chat</button>
+            <button class="rs-grey-btn">Who's Chatting</button>
+            <button class="rs-grey-btn">More</button>
           </div>
+        </div>
+
+        <!-- Right sidebar -->
+        <div class="rs-sidebar">
+          <!-- Chat with people like you -->
+          <div class="rs-sidebar-box">
+            <div class="rs-sidebar-title">Chat With People Like You</div>
+            <span class="rs-sidebar-bullet">·</span><a class="rs-sidebar-link">Piercing and Tattoos</a>
+            <span class="rs-sidebar-bullet">·</span><a class="rs-sidebar-link">Elvis Sightings</a> | <a class="rs-sidebar-link">Britney Fans</a>
+            <span class="rs-sidebar-bullet">·</span><a class="rs-sidebar-link">Duuuude</a> | <a class="rs-sidebar-link">Hey Girlfriend</a>
+          </div>
+
+          <!-- Start / Private chat -->
+          <div class="rs-sidebar-box" style="display:flex;flex-direction:column;gap:6px;">
+            <div style="display:flex;align-items:center;gap:5px;font-size:11px;cursor:pointer;">
+              <span style="font-size:9px;color:#3060a0;">▪</span>
+              <span style="color:#000;">Start Your Own Chat</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:5px;font-size:11px;cursor:pointer;">
+              <span style="font-size:9px;color:#3060a0;">▪</span>
+              <span style="color:#000;">Enter or Start Private Chat</span>
+            </div>
+          </div>
+
+          <!-- Top City Chats -->
+          <div class="rs-sidebar-box">
+            <div class="rs-sidebar-title">Top City Chats</div>
+            <div class="rs-sidebar-num">1. <a class="rs-sidebar-link" style="display:inline;">New York</a></div>
+            <div class="rs-sidebar-num">2. <a class="rs-sidebar-link" style="display:inline;">Los Angeles</a></div>
+            <div class="rs-sidebar-num">3. <a class="rs-sidebar-link" style="display:inline;">Miami</a></div>
+            <div class="rs-sidebar-num">4. <a class="rs-sidebar-link" style="display:inline;">Chicago</a></div>
+            <div class="rs-sidebar-num">5. <a class="rs-sidebar-link" style="display:inline;">Boston</a></div>
+          </div>
+
+          <!-- Go Where the People Are -->
+          <div class="rs-sidebar-box" style="overflow:hidden;">
+            <div class="rs-sidebar-title">Go Where the People Are</div>
+            <div style="display:flex;gap:7px;align-items:flex-start;">
+              <div class="rs-gwpa-img">👩</div>
+              <div class="rs-gwpa-text">
+                Rate photos, flirt a little, get the star treatment.<br>
+                <a class="rs-sidebar-link" style="display:inline;font-size:10px;">· Join the fun</a>
+              </div>
+            </div>
+          </div>
+
+          <div style="font-size:9px;color:#808080;text-align:right;padding-top:2px;">AOL Keyword: Chat Room Listings</div>
         </div>
       </div>
     </div>
@@ -2043,23 +2253,6 @@
     var area = document.getElementById('bl-list-area');
     area.innerHTML = '';
 
-    // Show currentUser at very top — italic if away
-    if (currentUser) {
-      var meRow = document.createElement('div');
-      meRow.className = 'bl-buddy ' + (isAway ? 'me-away' : 'me-online');
-      meRow.textContent = currentUser + (isAway ? ' (Away)' : '');
-      meRow.title = isAway ? 'Click to view your away message' : '';
-      meRow.addEventListener('click', function() {
-        if (isAway) {
-          showAwayView();
-        }
-      });
-      area.appendChild(meRow);
-      var sep = document.createElement('div');
-      sep.style.cssText = 'height:1px;background:#d0d0d0;margin:2px 4px;';
-      area.appendChild(sep);
-    }
-
     buddyData.forEach(function(group) {
       var onCount = group.members.filter(function(m){ return m.online; }).length;
       var hdr = document.createElement('div');
@@ -2067,6 +2260,19 @@
       var cls = group.highlight ? 'bl-group-yellow' : 'bl-group-plain';
       hdr.innerHTML = '<span style="font-size:9px;">▼</span><span class="'+cls+'">'+group.group+' ('+onCount+'/'+group.members.length+')</span>';
       area.appendChild(hdr);
+
+      // Insert currentUser as first item inside the Buddies group
+      if (group.highlight && currentUser) {
+        var meRow = document.createElement('div');
+        meRow.className = 'bl-buddy ' + (isAway ? 'me-away' : 'me-online');
+        meRow.textContent = currentUser + (isAway ? ' (Away)' : '');
+        meRow.title = isAway ? 'Click to view your away message' : '';
+        meRow.addEventListener('click', function() {
+          if (isAway) showAwayView();
+        });
+        area.appendChild(meRow);
+      }
+
       group.members.forEach(function(m) {
         var item = document.createElement('div');
         item.className = 'bl-buddy '+(m.online?'online':'offline');
@@ -3322,14 +3528,16 @@
 
   function renderRSRooms(catName) {
     var rooms = RS_ROOMS[catName] || [];
-    document.getElementById('rs-room-label').textContent = catName + ' — ' + rooms.length + ' rooms';
+    document.getElementById('rs-room-label').textContent = 'Double-click to enter a room:';
+    document.getElementById('rs-col-header-text').textContent = 'Rooms in "' + catName + '"';
+    document.getElementById('rs-col-subheader-name').textContent = catName;
     var list = document.getElementById('rs-room-list');
     list.innerHTML = '';
     rooms.forEach(function(room) {
       var row = document.createElement('div');
       row.className = 'rs-room-row';
       if (rsSelectedRoom === room.name) row.classList.add('selected');
-      row.innerHTML = '<span class="rs-room-name">' + esc(room.name) + '</span><span class="rs-room-count">' + room.count + '</span>';
+      row.innerHTML = '<span class="rs-room-count">' + room.count + '</span><span class="rs-room-name">' + esc(room.name) + '</span>';
       row.addEventListener('click', function() {
         rsSelectedRoom = room.name;
         document.querySelectorAll('.rs-room-row').forEach(function(r){ r.classList.remove('selected'); });
