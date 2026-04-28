@@ -1704,7 +1704,7 @@
           <span id="cr-room-name">The Bonfire</span>
         </div>
         <div class="cr-win-btns">
-          <div class="cr-win-btn">_</div>
+          <div class="cr-win-btn" id="cr-minimize-btn">_</div>
           <div class="cr-win-btn">□</div>
           <div class="cr-win-btn" id="cr-close-btn">✕</div>
         </div>
@@ -3459,6 +3459,65 @@
     if (minimizedChats[name].flashInterval) clearInterval(minimizedChats[name].flashInterval);
   }
 
+  // ── Chatroom minimize/restore ──
+  var crMinimized = { tab: null, flashTimer: null, flashInterval: null };
+
+  function minimizeChatroom() {
+    var win = document.getElementById('chatroom-window');
+    if (!win || crMinimized.tab) return;
+    win.style.display = 'none';
+
+    var tray = document.getElementById('minimized-tray');
+    var tab = document.createElement('div');
+    tab.className = 'minimized-tab';
+    tab.innerHTML =
+      '<svg width="11" height="11" viewBox="0 0 20 20" style="flex-shrink:0;margin-right:4px;"><circle cx="10" cy="10" r="8" fill="none" stroke="#7ad4e8" stroke-width="2"/><text x="10" y="14" text-anchor="middle" font-size="9" fill="#7ad4e8">A</text></svg>'
+      + '<span class="minimized-tab-title">' + esc(crRoomName) + '</span>'
+      + '<div class="minimized-tab-close" id="cr-tab-close">✕</div>';
+
+    tab.addEventListener('click', function(e) {
+      if (e.target.id === 'cr-tab-close') return;
+      restoreChatroom();
+    });
+    tab.querySelector('#cr-tab-close').addEventListener('click', function(e) {
+      e.stopPropagation();
+      stopCrFlashing();
+      tray.removeChild(tab);
+      crMinimized = { tab: null, flashTimer: null, flashInterval: null };
+      closeChatroom();
+    });
+
+    tray.appendChild(tab);
+
+    // Start flashing after 10s
+    crMinimized.tab = tab;
+    crMinimized.flashTimer = setTimeout(function() {
+      if (!crMinimized.tab) return;
+      var isAlt = false;
+      crMinimized.flashInterval = setInterval(function() {
+        if (!crMinimized.tab) { clearInterval(crMinimized.flashInterval); return; }
+        isAlt = !isAlt;
+        tab.classList.toggle('flashing-alt', isAlt);
+      }, 1000);
+    }, 10000);
+  }
+
+  function restoreChatroom() {
+    var win = document.getElementById('chatroom-window');
+    if (!win) return;
+    stopCrFlashing();
+    win.style.display = 'flex';
+    win.style.zIndex = ++chatZBase;
+    var tray = document.getElementById('minimized-tray');
+    if (crMinimized.tab && tray.contains(crMinimized.tab)) tray.removeChild(crMinimized.tab);
+    crMinimized = { tab: null, flashTimer: null, flashInterval: null };
+  }
+
+  function stopCrFlashing() {
+    if (crMinimized.flashTimer) clearTimeout(crMinimized.flashTimer);
+    if (crMinimized.flashInterval) clearInterval(crMinimized.flashInterval);
+  }
+
   function makeDraggable(win, handle) {
     var dx=0, dy=0, startX=0, startY=0;
     handle.addEventListener('mousedown', function(e) {
@@ -3832,7 +3891,9 @@
 
     var win = document.getElementById('chatroom-window');
     win.classList.add('open');
-    win.style.zIndex = 350;
+    win.style.zIndex = 300;
+    // Ensure any subsequently opened IM windows appear above the chatroom
+    if (chatZBase < 350) chatZBase = 350;
 
     // Populate people list — names are clickable to open private IM
     var list = document.getElementById('cr-people-list');
@@ -3860,7 +3921,7 @@
       crFireBatch(crPickNext5(), 0, epoch, function() {
         crWaitingForUser = true;
       });
-    }, 2500);
+    }, 4000);
 
     // 20 seconds after entering: random creepy stranger IMs you
     var stranger = crShuffled[Math.floor(Math.random() * crShuffled.length)];
@@ -3877,31 +3938,37 @@
     }, 20000);
   }
 
-  function openChatroomPrivateIM(name, skipGreeting) {
-    // Build a stranger personality for this chatroom person
+  function openChatroomPrivateIM(name) {
+    // Always set/overwrite the stranger personality for chatroom names
     var strangerPersonality = 'You are ' + name + ', a random AOL chatroom user in 1999. '
       + (crTopicContext || 'You hang out in AOL chatrooms.') + ' '
-      + 'PERSONALITY: You are a goofy, overly eager, slightly creepy AOL chatroom person who is desperately looking for online romance or someone to talk to. '
-      + 'You ask a/s/l immediately, ask if they have pics, say things like "u r so cool" and "wanna chat private?", '
-      + 'use lots of emoticons like ;) :P :-) lol, and overshare about yourself. '
-      + 'You are harmless but socially awkward. You are very enthusiastic. '
-      + 'Keep all messages short — 1-2 sentences max. Classic 1999 AIM style. Never break character.';
+      + 'PERSONALITY: You are a goofy, overly eager, slightly creepy AOL chatroom person desperately looking for online romance. '
+      + 'You ask a/s/l, ask if they have pics, say things like "u r so cute", "wanna chat private?", "i never met anyone like u before :)". '
+      + 'Use emoticons like ;) :P :-) and overshare about yourself. You are harmless but very socially awkward and enthusiastic. '
+      + 'When they respond to you, keep flirting and asking personal questions. Stay in character no matter what. '
+      + 'Keep messages short — 1-2 sentences. Classic 1999 AIM lowercase style.';
 
-    // Store personality for this name
-    if (!personalities[name]) {
-      personalities[name] = strangerPersonality;
-    }
+    // Always overwrite so the personality is fresh and correct
+    personalities[name] = strangerPersonality;
 
     if (!chatHistories[name]) chatHistories[name] = [];
 
-    // Open a regular chat window but don't add to buddy list
+    // Open a chat window but don't add to buddy list
     openChat(name);
   }
 
   function closeChatroom() {
     crOpen = false;
     crWaitingForUser = false;
-    document.getElementById('chatroom-window').classList.remove('open');
+    if (crMinimized.tab) {
+      stopCrFlashing();
+      var tray = document.getElementById('minimized-tray');
+      if (tray && tray.contains(crMinimized.tab)) tray.removeChild(crMinimized.tab);
+      crMinimized = { tab: null, flashTimer: null, flashInterval: null };
+    }
+    var win = document.getElementById('chatroom-window');
+    win.classList.remove('open');
+    win.style.display = '';
     document.getElementById('cr-messages').innerHTML = '';
   }
 
@@ -4028,13 +4095,15 @@
       crHistory.push({ role: 'assistant', content: name + ': ' + reply });
       cb(reply);
     } catch(e) {
-      var fallbackErr = 'haha yeah no';
+      var errorFallbacks = ['omg same','right??','haha yeah dude','no way seriously','dude i kno','lmao exactly','wait fr?','haha ok then','tru tho','yeah for real'];
+      var fallbackErr = errorFallbacks[Math.floor(Math.random()*errorFallbacks.length)];
       crHistory.push({ role: 'assistant', content: name + ': ' + fallbackErr });
       cb(fallbackErr);
     }
   }
   // Wire up chatroom close and drag
   document.getElementById('cr-close-btn').addEventListener('click', closeChatroom);
+  document.getElementById('cr-minimize-btn').addEventListener('click', minimizeChatroom);
   makeDraggable(document.getElementById('chatroom-window'), document.getElementById('cr-titlebar'));
   makeDraggable(document.getElementById('room-selector'),   document.getElementById('rs-titlebar'));
   document.getElementById('room-selector').addEventListener('mousedown', function(){ document.getElementById('room-selector').style.zIndex = ++chatZBase; });
