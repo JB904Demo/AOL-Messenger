@@ -810,6 +810,7 @@
     width: 160px; height: 26px;
     background: #000080;
     border: 2px solid; border-color: #5050c0 #000030 #000030 #5050c0;
+    outline: 2px solid #c0c0c0;
     display: flex; align-items: center; justify-content: space-between;
     padding: 0 4px 0 6px; cursor: pointer;
     font-family: 'Tahoma', Arial; font-size: 11px; font-weight: bold; color: white;
@@ -1751,7 +1752,7 @@
 
     <!-- Write launch button -->
     <button id="write-launch-btn" onclick="openWriteMail()" title="">
-      <img src="write.png" alt="" style="width:100%;height:100%;object-fit:contain;">
+      <img src="write.png" alt="" onerror="this.style.display='none'" style="width:100%;height:100%;object-fit:contain;">
     </button>
 
     <!-- Inbox window -->
@@ -3953,7 +3954,8 @@
 
     if (!chatHistories[name]) chatHistories[name] = [];
 
-    // Open a chat window but don't add to buddy list
+    // Ensure the IM window opens above the chatroom (z-index 300)
+    if (chatZBase < 400) chatZBase = 400;
     openChat(name);
   }
 
