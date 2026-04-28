@@ -94,6 +94,10 @@
   .desktop-hotspot:hover { outline: 2px dashed rgba(255,255,255,0.4); }
 
   /* Win95 Taskbar */
+  /* Global taskbar — shown on signin, loading, desktop, netscape screens */
+  #global-taskbar {
+    position: absolute; bottom: 0; left: 0; width: 100%; z-index: 1000; pointer-events: auto;
+  }
   #win95-taskbar {
     position: absolute; bottom: 0; left: 0; width: 100%; height: 28px;
     background: #c0c0c0;
@@ -191,11 +195,77 @@
     border-top: 2px solid #808080;
   }
   #screen-apikey {
+    background: #008080;
     background-image: url('wallpaper.png');
     background-size: cover;
     background-position: center;
-    background-color: #000033;
     align-items: center; justify-content: center;
+  }
+  /* Win95 login dialog overrides */
+  #apikey-dialog {
+    background: #c0c0c0;
+    border: 2px solid; border-color: #ffffff #808080 #808080 #ffffff;
+    box-shadow: 2px 2px 0 #000;
+    width: 420px;
+  }
+  #apikey-dialog .w95-titlebar {
+    background: linear-gradient(to right, #000080, #1084d0);
+    color: white; font-size: 12px; font-weight: bold;
+    padding: 3px 6px; display: flex; align-items: center;
+    justify-content: space-between; height: 20px;
+  }
+  .apikey-help-btn {
+    width: 16px; height: 14px; background: #c0c0c0;
+    border: 1px solid; border-color: #fff #808080 #808080 #fff;
+    font-size: 10px; font-weight: bold; display: flex; align-items: center;
+    justify-content: center; cursor: pointer; color: #000;
+  }
+  .apikey-inner {
+    display: flex; gap: 12px; padding: 14px 14px 10px;
+  }
+  .apikey-icon-col {
+    flex-shrink: 0; display: flex; align-items: flex-start; padding-top: 4px;
+  }
+  .apikey-key-icon {
+    width: 42px; height: 42px; position: relative;
+  }
+  .apikey-fields-col { flex: 1; display: flex; flex-direction: column; gap: 0; }
+  .apikey-prompt {
+    font-size: 12px; color: #000; margin-bottom: 12px; line-height: 1.4;
+    font-family: 'Tahoma', 'MS Sans Serif', Arial;
+  }
+  .apikey-field-row {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
+  }
+  .apikey-field-label {
+    width: 80px; font-size: 12px; color: #000; text-align: right;
+    font-family: 'Tahoma', 'MS Sans Serif', Arial;
+    flex-shrink: 0;
+  }
+  .apikey-field-input {
+    flex: 1; height: 22px;
+    border-top: 2px solid #808080; border-left: 2px solid #808080;
+    border-right: 2px solid #fff; border-bottom: 2px solid #fff;
+    background: #fff; font-family: 'Tahoma', Arial; font-size: 12px;
+    padding: 0 4px; outline: none; color: #000; user-select: text;
+  }
+  .apikey-field-input[disabled] {
+    background: #d4d0c8; color: #000;
+  }
+  .apikey-btn-col {
+    display: flex; flex-direction: column; gap: 5px; padding: 14px 10px 10px 0;
+    flex-shrink: 0;
+  }
+  .apikey-ok-btn, .apikey-cancel-btn {
+    background: #c0c0c0; border: 2px solid;
+    border-color: #ffffff #808080 #808080 #ffffff;
+    font-family: 'Tahoma', Arial; font-size: 12px;
+    padding: 3px 0; cursor: pointer; color: #000;
+    width: 72px; text-align: center;
+  }
+  .apikey-ok-btn { outline: 1px solid #000; outline-offset: -3px; }
+  .apikey-ok-btn:active, .apikey-cancel-btn:active {
+    border-color: #808080 #ffffff #ffffff #808080;
   }
 
   .w95-window {
@@ -1265,7 +1335,7 @@
     <!-- AOL hotspot: lowest icon on right side of image (~ADL & Internet FREE TRIAL, bottom) -->
     <!-- Estimated position from image: roughly x=105-205, y=298-348 in the 1024×768 canvas -->
     <div class="desktop-hotspot" id="hotspot-aol"
-         style="left:50px; top:451px; width:110px; height:60px;"
+         style="left:40px; top:487px; width:110px; height:60px;"
          onclick="launchAOL()" title="America Online"></div>
 
     <!-- Netscape hotspot: top row, third from left -->
@@ -1273,79 +1343,6 @@
          style="left:304px; top:12px; width:80px; height:70px;"
          onclick="launchNetscape()" title="Netscape Navigator"></div>
 
-    <!-- Win95 Taskbar -->
-    <div id="win95-taskbar">
-      <button id="start-btn" onclick="toggleStartMenu()">
-        <img src="windows.png" alt="" style="width:16px;height:16px;object-fit:contain;">
-        <span>Start</span>
-      </button>
-      <!-- Taskbar program buttons area -->
-      <div style="flex:1;"></div>
-      <!-- Clock -->
-      <div id="win95-clock">12:00 AM</div>
-    </div>
-
-    <!-- Start Menu -->
-    <div id="start-menu">
-      <div class="start-menu-header">Windows 95</div>
-      <div class="start-menu-items">
-        <div class="start-menu-item" onclick="launchNetscape()">
-          <span class="smi-icon">🌐</span>
-          <div><span class="smi-label">Netscape Navigator</span><span class="smi-sub">Browse the Web</span></div>
-        </div>
-        <div class="start-menu-item" onclick="launchAOL()">
-          <span class="smi-icon">📡</span>
-          <div><span class="smi-label">America Online</span><span class="smi-sub">AOL 4.0</span></div>
-        </div>
-        <div class="start-menu-divider"></div>
-        <div class="start-menu-item">
-          <span class="smi-icon">📁</span>
-          <div><span class="smi-label">My Documents</span></div>
-        </div>
-        <div class="start-menu-item">
-          <span class="smi-icon">🖥️</span>
-          <div><span class="smi-label">My Computer</span></div>
-        </div>
-        <div class="start-menu-item">
-          <span class="smi-icon">🖨️</span>
-          <div><span class="smi-label">Printers</span></div>
-        </div>
-        <div class="start-menu-item">
-          <span class="smi-icon">🎮</span>
-          <div><span class="smi-label">Games</span><span class="smi-sub">Minesweeper, Solitaire</span></div>
-        </div>
-        <div class="start-menu-item">
-          <span class="smi-icon">📝</span>
-          <div><span class="smi-label">Notepad</span></div>
-        </div>
-        <div class="start-menu-item">
-          <span class="smi-icon">🎨</span>
-          <div><span class="smi-label">Paint</span></div>
-        </div>
-        <div class="start-menu-item">
-          <span class="smi-icon">🔊</span>
-          <div><span class="smi-label">Volume Control</span></div>
-        </div>
-        <div class="start-menu-divider"></div>
-        <div class="start-menu-item">
-          <span class="smi-icon">🔍</span>
-          <div><span class="smi-label">Find</span><span class="smi-sub">Files or Folders...</span></div>
-        </div>
-        <div class="start-menu-item">
-          <span class="smi-icon">❓</span>
-          <div><span class="smi-label">Help</span></div>
-        </div>
-        <div class="start-menu-item">
-          <span class="smi-icon">⚙️</span>
-          <div><span class="smi-label">Settings</span><span class="smi-sub">Control Panel, Taskbar...</span></div>
-        </div>
-        <div class="start-menu-divider"></div>
-        <div class="start-menu-item" onclick="toggleStartMenu()">
-          <span class="smi-icon">🔌</span>
-          <div><span class="smi-label">Shut Down...</span></div>
-        </div>
-      </div>
-    </div>
   </div>
 
   <!-- ══════════════════════════════════════
@@ -1368,35 +1365,50 @@
        API KEY SCREEN
   ══════════════════════════════════════ -->
   <div class="screen" id="screen-apikey">
-    <div class="w95-window" style="width:360px;">
+    <div id="apikey-dialog">
       <div class="w95-titlebar">
-        <div class="w95-titlebar-left">
-          <span class="w95-title-icon">🔑</span>
-          America Online — Enter API Key
+        <div class="w95-titlebar-left" style="display:flex;align-items:center;gap:4px;">
+          <svg width="14" height="14" viewBox="0 0 20 20">
+            <rect x="2" y="2" width="7" height="7" fill="#ff0000"/>
+            <rect x="11" y="2" width="7" height="7" fill="#00aa00"/>
+            <rect x="2" y="11" width="7" height="7" fill="#0000ff"/>
+            <rect x="11" y="11" width="7" height="7" fill="#ffaa00"/>
+          </svg>
+          Welcome to Windows
         </div>
-        <div class="w95-btns">
-          <div class="w95-btn">_</div>
-          <div class="w95-btn">□</div>
-          <div class="w95-btn">✕</div>
+        <div style="display:flex;gap:2px;">
+          <div class="apikey-help-btn">?</div>
+          <div class="apikey-help-btn">✕</div>
         </div>
       </div>
-      <div class="w95-body">
-        <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
-          <span style="font-size:32px;line-height:1;">🖥️</span>
-          <div>
-            <div style="font-weight:bold;font-size:12px;margin-bottom:4px;">Anthropic API Key Required</div>
-            <div style="font-size:11px;color:#333;line-height:1.5;">Enter your API key to enable buddy chat responses. Your key is used this session only and never stored.</div>
+      <div style="display:flex;">
+        <div class="apikey-inner" style="flex:1;">
+          <!-- Key icon -->
+          <div class="apikey-icon-col">
+            <svg width="42" height="42" viewBox="0 0 42 42">
+              <circle cx="14" cy="20" r="10" fill="none" stroke="#c8960c" stroke-width="3"/>
+              <circle cx="14" cy="20" r="4" fill="#c8960c"/>
+              <rect x="23" y="19" width="16" height="4" fill="#c8960c" rx="1"/>
+              <rect x="33" y="19" width="4" height="7" fill="#c8960c" rx="1"/>
+              <rect x="27" y="19" width="4" height="5" fill="#c8960c" rx="1"/>
+              <circle cx="10" cy="20" r="2" fill="#fff"/>
+            </svg>
+          </div>
+          <div class="apikey-fields-col">
+            <div class="apikey-prompt">Type a user name and password to log on to Windows.</div>
+            <div class="apikey-field-row">
+              <label class="apikey-field-label"><u>U</u>ser name:</label>
+              <input class="apikey-field-input" type="text" value="Shiftcaps" disabled>
+            </div>
+            <div class="apikey-field-row">
+              <label class="apikey-field-label"><u>P</u>assword:</label>
+              <input class="apikey-field-input" type="password" id="apikey-input" onkeydown="onApiKeyEnter(event)" autocomplete="current-password">
+            </div>
           </div>
         </div>
-        <div class="w95-input-row">
-          <span class="w95-label">API Key:</span>
-          <input type="password" id="apikey-input" class="w95-input" placeholder="sk-ant-..." onkeydown="onApiKeyEnter(event)">
-        </div>
-        <div class="w95-note">🔒 Key lives in memory only. Get a key at console.anthropic.com</div>
-        <hr class="w95-divider">
-        <div class="w95-btn-row">
-          <button class="w95-push-btn" onclick="skipApiKey()">Skip</button>
-          <button class="w95-push-btn default" onclick="submitApiKey()">OK</button>
+        <div class="apikey-btn-col">
+          <button class="apikey-ok-btn" onclick="submitApiKey()">OK</button>
+          <button class="apikey-cancel-btn" onclick="skipApiKey()">Cancel</button>
         </div>
       </div>
     </div>
@@ -2050,6 +2062,78 @@
 
   </div>
 
+  <!-- Global taskbar — shown on all screens except poweron, win95, apikey -->
+  <div id="global-taskbar" style="display:none;">
+    <div id="win95-taskbar">
+      <button id="start-btn" onclick="toggleStartMenu()">
+        <img src="windows.png" alt="" style="width:16px;height:16px;object-fit:contain;">
+        <span>Start</span>
+      </button>
+      <div style="flex:1;"></div>
+      <div id="win95-clock">12:00 AM</div>
+    </div>
+    <div id="start-menu">
+      <div class="start-menu-header">Windows 95</div>
+      <div class="start-menu-items">
+        <div class="start-menu-item" onclick="launchNetscape()">
+          <span class="smi-icon">🌐</span>
+          <div><span class="smi-label">Netscape Navigator</span><span class="smi-sub">Browse the Web</span></div>
+        </div>
+        <div class="start-menu-item" onclick="launchAOL()">
+          <span class="smi-icon">📡</span>
+          <div><span class="smi-label">America Online</span><span class="smi-sub">AOL 4.0</span></div>
+        </div>
+        <div class="start-menu-divider"></div>
+        <div class="start-menu-item">
+          <span class="smi-icon">📁</span>
+          <div><span class="smi-label">My Documents</span></div>
+        </div>
+        <div class="start-menu-item">
+          <span class="smi-icon">🖥️</span>
+          <div><span class="smi-label">My Computer</span></div>
+        </div>
+        <div class="start-menu-item">
+          <span class="smi-icon">🖨️</span>
+          <div><span class="smi-label">Printers</span></div>
+        </div>
+        <div class="start-menu-item">
+          <span class="smi-icon">🎮</span>
+          <div><span class="smi-label">Games</span><span class="smi-sub">Minesweeper, Solitaire</span></div>
+        </div>
+        <div class="start-menu-item">
+          <span class="smi-icon">📝</span>
+          <div><span class="smi-label">Notepad</span></div>
+        </div>
+        <div class="start-menu-item">
+          <span class="smi-icon">🎨</span>
+          <div><span class="smi-label">Paint</span></div>
+        </div>
+        <div class="start-menu-item">
+          <span class="smi-icon">🔊</span>
+          <div><span class="smi-label">Volume Control</span></div>
+        </div>
+        <div class="start-menu-divider"></div>
+        <div class="start-menu-item">
+          <span class="smi-icon">🔍</span>
+          <div><span class="smi-label">Find</span><span class="smi-sub">Files or Folders...</span></div>
+        </div>
+        <div class="start-menu-item">
+          <span class="smi-icon">❓</span>
+          <div><span class="smi-label">Help</span></div>
+        </div>
+        <div class="start-menu-item">
+          <span class="smi-icon">⚙️</span>
+          <div><span class="smi-label">Settings</span><span class="smi-sub">Control Panel, Taskbar...</span></div>
+        </div>
+        <div class="start-menu-divider"></div>
+        <div class="start-menu-item" onclick="toggleStartMenu()">
+          <span class="smi-icon">🔌</span>
+          <div><span class="smi-label">Shut Down...</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div><!-- /#canvas -->
 
 <script>
@@ -2125,7 +2209,6 @@
     if (v) apiKey = v;
     showScreen('screen-windesktop');
     startClock();
-    setTimeout(function(){ document.getElementById('apikey-input').focus(); }, 100);
   }
   function skipApiKey() {
     showScreen('screen-windesktop');
@@ -2194,8 +2277,9 @@
     showScreen('screen-win95');
     playSound('win95');
     setTimeout(function() {
-      showScreen('screen-windesktop');
-      startClock();
+      // After Win95 boot, show the login dialog
+      showScreen('screen-apikey');
+      setTimeout(function(){ document.getElementById('apikey-input').focus(); }, 100);
     }, 9000);
   }
 
@@ -2213,12 +2297,16 @@
     shake();
   }
 
+  var taskbarScreens = { 'screen-windesktop': true, 'screen-signin': true, 'screen-loading': true, 'screen-netscape': true, 'screen-desktop': true };
+
   function showScreen(id) {
-    document.querySelectorAll('.screen').forEach(function(s){
-      s.style.display = 'none';
-    });
+    document.querySelectorAll('.screen').forEach(function(s){ s.style.display = 'none'; });
     var el = document.getElementById(id);
     el.style.display = flexScreens[id] ? 'flex' : 'block';
+    var tb = document.getElementById('global-taskbar');
+    if (tb) tb.style.display = taskbarScreens[id] ? 'block' : 'none';
+    var sm = document.getElementById('start-menu');
+    if (sm) sm.classList.remove('open');
   }
 
   // ── Buddy rotation ──
@@ -2984,14 +3072,8 @@
 
   function launchAOL() {
     document.getElementById('start-menu').classList.remove('open');
-    // If already have API key go straight to sign-in, else ask for key first
-    if (apiKey) {
-      showScreen('screen-signin');
-      setTimeout(function(){ document.getElementById('pw-input').focus(); }, 100);
-    } else {
-      showScreen('screen-apikey');
-      setTimeout(function(){ document.getElementById('apikey-input').focus(); }, 100);
-    }
+    showScreen('screen-signin');
+    setTimeout(function(){ document.getElementById('pw-input').focus(); }, 100);
   }
 
   function launchNetscape() {
