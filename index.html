@@ -800,7 +800,29 @@
   }
   .wm-side-icon { font-size: 24px; line-height: 1; }
   .wm-side-label { font-size: 10px; font-weight: bold; color: #000; text-align: center; line-height: 1.2; }
-  /* ── Away message system ── */
+  /* ── Minimized IM tabs ── */
+  #minimized-tray {
+    position: absolute; bottom: 28px; left: 0;
+    display: flex; flex-direction: row; gap: 0;
+    z-index: 999; pointer-events: auto;
+  }
+  .minimized-tab {
+    width: 160px; height: 26px;
+    background: #000080;
+    border: 2px solid; border-color: #5050c0 #000030 #000030 #5050c0;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 4px 0 6px; cursor: pointer;
+    font-family: 'Tahoma', Arial; font-size: 11px; font-weight: bold; color: white;
+    white-space: nowrap; overflow: hidden;
+  }
+  .minimized-tab.flashing-alt { background: #1a8a4a; border-color: #4acc7a #005020 #005020 #4acc7a; }
+  .minimized-tab-title { flex: 1; overflow: hidden; text-overflow: ellipsis; font-size: 11px; }
+  .minimized-tab-close {
+    width: 14px; height: 12px; background: #c0c0c0;
+    border: 1px solid; border-color: #fff #808080 #808080 #fff;
+    font-size: 8px; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: #000; font-weight: bold; flex-shrink: 0; margin-left: 4px;
+  }
   .bl-buddy.me-online { color: #000; font-weight: bold; cursor: pointer; }
   .bl-buddy.me-away   { color: #000; font-weight: bold; font-style: italic; cursor: pointer; }
 
@@ -2064,6 +2086,8 @@
 
   <!-- Global taskbar — shown on all screens except poweron, win95, apikey -->
   <div id="global-taskbar" style="display:none;">
+    <!-- Minimized IM tray — sits just above taskbar -->
+    <div id="minimized-tray"></div>
     <div id="win95-taskbar">
       <button id="start-btn" onclick="toggleStartMenu()">
         <img src="windows.png" alt="" style="width:16px;height:16px;object-fit:contain;">
@@ -2409,7 +2433,7 @@
           ${esc(name)} - Instant Message
         </div>
         <div class="chat-win-btns">
-          <div class="chat-win-btn">_</div>
+          <div class="chat-win-btn minimize-chat-btn" data-name="${name}">_</div>
           <div class="chat-win-btn">□</div>
           <div class="chat-win-btn close-chat-btn" data-name="${name}">✕</div>
         </div>
@@ -2466,6 +2490,9 @@
     // Close button
     win.querySelector('.close-chat-btn').addEventListener('click', function() { closeChat(name); });
 
+    // Minimize button
+    win.querySelector('.minimize-chat-btn').addEventListener('click', function() { minimizeChat(name); });
+
     // Send button
     win.querySelector('.chat-send-btn').addEventListener('click', function() { sendChat(name); });
 
@@ -2491,6 +2518,15 @@
   var chatZBase = 200;
 
   function closeChat(name) {
+    // Clean up minimized state if applicable
+    if (minimizedChats[name]) {
+      stopFlashing(name);
+      var tray = document.getElementById('minimized-tray');
+      if (minimizedChats[name].tab && tray.contains(minimizedChats[name].tab)) {
+        tray.removeChild(minimizedChats[name].tab);
+      }
+      delete minimizedChats[name];
+    }
     if (openChats[name]) {
       openChats[name].remove();
       delete openChats[name];
@@ -3349,6 +3385,80 @@
     }
   }
 
+  // ════════════════════════════════════════
+  // MINIMIZE / RESTORE IM WINDOWS
+  // ════════════════════════════════════════
+  var minimizedChats = {};  // name → { tab, flashInterval }
+
+  function minimizeChat(name) {
+    var win = openChats[name];
+    if (!win || minimizedChats[name]) return;
+
+    // Hide the window
+    win.style.display = 'none';
+
+    // Create the minimized tab
+    var tray = document.getElementById('minimized-tray');
+    var tab = document.createElement('div');
+    tab.className = 'minimized-tab';
+    tab.innerHTML =
+      '<svg width="11" height="11" viewBox="0 0 20 26" style="flex-shrink:0;margin-right:4px;"><circle cx="10" cy="3" r="3" fill="#ffcc00"/><line x1="10" y1="6" x2="10" y2="16" stroke="#ffcc00" stroke-width="2.5"/><line x1="10" y1="10" x2="3" y2="14" stroke="#ffcc00" stroke-width="2"/><line x1="10" y1="10" x2="17" y2="13" stroke="#ffcc00" stroke-width="2"/><line x1="10" y1="16" x2="5" y2="24" stroke="#ffcc00" stroke-width="2"/><line x1="10" y1="16" x2="15" y2="24" stroke="#ffcc00" stroke-width="2"/></svg>'
+      + '<span class="minimized-tab-title">' + esc(name) + ' - IM</span>'
+      + '<div class="minimized-tab-close" data-name="' + esc(name) + '">✕</div>';
+
+    // Click tab body → restore
+    tab.addEventListener('click', function(e) {
+      if (e.target.classList.contains('minimized-tab-close')) return;
+      restoreChat(name);
+    });
+
+    // Click X → close entirely
+    tab.querySelector('.minimized-tab-close').addEventListener('click', function(e) {
+      e.stopPropagation();
+      stopFlashing(name);
+      tray.removeChild(tab);
+      delete minimizedChats[name];
+      closeChat(name);
+    });
+
+    tray.appendChild(tab);
+
+    // Start flashing after 10 seconds
+    var flashTimer = setTimeout(function() {
+      if (!minimizedChats[name]) return;
+      var isAlt = false;
+      var interval = setInterval(function() {
+        if (!minimizedChats[name]) { clearInterval(interval); return; }
+        isAlt = !isAlt;
+        tab.classList.toggle('flashing-alt', isAlt);
+      }, 1000);
+      minimizedChats[name].flashInterval = interval;
+    }, 10000);
+
+    minimizedChats[name] = { tab: tab, flashTimer: flashTimer, flashInterval: null };
+  }
+
+  function restoreChat(name) {
+    var win = openChats[name];
+    if (!win) return;
+    stopFlashing(name);
+    win.style.display = 'flex';
+    win.style.zIndex = ++chatZBase;
+    var tray = document.getElementById('minimized-tray');
+    if (minimizedChats[name] && minimizedChats[name].tab) {
+      tray.removeChild(minimizedChats[name].tab);
+    }
+    delete minimizedChats[name];
+    var inp = document.getElementById('chat-input-' + name);
+    if (inp) inp.focus();
+  }
+
+  function stopFlashing(name) {
+    if (!minimizedChats[name]) return;
+    if (minimizedChats[name].flashTimer) clearTimeout(minimizedChats[name].flashTimer);
+    if (minimizedChats[name].flashInterval) clearInterval(minimizedChats[name].flashInterval);
+  }
+
   function makeDraggable(win, handle) {
     var dx=0, dy=0, startX=0, startY=0;
     handle.addEventListener('mousedown', function(e) {
@@ -3706,7 +3816,6 @@
     crTopicContext = topicContext || '';
 
     if (crOpen) {
-      // Reset for new room
       crHistory = [];
       crBatchEpoch++;
       document.getElementById('cr-messages').innerHTML = '';
@@ -3719,14 +3828,13 @@
     crWaitingForUser = false;
     crAslPending = false;
 
-    // Update titlebar room name
     document.getElementById('cr-room-name').textContent = crRoomName;
 
     var win = document.getElementById('chatroom-window');
     win.classList.add('open');
     win.style.zIndex = 350;
 
-    // Populate people list
+    // Populate people list — names are clickable to open private IM
     var list = document.getElementById('cr-people-list');
     list.innerHTML = '';
     var meEl = document.createElement('div');
@@ -3737,6 +3845,9 @@
       var el = document.createElement('div');
       el.className = 'cr-person';
       el.textContent = n;
+      el.style.cursor = 'pointer';
+      el.title = 'Click to IM ' + n;
+      el.addEventListener('click', function() { openChatroomPrivateIM(n); });
       list.appendChild(el);
     });
     document.getElementById('cr-people-count').textContent = '21\u00a0 people here';
@@ -3750,6 +3861,41 @@
         crWaitingForUser = true;
       });
     }, 2500);
+
+    // 20 seconds after entering: random creepy stranger IMs you
+    var stranger = crShuffled[Math.floor(Math.random() * crShuffled.length)];
+    setTimeout(function() {
+      if (!crOpen) return;
+      openChatroomPrivateIM(stranger, true);
+      setTimeout(function() {
+        if (!chatHistories[stranger]) chatHistories[stranger] = [];
+        var msg = 'a/s/l? got a pic? ;)';
+        chatHistories[stranger].push({ role: 'assistant', content: msg });
+        appendChatMsg(stranger, stranger, msg, false);
+        playSound('imTone');
+      }, 800);
+    }, 20000);
+  }
+
+  function openChatroomPrivateIM(name, skipGreeting) {
+    // Build a stranger personality for this chatroom person
+    var strangerPersonality = 'You are ' + name + ', a random AOL chatroom user in 1999. '
+      + (crTopicContext || 'You hang out in AOL chatrooms.') + ' '
+      + 'PERSONALITY: You are a goofy, overly eager, slightly creepy AOL chatroom person who is desperately looking for online romance or someone to talk to. '
+      + 'You ask a/s/l immediately, ask if they have pics, say things like "u r so cool" and "wanna chat private?", '
+      + 'use lots of emoticons like ;) :P :-) lol, and overshare about yourself. '
+      + 'You are harmless but socially awkward. You are very enthusiastic. '
+      + 'Keep all messages short — 1-2 sentences max. Classic 1999 AIM style. Never break character.';
+
+    // Store personality for this name
+    if (!personalities[name]) {
+      personalities[name] = strangerPersonality;
+    }
+
+    if (!chatHistories[name]) chatHistories[name] = [];
+
+    // Open a regular chat window but don't add to buddy list
+    openChat(name);
   }
 
   function closeChatroom() {
@@ -3822,7 +3968,7 @@
 
   async function getChatroomReply(name, cb) {
     if (!apiKey) {
-      var fallbacks = ['lol','no way','for real?','haha yeah','omg','brb','lmao','tru','word','nice'];
+      var fallbacks = ['no way','for real?','haha same','omg yes','dude same','right??','lmao ok','tru tho','word up','exactly','haha nice','wait really?'];
       var f = fallbacks[Math.floor(Math.random()*fallbacks.length)];
       crHistory.push({ role: 'assistant', content: name + ': ' + f });
       cb(f); return;
@@ -3832,19 +3978,29 @@
       ? crTopicContext
       : 'The year is 1999. You are in an AOL chatroom called "' + crRoomName + '". Make casual conversation.';
 
+    // Build what the last person said so we can explicitly forbid repeating it
+    var lastMsg = crHistory.length > 0 ? crHistory[crHistory.length-1].content : '';
+    var lastText = lastMsg.indexOf(': ') !== -1 ? lastMsg.split(': ').slice(1).join(': ') : '';
+
     var systemPrompt = 'You are ' + name + ', a teenager or young adult from somewhere in the US in 1999. '
       + topicLine + ' '
-      + 'Type in classic AOL chatroom style: very short, casual, lowercase, abbreviations (lol brb omg nm sup u ur r), occasional typos. '
-      + 'ONE sentence or fragment only — 2 to 10 words max. '
-      + 'React organically to the most recent messages. Vary your responses — agree, disagree, joke, ask a question. '
-      + 'Do not all say the same thing. Never break character. Never reference anything after 1999.';
+      + 'Type in classic AOL chatroom style: short, casual, lowercase, abbreviations, occasional typos. '
+      + 'ONE sentence or fragment — 3 to 12 words. '
+      + 'CRITICAL RULES: '
+      + '(1) NEVER say just "lol" alone as your entire message. '
+      + '(2) NEVER repeat or closely echo what the previous person just said. '
+      + '(3) Do NOT start your message with "lol" — find something more interesting to say. '
+      + '(4) Vary your responses dramatically — ask a question, share an opinion, make a joke, start a new angle, challenge something, be specific about the topic. '
+      + '(5) React to the TOPIC being discussed, not just to other people agreeing. '
+      + '(6) If someone just said "' + (lastText.slice(0,40) || 'something') + '", say something DIFFERENT and add new content. '
+      + 'Never break character. Never reference anything after 1999.';
 
     var recent = crHistory.slice(-20);
     var contextText = recent.map(function(m){ return m.content; }).join('\n');
-    var lastThree  = crHistory.slice(-3).map(function(m){ return m.content; }).join('\n');
+    var lastThree = crHistory.slice(-3).map(function(m){ return m.content; }).join('\n');
     var prompt = contextText
-      ? 'Chat so far:\n' + contextText + '\n\nMost recent:\n' + lastThree + '\n\nYou are ' + name + '. Write ONE short chatroom message (2-10 words):'
-      : 'You just entered "' + crRoomName + '". Write ONE short opening chatroom message as ' + name + ' (2-8 words):';
+      ? 'Chat so far:\n' + contextText + '\n\nMost recent:\n' + lastThree + '\n\nYou are ' + name + '. Write ONE chatroom message (3-12 words) that adds something NEW to the conversation — do NOT just agree or say lol:'
+      : 'You just entered "' + crRoomName + '". Write ONE opening chatroom message as ' + name + ' (4-10 words) that is specific and interesting:';
 
     try {
       var r = await fetch('https://api.anthropic.com/v1/messages', {
@@ -3857,19 +4013,24 @@
         },
         body: JSON.stringify({
           model: 'claude-sonnet-4-20250514',
-          max_tokens: 60,
+          max_tokens: 80,
           system: systemPrompt,
           messages: [{ role: 'user', content: prompt }]
         })
       });
       var d = await r.json();
-      var reply = (d.content && d.content[0]) ? d.content[0].text.trim().replace(/^["']|["']$/g,'') : 'lol';
+      var reply = (d.content && d.content[0]) ? d.content[0].text.trim().replace(/^["']|["']$/g,'') : 'wait what happened';
+      // If Claude still returned just "lol" despite instructions, use fallback
+      if (/^lol[.!?]*$/i.test(reply.trim())) {
+        var fb2 = ['omg same tho','no way really??','haha that\'s wild','dude i know right','wait seriously??'];
+        reply = fb2[Math.floor(Math.random()*fb2.length)];
+      }
       crHistory.push({ role: 'assistant', content: name + ': ' + reply });
       cb(reply);
     } catch(e) {
-      var fb = 'lol';
-      crHistory.push({ role: 'assistant', content: name + ': ' + fb });
-      cb(fb);
+      var fallbackErr = 'haha yeah no';
+      crHistory.push({ role: 'assistant', content: name + ': ' + fallbackErr });
+      cb(fallbackErr);
     }
   }
   // Wire up chatroom close and drag
