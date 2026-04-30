@@ -824,6 +824,71 @@
     font-size: 8px; display: flex; align-items: center; justify-content: center;
     cursor: pointer; color: #000; font-weight: bold; flex-shrink: 0; margin-left: 4px;
   }
+  /* ── Win95 Notepad ── */
+  #notepad-window {
+    position: absolute; top: 80px; left: 200px;
+    width: 540px; height: 400px;
+    background: #c0c0c0;
+    border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    box-shadow: 2px 2px 0 #000;
+    display: none; flex-direction: column; z-index: 500;
+  }
+  #notepad-window.open { display: flex; }
+  .np-titlebar {
+    background: #000080; color: #fff; font-size: 12px; font-weight: bold;
+    padding: 2px 5px; display: flex; align-items: center;
+    justify-content: space-between; height: 20px; cursor: grab; flex-shrink: 0;
+  }
+  .np-titlebar:active { cursor: grabbing; }
+  .np-titlebar-left { display: flex; align-items: center; gap: 5px; }
+  .np-win-btns { display: flex; gap: 2px; }
+  .np-win-btn {
+    width: 16px; height: 14px; background: #c0c0c0;
+    border: 1px solid; border-color: #fff #808080 #808080 #fff;
+    font-size: 9px; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: #000; font-weight: bold;
+  }
+  .np-menubar {
+    display: flex; background: #c0c0c0; padding: 1px 2px;
+    border-bottom: 1px solid #808080; flex-shrink: 0;
+  }
+  .np-menu {
+    font-size: 12px; padding: 2px 6px; cursor: pointer;
+    color: #000; position: relative;
+  }
+  .np-menu:hover { background: #000080; color: #fff; }
+  .np-menu-dropdown {
+    display: none; position: absolute; top: 100%; left: 0;
+    background: #c0c0c0; border: 2px solid;
+    border-color: #fff #808080 #808080 #fff;
+    box-shadow: 2px 2px 0 #000; z-index: 600; min-width: 160px;
+  }
+  .np-menu:hover .np-menu-dropdown { display: block; }
+  .np-menu-item {
+    font-size: 12px; padding: 3px 20px; color: #000; cursor: pointer; white-space: nowrap;
+  }
+  .np-menu-item:hover { background: #000080; color: #fff; }
+  .np-menu-sep { height: 1px; background: #808080; margin: 2px 0; border-bottom: 1px solid #fff; }
+  .np-menu-item.disabled { color: #808080; cursor: default; }
+  .np-menu-item.disabled:hover { background: transparent; color: #808080; }
+  #np-textarea {
+    flex: 1; resize: none; outline: none;
+    font-family: 'Courier New', Courier, monospace; font-size: 12px;
+    color: #000; background: #fff; padding: 2px 4px;
+    border: 2px solid; border-color: #808080 #fff #fff #808080;
+    margin: 2px; line-height: 1.4; user-select: text;
+  }
+  .np-statusbar {
+    height: 18px; background: #c0c0c0; border-top: 1px solid #808080;
+    display: flex; align-items: center; padding: 0 4px;
+    font-size: 10px; font-family: 'Tahoma', Arial; color: #000;
+    flex-shrink: 0; gap: 8px;
+  }
+  .np-status-panel {
+    border: 1px solid; border-color: #808080 #fff #fff #808080;
+    padding: 0 6px; height: 14px; display: flex; align-items: center;
+  }
+
   .bl-buddy.me-online { color: #000; font-weight: bold; cursor: pointer; }
   .bl-buddy.me-away   { color: #000; font-weight: bold; font-style: italic; cursor: pointer; }
 
@@ -1985,6 +2050,75 @@
       </div>
     </div>
 
+    <!-- Win95 Notepad -->
+    <div id="notepad-window">
+      <div class="np-titlebar" id="np-titlebar">
+        <div class="np-titlebar-left">
+          <svg width="14" height="14" viewBox="0 0 16 16">
+            <rect x="2" y="1" width="10" height="14" fill="#fff" stroke="#000" stroke-width="1"/>
+            <line x1="4" y1="4" x2="10" y2="4" stroke="#000" stroke-width="1"/>
+            <line x1="4" y1="6" x2="10" y2="6" stroke="#000" stroke-width="1"/>
+            <line x1="4" y1="8" x2="10" y2="8" stroke="#000" stroke-width="1"/>
+            <line x1="4" y1="10" x2="8"  y2="10" stroke="#000" stroke-width="1"/>
+          </svg>
+          Untitled - Notepad
+        </div>
+        <div class="np-win-btns">
+          <div class="np-win-btn" onclick="minimizeNotepad()">_</div>
+          <div class="np-win-btn">□</div>
+          <div class="np-win-btn" onclick="closeNotepad()">✕</div>
+        </div>
+      </div>
+      <div class="np-menubar">
+        <div class="np-menu"><u>F</u>ile
+          <div class="np-menu-dropdown">
+            <div class="np-menu-item disabled">New</div>
+            <div class="np-menu-item disabled">Open...</div>
+            <div class="np-menu-item disabled">Save</div>
+            <div class="np-menu-item disabled">Save As...</div>
+            <div class="np-menu-sep"></div>
+            <div class="np-menu-item disabled">Page Setup...</div>
+            <div class="np-menu-item disabled">Print</div>
+            <div class="np-menu-sep"></div>
+            <div class="np-menu-item" onclick="closeNotepad()">Exit</div>
+          </div>
+        </div>
+        <div class="np-menu"><u>E</u>dit
+          <div class="np-menu-dropdown">
+            <div class="np-menu-item disabled">Undo</div>
+            <div class="np-menu-sep"></div>
+            <div class="np-menu-item" onclick="document.getElementById('np-textarea').select()">Select All</div>
+            <div class="np-menu-item" onclick="document.getElementById('np-textarea').value=''">Delete</div>
+            <div class="np-menu-sep"></div>
+            <div class="np-menu-item disabled">Find...</div>
+            <div class="np-menu-item disabled">Find Next</div>
+            <div class="np-menu-item disabled">Replace...</div>
+            <div class="np-menu-item disabled">Go To...</div>
+            <div class="np-menu-sep"></div>
+            <div class="np-menu-item" onclick="npInsertTimestamp()">Time/Date</div>
+            <div class="np-menu-sep"></div>
+            <div class="np-menu-item disabled">Word Wrap</div>
+          </div>
+        </div>
+        <div class="np-menu"><u>S</u>earch
+          <div class="np-menu-dropdown">
+            <div class="np-menu-item disabled">Find...</div>
+          </div>
+        </div>
+        <div class="np-menu"><u>H</u>elp
+          <div class="np-menu-dropdown">
+            <div class="np-menu-item disabled">Help Topics</div>
+            <div class="np-menu-sep"></div>
+            <div class="np-menu-item disabled">About Notepad</div>
+          </div>
+        </div>
+      </div>
+      <textarea id="np-textarea" spellcheck="false"></textarea>
+      <div class="np-statusbar">
+        <div class="np-status-panel" id="np-status">Ln 1, Col 1</div>
+      </div>
+    </div>
+
     <!-- Chat windows injected here by JS -->
 
     <!-- Add Buddy overlay -->
@@ -2125,7 +2259,7 @@
           <span class="smi-icon">🎮</span>
           <div><span class="smi-label">Games</span><span class="smi-sub">Minesweeper, Solitaire</span></div>
         </div>
-        <div class="start-menu-item">
+        <div class="start-menu-item" onclick="openNotepad();toggleStartMenu();">
           <span class="smi-icon">📝</span>
           <div><span class="smi-label">Notepad</span></div>
         </div>
@@ -4142,7 +4276,44 @@
       cb(fallbackErr);
     }
   }
-  // Wire up chatroom close and drag
+  // ── Win95 Notepad ──
+  function openNotepad() {
+    var win = document.getElementById('notepad-window');
+    win.classList.add('open');
+    win.style.zIndex = ++chatZBase;
+    setTimeout(function(){ document.getElementById('np-textarea').focus(); }, 80);
+  }
+  function closeNotepad() {
+    document.getElementById('notepad-window').classList.remove('open');
+  }
+  function minimizeNotepad() {
+    document.getElementById('notepad-window').classList.remove('open');
+  }
+  function npInsertTimestamp() {
+    var ta = document.getElementById('np-textarea');
+    var now = new Date();
+    var ts = now.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) + ' ' + now.toLocaleDateString();
+    var start = ta.selectionStart;
+    ta.value = ta.value.slice(0, start) + ts + ta.value.slice(ta.selectionEnd);
+    ta.selectionStart = ta.selectionEnd = start + ts.length;
+    ta.focus();
+  }
+  // Status bar — track line/col
+  document.getElementById('np-textarea').addEventListener('keyup', npUpdateStatus);
+  document.getElementById('np-textarea').addEventListener('click', npUpdateStatus);
+  function npUpdateStatus() {
+    var ta = document.getElementById('np-textarea');
+    var text = ta.value.slice(0, ta.selectionStart);
+    var lines = text.split('\n');
+    var ln = lines.length;
+    var col = lines[lines.length-1].length + 1;
+    document.getElementById('np-status').textContent = 'Ln ' + ln + ', Col ' + col;
+  }
+  // Notepad bring-to-front on click
+  document.getElementById('notepad-window').addEventListener('mousedown', function(){
+    document.getElementById('notepad-window').style.zIndex = ++chatZBase;
+  });
+  makeDraggable(document.getElementById('notepad-window'), document.getElementById('np-titlebar'));
   document.getElementById('cr-close-btn').addEventListener('click', closeChatroom);
   document.getElementById('cr-minimize-btn').addEventListener('click', minimizeChatroom);
   makeDraggable(document.getElementById('chatroom-window'), document.getElementById('cr-titlebar'));
