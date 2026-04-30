@@ -873,7 +873,7 @@
   .np-menu-item.disabled:hover { background: transparent; color: #808080; }
   #np-textarea {
     flex: 1; resize: none; outline: none;
-    font-family: 'Courier New', Courier, monospace; font-size: 10pt;
+    font-family: 'Courier New', Courier, monospace; font-size: 10pt; font-weight: bold;
     color: #000; background: #fff; padding: 2px 4px;
     border: 2px solid; border-color: #808080 #fff #fff #808080;
     margin: 2px; line-height: 1.4; user-select: text;
@@ -887,6 +887,155 @@
   .np-status-panel {
     border: 1px solid; border-color: #808080 #fff #fff #808080;
     padding: 0 6px; height: 14px; display: flex; align-items: center;
+  }
+
+  /* ── Win95 Save Dialog ── */
+  #np-save-overlay {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.3); z-index: 900; display: none;
+    align-items: center; justify-content: center;
+  }
+  #np-save-overlay.open { display: flex; }
+  #np-save-dialog {
+    background: #c0c0c0; border: 2px solid;
+    border-color: #fff #808080 #808080 #fff;
+    box-shadow: 2px 2px 0 #000; width: 320px;
+  }
+  .np-save-titlebar {
+    background: #000080; color: #fff; font-size: 12px; font-weight: bold;
+    padding: 2px 5px; display: flex; align-items: center;
+    justify-content: space-between; height: 20px; flex-shrink: 0;
+  }
+  .np-save-body { padding: 14px 14px 10px; }
+  .np-save-label { font-size: 12px; color: #000; margin-bottom: 5px; font-family: 'Tahoma', Arial; }
+  .np-save-input {
+    width: 100%; height: 22px;
+    border-top: 2px solid #808080; border-left: 2px solid #808080;
+    border-right: 2px solid #fff; border-bottom: 2px solid #fff;
+    background: #fff; font-family: 'Courier New', monospace; font-size: 12px;
+    padding: 0 4px; outline: none; color: #000; user-select: text;
+  }
+  .np-save-footer { display: flex; justify-content: flex-end; gap: 6px; margin-top: 12px; }
+  .np-save-btn {
+    background: #c0c0c0; border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    font-family: 'Tahoma', Arial; font-size: 12px; padding: 3px 16px;
+    cursor: pointer; color: #000; min-width: 70px; text-align: center;
+  }
+  .np-save-btn:active { border-color: #808080 #fff #fff #808080; }
+  .np-save-btn.default { outline: 1px solid #000; outline-offset: -3px; }
+
+  /* ── My Briefcase Window ── */
+  #briefcase-window {
+    position: absolute; top: 60px; left: 120px;
+    width: 620px; height: 440px;
+    background: #c0c0c0;
+    border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    box-shadow: 2px 2px 0 #000;
+    display: none; flex-direction: column; z-index: 500;
+  }
+  #briefcase-window.open { display: flex; }
+  .bc-titlebar {
+    background: #000080; color: #fff; font-size: 12px; font-weight: bold;
+    padding: 2px 5px; display: flex; align-items: center;
+    justify-content: space-between; height: 20px; cursor: grab; flex-shrink: 0;
+  }
+  .bc-titlebar:active { cursor: grabbing; }
+  .bc-titlebar-left { display: flex; align-items: center; gap: 5px; }
+  .bc-win-btns { display: flex; gap: 2px; }
+  .bc-win-btn {
+    width: 16px; height: 14px; background: #c0c0c0;
+    border: 1px solid; border-color: #fff #808080 #808080 #fff;
+    font-size: 9px; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: #000; font-weight: bold;
+  }
+  .bc-menubar {
+    display: flex; background: #c0c0c0; padding: 1px 2px;
+    border-bottom: 1px solid #808080; flex-shrink: 0;
+  }
+  .bc-menu { font-size: 12px; padding: 2px 6px; cursor: pointer; color: #000; }
+  .bc-menu:hover { background: #000080; color: #fff; }
+  /* Toolbar */
+  .bc-toolbar {
+    display: flex; align-items: flex-end; gap: 2px;
+    background: #c0c0c0; padding: 3px 4px;
+    border-bottom: 2px solid #808080; flex-shrink: 0;
+  }
+  .bc-toolbar-btn {
+    display: flex; flex-direction: column; align-items: center; gap: 1px;
+    padding: 2px 8px; font-size: 10px; color: #000; cursor: default;
+    border: 2px solid transparent;
+  }
+  .bc-toolbar-btn:hover { border-color: #fff #808080 #808080 #fff; background: #c0c0c0; }
+  .bc-toolbar-btn .bc-tb-icon { font-size: 18px; line-height: 1; }
+  .bc-toolbar-sep { width: 1px; height: 32px; background: #808080; margin: 0 3px; border-right: 1px solid #fff; }
+  /* Address bar */
+  .bc-addressbar {
+    display: flex; align-items: center; gap: 4px; padding: 2px 4px;
+    background: #c0c0c0; border-bottom: 1px solid #808080; flex-shrink: 0;
+    font-size: 11px; font-family: 'Tahoma', Arial;
+  }
+  .bc-addr-label { color: #000; font-weight: normal; }
+  .bc-addr-box {
+    flex: 1; height: 20px;
+    border-top: 2px solid #808080; border-left: 2px solid #808080;
+    border-right: 2px solid #fff; border-bottom: 2px solid #fff;
+    background: #fff; font-size: 11px; font-family: 'Tahoma', Arial;
+    padding: 0 4px; color: #000; display: flex; align-items: center;
+  }
+  .bc-addr-arrow {
+    width: 16px; height: 20px; background: #c0c0c0;
+    border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+  }
+  .bc-addr-arrow::after { content:''; border-left:4px solid transparent; border-right:4px solid transparent; border-top:5px solid #000; }
+  /* Main body */
+  .bc-body { display: flex; flex: 1; overflow: hidden; }
+  /* Left panel */
+  .bc-left-panel {
+    width: 160px; flex-shrink: 0; background: #fff;
+    border-right: 2px solid #808080;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 16px 12px; gap: 8px;
+  }
+  .bc-left-icon { font-size: 48px; line-height: 1; }
+  .bc-left-title { font-size: 18px; font-weight: bold; color: #000; font-family: Arial; line-height: 1.1; }
+  .bc-left-divider { width: 100%; height: 2px; background: linear-gradient(to right, #cc0000, #ffcc00); margin: 4px 0; }
+  .bc-left-desc { font-size: 11px; color: #000; font-family: 'Tahoma', Arial; line-height: 1.5; }
+  /* Right list area */
+  .bc-list-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .bc-col-headers {
+    display: flex; background: #c0c0c0; border-bottom: 2px solid #808080; flex-shrink: 0;
+  }
+  .bc-col-btn {
+    font-size: 11px; font-family: 'Tahoma', Arial; color: #000; text-align: left;
+    padding: 2px 6px; border-right: 2px solid #808080;
+    border-bottom: 2px solid; border-color: #fff #808080 #808080 #fff;
+    cursor: default; user-select: none;
+  }
+  .bc-col-name { width: 200px; }
+  .bc-col-date { width: 140px; }
+  .bc-col-size { width: 80px; }
+  .bc-file-list { flex: 1; background: #fff; overflow-y: auto; }
+  .bc-file-row {
+    display: flex; align-items: center; padding: 2px 4px;
+    font-size: 12px; font-family: 'Tahoma', Arial; cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .bc-file-row:hover { background: #000080; color: #fff; }
+  .bc-file-row.selected { background: #000080; color: #fff; }
+  .bc-file-icon { width: 20px; height: 20px; flex-shrink: 0; margin-right: 5px; image-rendering: pixelated; }
+  .bc-file-name { width: 175px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .bc-file-date { width: 140px; font-size: 11px; }
+  .bc-file-size { width: 80px; font-size: 11px; text-align: right; padding-right: 8px; }
+  /* Status bar */
+  .bc-statusbar {
+    height: 18px; background: #c0c0c0; border-top: 1px solid #808080;
+    display: flex; align-items: center; padding: 0 4px;
+    font-size: 10px; font-family: 'Tahoma', Arial; color: #000; flex-shrink: 0;
+  }
+  .bc-status-panel {
+    border: 1px solid; border-color: #808080 #fff #fff #808080;
+    padding: 0 6px; height: 14px; display: flex; align-items: center; margin-right: 4px;
   }
 
   .bl-buddy.me-online { color: #000; font-weight: bold; cursor: pointer; }
@@ -2179,6 +2328,10 @@
           <span class="smi-icon">📁</span>
           <div><span class="smi-label">My Documents</span></div>
         </div>
+        <div class="start-menu-item" onclick="openBriefcase();toggleStartMenu();">
+          <span class="smi-icon">💼</span>
+          <div><span class="smi-label">My Briefcase</span></div>
+        </div>
         <div class="start-menu-item">
           <span class="smi-icon">🖥️</span>
           <div><span class="smi-label">My Computer</span></div>
@@ -2249,8 +2402,8 @@
         <div class="np-menu-dropdown">
           <div class="np-menu-item disabled">New</div>
           <div class="np-menu-item disabled">Open...</div>
-          <div class="np-menu-item disabled">Save</div>
-          <div class="np-menu-item disabled">Save As...</div>
+          <div class="np-menu-item" onclick="npSave()">Save</div>
+          <div class="np-menu-item" onclick="npSave()">Save As...</div>
           <div class="np-menu-sep"></div>
           <div class="np-menu-item disabled">Page Setup...</div>
           <div class="np-menu-item disabled">Print</div>
@@ -2291,6 +2444,102 @@
     <textarea id="np-textarea" spellcheck="false"></textarea>
     <div class="np-statusbar">
       <div class="np-status-panel" id="np-status">Ln 1, Col 1</div>
+    </div>
+  </div>
+  <!-- Win95 Save File dialog -->
+  <div id="np-save-overlay">
+    <div id="np-save-dialog">
+      <div class="np-save-titlebar">
+        <span>Save As</span>
+        <div style="display:flex;gap:2px;">
+          <div style="width:14px;height:12px;background:#c0c0c0;border:1px solid;border-color:#fff #808080 #808080 #fff;font-size:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#000;font-weight:bold;" onclick="npCancelSave()">✕</div>
+        </div>
+      </div>
+      <div class="np-save-body">
+        <div class="np-save-label">File name:</div>
+        <input class="np-save-input" id="np-save-input" type="text" value=".txt" onkeydown="if(event.key==='Enter')npConfirmSave()">
+        <div style="font-size:10px;color:#808080;margin-top:4px;font-family:'Tahoma',Arial;">Save as type: Text Documents (*.txt)</div>
+        <div class="np-save-footer">
+          <button class="np-save-btn" onclick="npCancelSave()">Cancel</button>
+          <button class="np-save-btn default" onclick="npConfirmSave()">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- My Briefcase Window -->
+  <div id="briefcase-window">
+    <div class="bc-titlebar" id="bc-titlebar">
+      <div class="bc-titlebar-left">
+        <svg width="14" height="14" viewBox="0 0 16 16">
+          <rect x="1" y="5" width="14" height="10" rx="1" fill="#c8a040" stroke="#806010" stroke-width="1"/>
+          <rect x="5" y="3" width="6" height="3" rx="1" fill="none" stroke="#806010" stroke-width="1"/>
+          <rect x="6" y="9" width="4" height="2" fill="#806010"/>
+        </svg>
+        My Briefcase
+      </div>
+      <div class="bc-win-btns">
+        <div class="bc-win-btn" onclick="closeBriefcase()">_</div>
+        <div class="bc-win-btn">□</div>
+        <div class="bc-win-btn" onclick="closeBriefcase()">✕</div>
+      </div>
+    </div>
+    <div class="bc-menubar">
+      <span class="bc-menu"><u>F</u>ile</span>
+      <span class="bc-menu"><u>E</u>dit</span>
+      <span class="bc-menu"><u>V</u>iew</span>
+      <span class="bc-menu"><u>G</u>o</span>
+      <span class="bc-menu">F<u>a</u>vorites</span>
+      <span class="bc-menu">Brie<u>f</u>case</span>
+      <span class="bc-menu"><u>H</u>elp</span>
+    </div>
+    <!-- Toolbar -->
+    <div class="bc-toolbar">
+      <div class="bc-toolbar-btn"><span class="bc-tb-icon">◀</span><span>Back</span></div>
+      <div class="bc-toolbar-btn" style="color:#808080;"><span class="bc-tb-icon">▶</span><span>Forward</span></div>
+      <div class="bc-toolbar-sep"></div>
+      <div class="bc-toolbar-btn"><span class="bc-tb-icon">⬆</span><span>Up</span></div>
+      <div class="bc-toolbar-sep"></div>
+      <div class="bc-toolbar-btn" style="color:#808080;">
+        <svg width="22" height="18" viewBox="0 0 24 20"><rect x="2" y="2" width="8" height="8" fill="#c0c0c0" stroke="#808080" stroke-width="1"/><rect x="5" y="5" width="8" height="8" fill="#fff" stroke="#808080" stroke-width="1"/><line x1="11" y1="8" x2="18" y2="8" stroke="#808080" stroke-width="1.5"/><polyline points="16,5 19,8 16,11" fill="none" stroke="#808080" stroke-width="1.5"/></svg>
+        <span>Update All</span>
+      </div>
+      <div class="bc-toolbar-btn" style="color:#808080;">
+        <svg width="22" height="18" viewBox="0 0 24 20"><rect x="2" y="2" width="8" height="8" fill="#c0c0c0" stroke="#808080" stroke-width="1"/><rect x="5" y="5" width="8" height="8" fill="#fff" stroke="#808080" stroke-width="1"/><line x1="11" y1="8" x2="18" y2="8" stroke="#808080" stroke-width="1.5"/><polyline points="16,5 19,8 16,11" fill="none" stroke="#808080" stroke-width="1.5"/></svg>
+        <span>Update Sele...</span>
+      </div>
+    </div>
+    <!-- Address bar -->
+    <div class="bc-addressbar">
+      <span class="bc-addr-label">Address</span>
+      <div style="width:20px;height:20px;margin:0 2px;display:flex;align-items:center;justify-content:center;font-size:14px;">💼</div>
+      <div class="bc-addr-box">C:\WINDOWS\Desktop\My Briefcase</div>
+      <div class="bc-addr-arrow"></div>
+    </div>
+    <!-- Body -->
+    <div class="bc-body">
+      <!-- Left panel -->
+      <div class="bc-left-panel">
+        <div class="bc-left-icon">💼</div>
+        <div class="bc-left-title">My<br>Briefcase</div>
+        <div class="bc-left-divider"></div>
+        <div class="bc-left-desc">This folder contains files you want to work on at a different computer.</div>
+      </div>
+      <!-- Right: column headers + file list -->
+      <div class="bc-list-area">
+        <div class="bc-col-headers">
+          <div class="bc-col-btn bc-col-name">Name</div>
+          <div class="bc-col-btn bc-col-date">Date Saved</div>
+          <div class="bc-col-btn bc-col-size">Size</div>
+        </div>
+        <div class="bc-file-list" id="bc-file-list">
+          <!-- populated by JS -->
+        </div>
+      </div>
+    </div>
+    <!-- Status bar -->
+    <div class="bc-statusbar">
+      <div class="bc-status-panel" id="bc-status">0 object(s)</div>
     </div>
   </div>
 
@@ -4278,10 +4527,19 @@
     }
   }
   // ── Win95 Notepad ──
-  function openNotepad() {
+  var npCurrentFile = null; // name of currently open file (null = unsaved)
+
+  function openNotepad(filename, content) {
     var win = document.getElementById('notepad-window');
     win.classList.add('open');
     win.style.zIndex = ++chatZBase;
+    if (filename !== undefined) {
+      npCurrentFile = filename;
+      document.getElementById('np-textarea').value = content || '';
+      win.querySelector('.np-titlebar-left').lastChild.textContent = ' ' + filename + ' - Notepad';
+    } else if (!npCurrentFile) {
+      win.querySelector('.np-titlebar-left').lastChild.textContent = ' Untitled - Notepad';
+    }
     setTimeout(function(){ document.getElementById('np-textarea').focus(); }, 80);
   }
   function closeNotepad() {
@@ -4299,9 +4557,6 @@
     ta.selectionStart = ta.selectionEnd = start + ts.length;
     ta.focus();
   }
-  // Status bar — track line/col
-  document.getElementById('np-textarea').addEventListener('keyup', npUpdateStatus);
-  document.getElementById('np-textarea').addEventListener('click', npUpdateStatus);
   function npUpdateStatus() {
     var ta = document.getElementById('np-textarea');
     var text = ta.value.slice(0, ta.selectionStart);
@@ -4310,11 +4565,126 @@
     var col = lines[lines.length-1].length + 1;
     document.getElementById('np-status').textContent = 'Ln ' + ln + ', Col ' + col;
   }
-  // Notepad bring-to-front on click
+  document.getElementById('np-textarea').addEventListener('keyup', npUpdateStatus);
+  document.getElementById('np-textarea').addEventListener('click', npUpdateStatus);
+
+  // ── Notepad Save ──
+  function npSave() {
+    // If file already has a name, show dialog pre-filled; otherwise blank + .txt
+    var inp = document.getElementById('np-save-input');
+    inp.value = npCurrentFile || '.txt';
+    document.getElementById('np-save-overlay').classList.add('open');
+    // Position cursor before .txt
+    setTimeout(function(){
+      inp.focus();
+      var pos = inp.value.indexOf('.txt');
+      if (pos > 0) { inp.selectionStart = 0; inp.selectionEnd = pos; }
+      else { inp.selectionStart = 0; inp.selectionEnd = 0; }
+    }, 50);
+  }
+  function npCancelSave() {
+    document.getElementById('np-save-overlay').classList.remove('open');
+  }
+  function npConfirmSave() {
+    var raw = document.getElementById('np-save-input').value.trim();
+    if (!raw) return;
+    // Ensure .txt extension
+    var filename = raw.endsWith('.txt') ? raw : raw + '.txt';
+    var content  = document.getElementById('np-textarea').value;
+    var now      = new Date();
+
+    // Save to localStorage
+    var files = loadBriefcaseFiles();
+    var existing = files.findIndex(function(f){ return f.name === filename; });
+    var entry = {
+      name: filename,
+      content: content,
+      date: now.toLocaleDateString() + ' ' + now.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}),
+      size: Math.ceil(content.length / 1024 * 10) / 10 || 1
+    };
+    if (existing >= 0) { files[existing] = entry; }
+    else { files.unshift(entry); } // newest first
+    saveBriefcaseFiles(files);
+
+    // Update notepad title
+    npCurrentFile = filename;
+    var tl = document.getElementById('notepad-window').querySelector('.np-titlebar-left');
+    // Update title text node
+    var spans = tl.querySelectorAll('*');
+    tl.lastChild.textContent && (tl.lastChild.textContent = '');
+    tl.innerHTML = tl.innerHTML.replace(/Untitled - Notepad|[^<>]+ - Notepad/, filename + ' - Notepad');
+
+    document.getElementById('np-save-overlay').classList.remove('open');
+    // Refresh briefcase if open
+    if (document.getElementById('briefcase-window').classList.contains('open')) {
+      renderBriefcaseFiles();
+    }
+  }
+
+  // ── Briefcase file storage ──
+  function loadBriefcaseFiles() {
+    try { return JSON.parse(localStorage.getItem('win95_briefcase') || '[]'); } catch(e) { return []; }
+  }
+  function saveBriefcaseFiles(arr) {
+    try { localStorage.setItem('win95_briefcase', JSON.stringify(arr)); } catch(e) {}
+  }
+
+  // ── My Briefcase window ──
+  function openBriefcase() {
+    var win = document.getElementById('briefcase-window');
+    win.classList.add('open');
+    win.style.zIndex = ++chatZBase;
+    renderBriefcaseFiles();
+  }
+  function closeBriefcase() {
+    document.getElementById('briefcase-window').classList.remove('open');
+  }
+  function renderBriefcaseFiles() {
+    var files = loadBriefcaseFiles();
+    var list  = document.getElementById('bc-file-list');
+    list.innerHTML = '';
+    if (!files.length) {
+      list.innerHTML = '<div style="padding:8px;font-size:11px;color:#808080;font-family:Tahoma,Arial;">No files saved yet.</div>';
+      document.getElementById('bc-status').textContent = '0 object(s)';
+      return;
+    }
+    files.forEach(function(f) {
+      var row = document.createElement('div');
+      row.className = 'bc-file-row';
+      // Win95 txt file icon as inline SVG
+      row.innerHTML =
+        '<svg class="bc-file-icon" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">'
+        + '<rect x="2" y="1" width="9" height="13" fill="#fff" stroke="#808080" stroke-width="1"/>'
+        + '<polyline points="8,1 8,5 12,5" fill="#c0c0c0" stroke="#808080" stroke-width="1"/>'
+        + '<rect x="8" y="1" width="4" height="4" fill="#c0c0c0" stroke="#808080" stroke-width="1"/>'
+        + '<line x1="4" y1="6" x2="10" y2="6" stroke="#000" stroke-width="1"/>'
+        + '<line x1="4" y1="8" x2="10" y2="8" stroke="#000" stroke-width="1"/>'
+        + '<line x1="4" y1="10" x2="8"  y2="10" stroke="#000" stroke-width="1"/>'
+        + '</svg>'
+        + '<span class="bc-file-name">' + esc(f.name) + '</span>'
+        + '<span class="bc-file-date">' + esc(f.date) + '</span>'
+        + '<span class="bc-file-size">' + f.size + ' KB</span>';
+      row.addEventListener('click', function() {
+        document.querySelectorAll('.bc-file-row').forEach(function(r){ r.classList.remove('selected'); });
+        row.classList.add('selected');
+      });
+      row.addEventListener('dblclick', function() {
+        // Open file in Notepad
+        openNotepad(f.name, f.content);
+      });
+      list.appendChild(row);
+    });
+    document.getElementById('bc-status').textContent = files.length + ' object(s)';
+  }
+
+  document.getElementById('briefcase-window').addEventListener('mousedown', function(){
+    document.getElementById('briefcase-window').style.zIndex = ++chatZBase;
+  });
   document.getElementById('notepad-window').addEventListener('mousedown', function(){
     document.getElementById('notepad-window').style.zIndex = ++chatZBase;
   });
-  makeDraggable(document.getElementById('notepad-window'), document.getElementById('np-titlebar'));
+  makeDraggable(document.getElementById('notepad-window'),   document.getElementById('np-titlebar'));
+  makeDraggable(document.getElementById('briefcase-window'), document.getElementById('bc-titlebar'));
   document.getElementById('cr-close-btn').addEventListener('click', closeChatroom);
   document.getElementById('cr-minimize-btn').addEventListener('click', minimizeChatroom);
   makeDraggable(document.getElementById('chatroom-window'), document.getElementById('cr-titlebar'));
