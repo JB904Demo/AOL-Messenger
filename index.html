@@ -2050,74 +2050,6 @@
       </div>
     </div>
 
-    <!-- Win95 Notepad -->
-    <div id="notepad-window">
-      <div class="np-titlebar" id="np-titlebar">
-        <div class="np-titlebar-left">
-          <svg width="14" height="14" viewBox="0 0 16 16">
-            <rect x="2" y="1" width="10" height="14" fill="#fff" stroke="#000" stroke-width="1"/>
-            <line x1="4" y1="4" x2="10" y2="4" stroke="#000" stroke-width="1"/>
-            <line x1="4" y1="6" x2="10" y2="6" stroke="#000" stroke-width="1"/>
-            <line x1="4" y1="8" x2="10" y2="8" stroke="#000" stroke-width="1"/>
-            <line x1="4" y1="10" x2="8"  y2="10" stroke="#000" stroke-width="1"/>
-          </svg>
-          Untitled - Notepad
-        </div>
-        <div class="np-win-btns">
-          <div class="np-win-btn" onclick="minimizeNotepad()">_</div>
-          <div class="np-win-btn">□</div>
-          <div class="np-win-btn" onclick="closeNotepad()">✕</div>
-        </div>
-      </div>
-      <div class="np-menubar">
-        <div class="np-menu"><u>F</u>ile
-          <div class="np-menu-dropdown">
-            <div class="np-menu-item disabled">New</div>
-            <div class="np-menu-item disabled">Open...</div>
-            <div class="np-menu-item disabled">Save</div>
-            <div class="np-menu-item disabled">Save As...</div>
-            <div class="np-menu-sep"></div>
-            <div class="np-menu-item disabled">Page Setup...</div>
-            <div class="np-menu-item disabled">Print</div>
-            <div class="np-menu-sep"></div>
-            <div class="np-menu-item" onclick="closeNotepad()">Exit</div>
-          </div>
-        </div>
-        <div class="np-menu"><u>E</u>dit
-          <div class="np-menu-dropdown">
-            <div class="np-menu-item disabled">Undo</div>
-            <div class="np-menu-sep"></div>
-            <div class="np-menu-item" onclick="document.getElementById('np-textarea').select()">Select All</div>
-            <div class="np-menu-item" onclick="document.getElementById('np-textarea').value=''">Delete</div>
-            <div class="np-menu-sep"></div>
-            <div class="np-menu-item disabled">Find...</div>
-            <div class="np-menu-item disabled">Find Next</div>
-            <div class="np-menu-item disabled">Replace...</div>
-            <div class="np-menu-item disabled">Go To...</div>
-            <div class="np-menu-sep"></div>
-            <div class="np-menu-item" onclick="npInsertTimestamp()">Time/Date</div>
-            <div class="np-menu-sep"></div>
-            <div class="np-menu-item disabled">Word Wrap</div>
-          </div>
-        </div>
-        <div class="np-menu"><u>S</u>earch
-          <div class="np-menu-dropdown">
-            <div class="np-menu-item disabled">Find...</div>
-          </div>
-        </div>
-        <div class="np-menu"><u>H</u>elp
-          <div class="np-menu-dropdown">
-            <div class="np-menu-item disabled">Help Topics</div>
-            <div class="np-menu-sep"></div>
-            <div class="np-menu-item disabled">About Notepad</div>
-          </div>
-        </div>
-      </div>
-      <textarea id="np-textarea" spellcheck="false"></textarea>
-      <div class="np-statusbar">
-        <div class="np-status-panel" id="np-status">Ln 1, Col 1</div>
-      </div>
-    </div>
 
     <!-- Chat windows injected here by JS -->
 
@@ -2290,6 +2222,75 @@
           <div><span class="smi-label">Shut Down...</span></div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Win95 Notepad — outside all screens, always accessible -->
+  <div id="notepad-window">
+    <div class="np-titlebar" id="np-titlebar">
+      <div class="np-titlebar-left">
+        <svg width="14" height="14" viewBox="0 0 16 16">
+          <rect x="2" y="1" width="10" height="14" fill="#fff" stroke="#000" stroke-width="1"/>
+          <line x1="4" y1="4" x2="10" y2="4" stroke="#000" stroke-width="1"/>
+          <line x1="4" y1="6" x2="10" y2="6" stroke="#000" stroke-width="1"/>
+          <line x1="4" y1="8" x2="10" y2="8" stroke="#000" stroke-width="1"/>
+          <line x1="4" y1="10" x2="8"  y2="10" stroke="#000" stroke-width="1"/>
+        </svg>
+        Untitled - Notepad
+      </div>
+      <div class="np-win-btns">
+        <div class="np-win-btn" onclick="minimizeNotepad()">_</div>
+        <div class="np-win-btn">□</div>
+        <div class="np-win-btn" onclick="closeNotepad()">✕</div>
+      </div>
+    </div>
+    <div class="np-menubar">
+      <div class="np-menu"><u>F</u>ile
+        <div class="np-menu-dropdown">
+          <div class="np-menu-item disabled">New</div>
+          <div class="np-menu-item disabled">Open...</div>
+          <div class="np-menu-item disabled">Save</div>
+          <div class="np-menu-item disabled">Save As...</div>
+          <div class="np-menu-sep"></div>
+          <div class="np-menu-item disabled">Page Setup...</div>
+          <div class="np-menu-item disabled">Print</div>
+          <div class="np-menu-sep"></div>
+          <div class="np-menu-item" onclick="closeNotepad()">Exit</div>
+        </div>
+      </div>
+      <div class="np-menu"><u>E</u>dit
+        <div class="np-menu-dropdown">
+          <div class="np-menu-item disabled">Undo</div>
+          <div class="np-menu-sep"></div>
+          <div class="np-menu-item" onclick="document.getElementById('np-textarea').select()">Select All</div>
+          <div class="np-menu-item" onclick="document.getElementById('np-textarea').value=''">Delete</div>
+          <div class="np-menu-sep"></div>
+          <div class="np-menu-item disabled">Find...</div>
+          <div class="np-menu-item disabled">Find Next</div>
+          <div class="np-menu-item disabled">Replace...</div>
+          <div class="np-menu-item disabled">Go To...</div>
+          <div class="np-menu-sep"></div>
+          <div class="np-menu-item" onclick="npInsertTimestamp()">Time/Date</div>
+          <div class="np-menu-sep"></div>
+          <div class="np-menu-item disabled">Word Wrap</div>
+        </div>
+      </div>
+      <div class="np-menu"><u>S</u>earch
+        <div class="np-menu-dropdown">
+          <div class="np-menu-item disabled">Find...</div>
+        </div>
+      </div>
+      <div class="np-menu"><u>H</u>elp
+        <div class="np-menu-dropdown">
+          <div class="np-menu-item disabled">Help Topics</div>
+          <div class="np-menu-sep"></div>
+          <div class="np-menu-item disabled">About Notepad</div>
+        </div>
+      </div>
+    </div>
+    <textarea id="np-textarea" spellcheck="false"></textarea>
+    <div class="np-statusbar">
+      <div class="np-status-panel" id="np-status">Ln 1, Col 1</div>
     </div>
   </div>
 
