@@ -4534,16 +4534,30 @@
     win.classList.add('open');
     win.style.zIndex = ++chatZBase;
     if (filename !== undefined) {
+      // Opening a specific file from Briefcase
       npCurrentFile = filename;
       document.getElementById('np-textarea').value = content || '';
       win.querySelector('.np-titlebar-left').lastChild.textContent = ' ' + filename + ' - Notepad';
-    } else if (!npCurrentFile) {
-      win.querySelector('.np-titlebar-left').lastChild.textContent = ' Untitled - Notepad';
+    } else {
+      // Opening from Start menu — always blank
+      npCurrentFile = null;
+      document.getElementById('np-textarea').value = '';
+      document.getElementById('np-status').textContent = 'Ln 1, Col 1';
+      var tl = win.querySelector('.np-titlebar-left');
+      tl.innerHTML = tl.innerHTML.replace(/.+ - Notepad|Untitled - Notepad/, 'Untitled - Notepad');
     }
     setTimeout(function(){ document.getElementById('np-textarea').focus(); }, 80);
   }
   function closeNotepad() {
-    document.getElementById('notepad-window').classList.remove('open');
+    var win = document.getElementById('notepad-window');
+    win.classList.remove('open');
+    // Reset to blank state so next open from Start menu is fresh
+    npCurrentFile = null;
+    document.getElementById('np-textarea').value = '';
+    document.getElementById('np-status').textContent = 'Ln 1, Col 1';
+    // Reset titlebar text
+    var tl = win.querySelector('.np-titlebar-left');
+    tl.innerHTML = tl.innerHTML.replace(/.+ - Notepad/, 'Untitled - Notepad');
   }
   function minimizeNotepad() {
     document.getElementById('notepad-window').classList.remove('open');
