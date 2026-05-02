@@ -143,14 +143,212 @@
     display: flex; align-items: center; gap: 8px;
     padding: 5px 10px; font-size: 12px; font-family: 'Tahoma', Arial;
     color: #000; cursor: pointer; border-bottom: 1px solid #d0d0d0;
+    position: relative;
   }
   .start-menu-item:hover { background: #000080; color: #fff; }
   .start-menu-item .smi-icon { font-size: 18px; width: 22px; text-align: center; }
-  .start-menu-item .smi-label { font-weight: bold; }
+  .start-menu-item .smi-label { font-weight: bold; flex: 1; }
   .start-menu-item .smi-sub { font-size: 9px; color: #666; display: block; }
   .start-menu-item:hover .smi-sub { color: #aac; }
+  .start-menu-item .smi-arrow { font-size: 9px; color: #000; margin-left: auto; }
+  .start-menu-item:hover .smi-arrow { color: #fff; }
   .start-menu-divider { height: 1px; background: #808080; margin: 2px 0 2px 28px;
     border-bottom: 1px solid #fff; }
+
+  /* Cascading submenu */
+  .smi-submenu {
+    display: none; position: absolute; left: 100%; top: -2px;
+    background: #c0c0c0; border: 2px solid;
+    border-color: #fff #808080 #808080 #fff;
+    box-shadow: 2px 2px 0 #000; min-width: 180px; z-index: 200;
+  }
+  .start-menu-item:hover > .smi-submenu { display: block; }
+
+  /* ── MS Paint ── */
+  #paint-window {
+    position: absolute; top: 40px; left: 60px;
+    width: 720px; height: 560px;
+    background: #c0c0c0;
+    border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    box-shadow: 2px 2px 0 #000;
+    display: none; flex-direction: column; z-index: 500;
+  }
+  #paint-window.open { display: flex; }
+  .pt-titlebar {
+    background: #000080; color: #fff; font-size: 12px; font-weight: bold;
+    padding: 2px 5px; display: flex; align-items: center;
+    justify-content: space-between; height: 20px; cursor: grab; flex-shrink: 0;
+  }
+  .pt-titlebar:active { cursor: grabbing; }
+  .pt-titlebar-left { display: flex; align-items: center; gap: 5px; }
+  .pt-win-btns { display: flex; gap: 2px; }
+  .pt-win-btn {
+    width: 16px; height: 14px; background: #c0c0c0;
+    border: 1px solid; border-color: #fff #808080 #808080 #fff;
+    font-size: 9px; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: #000; font-weight: bold;
+  }
+  .pt-menubar {
+    display: flex; background: #c0c0c0; padding: 1px 2px;
+    border-bottom: 1px solid #808080; flex-shrink: 0;
+  }
+  .pt-menu {
+    font-size: 12px; padding: 2px 6px; cursor: pointer; color: #000; position: relative;
+  }
+  .pt-menu:hover { background: #000080; color: #fff; }
+  .pt-menu-dropdown {
+    display: none; position: absolute; top: 100%; left: 0;
+    background: #c0c0c0; border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    box-shadow: 2px 2px 0 #000; z-index: 600; min-width: 150px;
+  }
+  .pt-menu:hover .pt-menu-dropdown { display: block; }
+  .pt-menu-item { font-size: 12px; padding: 3px 20px; color: #000; cursor: pointer; white-space: nowrap; }
+  .pt-menu-item:hover { background: #000080; color: #fff; }
+  .pt-menu-item.disabled { color: #808080; cursor: default; }
+  .pt-menu-item.disabled:hover { background: transparent; color: #808080; }
+  .pt-menu-sep { height: 1px; background: #808080; margin: 2px 0; border-bottom: 1px solid #fff; }
+  /* Main area */
+  .pt-main { display: flex; flex: 1; overflow: hidden; }
+  /* Left toolbox */
+  .pt-toolbox {
+    width: 54px; flex-shrink: 0; background: #c0c0c0;
+    border-right: 2px solid #808080; border-top: 2px solid #fff;
+    display: flex; flex-direction: column; align-items: center; padding: 2px; gap: 1px;
+  }
+  .pt-tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; width: 100%; }
+  .pt-tool-btn {
+    width: 24px; height: 24px; background: #c0c0c0;
+    border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 13px; user-select: none;
+  }
+  .pt-tool-btn:hover { border-color: #000080; }
+  .pt-tool-btn.active { border-color: #808080 #fff #fff #808080; background: #b0b0b0; }
+  .pt-tool-sep { width: 44px; height: 1px; background: #808080; margin: 3px 0; border-bottom: 1px solid #fff; }
+  /* Brush size selector */
+  .pt-brush-sizes { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 4px 0; }
+  .pt-brush-opt {
+    display: flex; align-items: center; justify-content: center;
+    width: 38px; height: 14px; cursor: pointer;
+    border: 1px solid transparent;
+  }
+  .pt-brush-opt:hover { border-color: #000080; }
+  .pt-brush-opt.active { border-color: #808080 #fff #fff #808080; background: #b0b0b0; }
+  .pt-brush-dot { background: #000; border-radius: 50%; }
+  /* Canvas area */
+  .pt-canvas-wrap {
+    flex: 1; overflow: auto; background: #808080;
+    display: flex; align-items: flex-start; justify-content: flex-start; padding: 6px;
+  }
+  #paint-canvas {
+    cursor: crosshair; display: block;
+    border: 2px solid; border-color: #808080 #fff #fff #808080;
+    image-rendering: pixelated;
+  }
+  /* Bottom: color palette + status */
+  .pt-bottom { flex-shrink: 0; border-top: 2px solid #808080; background: #c0c0c0; }
+  .pt-palette-row { display: flex; align-items: center; padding: 3px 4px; gap: 4px; }
+  .pt-color-preview {
+    width: 32px; height: 28px; position: relative; flex-shrink: 0; margin-right: 6px;
+    border: 2px solid; border-color: #808080 #fff #fff #808080;
+  }
+  .pt-fg-swatch {
+    position: absolute; top: 0; left: 0; width: 20px; height: 18px;
+    border: 1px solid #000;
+  }
+  .pt-bg-swatch {
+    position: absolute; bottom: 0; right: 0; width: 20px; height: 18px;
+    border: 1px solid #000;
+  }
+  .pt-color-btn {
+    width: 18px; height: 18px; cursor: pointer; flex-shrink: 0;
+    border: 2px solid; border-color: #fff #808080 #808080 #fff;
+  }
+  .pt-color-btn:hover { border-color: #000; }
+  .pt-color-btn.selected-fg { border-color: #000 #fff #fff #000; box-shadow: inset 0 0 0 1px #fff; }
+  .pt-statusbar {
+    height: 18px; background: #c0c0c0; border-top: 1px solid #808080;
+    display: flex; align-items: center; padding: 0 4px;
+    font-size: 10px; font-family: 'Tahoma', Arial; color: #000; gap: 4px;
+  }
+  .pt-status-panel {
+    border: 1px solid; border-color: #808080 #fff #fff #808080;
+    padding: 0 6px; height: 14px; display: flex; align-items: center;
+  }
+
+  /* ── My Documents window ── */
+  #mydocs-window {
+    position: absolute; top: 60px; left: 140px;
+    width: 580px; height: 420px;
+    background: #c0c0c0;
+    border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    box-shadow: 2px 2px 0 #000;
+    display: none; flex-direction: column; z-index: 500;
+  }
+  #mydocs-window.open { display: flex; }
+  .md-titlebar {
+    background: #000080; color: #fff; font-size: 12px; font-weight: bold;
+    padding: 2px 5px; display: flex; align-items: center;
+    justify-content: space-between; height: 20px; cursor: grab; flex-shrink: 0;
+  }
+  .md-titlebar:active { cursor: grabbing; }
+  .md-titlebar-left { display: flex; align-items: center; gap: 5px; }
+  .md-win-btns { display: flex; gap: 2px; }
+  .md-win-btn {
+    width: 16px; height: 14px; background: #c0c0c0;
+    border: 1px solid; border-color: #fff #808080 #808080 #fff;
+    font-size: 9px; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: #000; font-weight: bold;
+  }
+  .md-menubar {
+    display: flex; background: #c0c0c0; padding: 1px 2px;
+    border-bottom: 1px solid #808080; flex-shrink: 0;
+  }
+  .md-menu { font-size: 12px; padding: 2px 6px; cursor: pointer; color: #000; }
+  .md-menu:hover { background: #000080; color: #fff; }
+  .md-addressbar {
+    display: flex; align-items: center; gap: 4px; padding: 2px 4px;
+    background: #c0c0c0; border-bottom: 1px solid #808080; flex-shrink: 0;
+    font-size: 11px; font-family: 'Tahoma', Arial;
+  }
+  .md-addr-box {
+    flex: 1; height: 20px;
+    border-top: 2px solid #808080; border-left: 2px solid #808080;
+    border-right: 2px solid #fff; border-bottom: 2px solid #fff;
+    background: #fff; font-size: 11px; padding: 0 4px; color: #000; display: flex; align-items: center;
+  }
+  /* Icon grid view */
+  .md-icon-area { flex: 1; background: #fff; overflow-y: auto; padding: 8px; }
+  .md-icon-grid { display: flex; flex-wrap: wrap; gap: 16px; align-content: flex-start; }
+  .md-icon-item {
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    width: 72px; cursor: pointer; padding: 4px; border: 1px solid transparent;
+  }
+  .md-icon-item:hover { border-color: #000080; background: rgba(0,0,128,0.1); }
+  .md-icon-item.selected { border-color: #000080; background: #000080; }
+  .md-icon-item.selected .md-icon-label { color: #fff; }
+  .md-icon-svg { width: 32px; height: 32px; }
+  .md-icon-label {
+    font-size: 10px; font-family: 'Tahoma', Arial; color: #000;
+    text-align: center; word-break: break-all; line-height: 1.2;
+  }
+  .md-statusbar {
+    height: 18px; background: #c0c0c0; border-top: 1px solid #808080;
+    display: flex; align-items: center; padding: 0 4px;
+    font-size: 10px; font-family: 'Tahoma', Arial; color: #000; flex-shrink: 0;
+  }
+  .md-status-panel {
+    border: 1px solid; border-color: #808080 #fff #fff #808080;
+    padding: 0 6px; height: 14px; display: flex; align-items: center;
+  }
+
+  /* Paint Save dialog */
+  #paint-save-overlay {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.3); z-index: 900; display: none;
+    align-items: center; justify-content: center;
+  }
+  #paint-save-overlay.open { display: flex; }
 
   /* ════════════════════════════════════════
      NETSCAPE BROWSER SCREEN
@@ -2327,6 +2525,13 @@
         <div class="start-menu-item">
           <span class="smi-icon">📁</span>
           <div><span class="smi-label">My Documents</span></div>
+          <span class="smi-arrow">▶</span>
+          <div class="smi-submenu" onclick="openMyDocs();toggleStartMenu();" style="min-width:140px;">
+            <div class="start-menu-item" onclick="openMyDocs();toggleStartMenu();" style="border:none;">
+              <span class="smi-icon">📁</span>
+              <div><span class="smi-label">Open My Documents</span></div>
+            </div>
+          </div>
         </div>
         <div class="start-menu-item" onclick="openBriefcase();toggleStartMenu();">
           <span class="smi-icon">💼</span>
@@ -2340,17 +2545,40 @@
           <span class="smi-icon">🖨️</span>
           <div><span class="smi-label">Printers</span></div>
         </div>
+        <!-- Programs with cascade -->
+        <div class="start-menu-item">
+          <span class="smi-icon">📂</span>
+          <div><span class="smi-label">Programs</span></div>
+          <span class="smi-arrow">▶</span>
+          <div class="smi-submenu">
+            <div class="start-menu-item">
+              <span class="smi-icon">📂</span>
+              <div><span class="smi-label">Accessories</span></div>
+              <span class="smi-arrow">▶</span>
+              <div class="smi-submenu">
+                <div class="start-menu-item" onclick="openNotepad();toggleStartMenu();" style="border:none;">
+                  <span class="smi-icon">📝</span>
+                  <div><span class="smi-label">Notepad</span></div>
+                </div>
+                <div class="start-menu-item" onclick="openPaint();toggleStartMenu();" style="border:none;">
+                  <span class="smi-icon">🎨</span>
+                  <div><span class="smi-label">Paint</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="start-menu-item" style="border:none;">
+              <span class="smi-icon">🌐</span>
+              <div><span class="smi-label">Netscape Navigator</span></div>
+            </div>
+            <div class="start-menu-item" onclick="launchAOL();toggleStartMenu();" style="border:none;">
+              <span class="smi-icon">📡</span>
+              <div><span class="smi-label">America Online 4.0</span></div>
+            </div>
+          </div>
+        </div>
         <div class="start-menu-item">
           <span class="smi-icon">🎮</span>
           <div><span class="smi-label">Games</span><span class="smi-sub">Minesweeper, Solitaire</span></div>
-        </div>
-        <div class="start-menu-item" onclick="openNotepad();toggleStartMenu();">
-          <span class="smi-icon">📝</span>
-          <div><span class="smi-label">Notepad</span></div>
-        </div>
-        <div class="start-menu-item">
-          <span class="smi-icon">🎨</span>
-          <div><span class="smi-label">Paint</span></div>
         </div>
         <div class="start-menu-item">
           <span class="smi-icon">🔊</span>
@@ -2540,6 +2768,180 @@
     <!-- Status bar -->
     <div class="bc-statusbar">
       <div class="bc-status-panel" id="bc-status">0 object(s)</div>
+    </div>
+  </div>
+  <!-- Paint Save dialog -->
+  <div id="paint-save-overlay">
+    <div id="np-save-dialog">
+      <div class="np-save-titlebar"><span>Save As</span>
+        <div style="width:14px;height:12px;background:#c0c0c0;border:1px solid;border-color:#fff #808080 #808080 #fff;font-size:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#000;font-weight:bold;" onclick="paintCancelSave()">✕</div>
+      </div>
+      <div class="np-save-body">
+        <div class="np-save-label">File name:</div>
+        <input class="np-save-input" id="paint-save-input" type="text" value=".bmp" onkeydown="if(event.key==='Enter')paintConfirmSave()">
+        <div style="font-size:10px;color:#808080;margin-top:4px;font-family:'Tahoma',Arial;">Save as type: 24-bit Bitmap (*.bmp)</div>
+        <div class="np-save-footer">
+          <button class="np-save-btn" onclick="paintCancelSave()">Cancel</button>
+          <button class="np-save-btn default" onclick="paintConfirmSave()">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MS Paint Window -->
+  <div id="paint-window">
+    <div class="pt-titlebar" id="pt-titlebar">
+      <div class="pt-titlebar-left">
+        <svg width="14" height="14" viewBox="0 0 16 16">
+          <rect x="1" y="1" width="14" height="14" fill="#fff" stroke="#808080" stroke-width="1"/>
+          <rect x="1" y="1" width="14" height="3" fill="#000080"/>
+          <circle cx="4" cy="10" r="2" fill="#ff0000"/>
+          <circle cx="8" cy="7" r="2" fill="#00aa00"/>
+          <circle cx="12" cy="10" r="2" fill="#0000ff"/>
+        </svg>
+        untitled - Paint
+      </div>
+      <div class="pt-win-btns">
+        <div class="pt-win-btn" onclick="closePaint()">_</div>
+        <div class="pt-win-btn">□</div>
+        <div class="pt-win-btn" onclick="closePaint()">✕</div>
+      </div>
+    </div>
+    <div class="pt-menubar">
+      <div class="pt-menu"><u>F</u>ile
+        <div class="pt-menu-dropdown">
+          <div class="pt-menu-item" onclick="paintNew()">New</div>
+          <div class="pt-menu-sep"></div>
+          <div class="pt-menu-item" onclick="paintSaveDialog()">Save</div>
+          <div class="pt-menu-item" onclick="paintSaveDialog()">Save As...</div>
+          <div class="pt-menu-sep"></div>
+          <div class="pt-menu-item disabled">Print Preview</div>
+          <div class="pt-menu-item disabled">Print...</div>
+          <div class="pt-menu-sep"></div>
+          <div class="pt-menu-item" onclick="closePaint()">Exit</div>
+        </div>
+      </div>
+      <div class="pt-menu"><u>E</u>dit
+        <div class="pt-menu-dropdown">
+          <div class="pt-menu-item" onclick="paintUndo()">Undo</div>
+          <div class="pt-menu-sep"></div>
+          <div class="pt-menu-item disabled">Cut</div>
+          <div class="pt-menu-item disabled">Copy</div>
+          <div class="pt-menu-item disabled">Paste</div>
+          <div class="pt-menu-sep"></div>
+          <div class="pt-menu-item" onclick="paintClear()">Select All</div>
+          <div class="pt-menu-item" onclick="paintClear()">Clear Image</div>
+        </div>
+      </div>
+      <div class="pt-menu"><u>V</u>iew
+        <div class="pt-menu-dropdown">
+          <div class="pt-menu-item disabled">Tool Box</div>
+          <div class="pt-menu-item disabled">Color Box</div>
+          <div class="pt-menu-item disabled">Status Bar</div>
+          <div class="pt-menu-sep"></div>
+          <div class="pt-menu-item disabled">Zoom</div>
+        </div>
+      </div>
+      <div class="pt-menu">I<u>m</u>age
+        <div class="pt-menu-dropdown">
+          <div class="pt-menu-item disabled">Flip/Rotate...</div>
+          <div class="pt-menu-item disabled">Stretch/Skew...</div>
+          <div class="pt-menu-item disabled">Invert Colors</div>
+          <div class="pt-menu-sep"></div>
+          <div class="pt-menu-item disabled">Attributes...</div>
+        </div>
+      </div>
+      <div class="pt-menu"><u>H</u>elp
+        <div class="pt-menu-dropdown">
+          <div class="pt-menu-item disabled">Help Topics</div>
+          <div class="pt-menu-sep"></div>
+          <div class="pt-menu-item disabled">About Paint</div>
+        </div>
+      </div>
+    </div>
+    <div class="pt-main">
+      <!-- Left toolbox -->
+      <div class="pt-toolbox">
+        <div class="pt-tool-grid">
+          <div class="pt-tool-btn" id="tool-select" title="Select" onclick="setPaintTool('select')">⬚</div>
+          <div class="pt-tool-btn" id="tool-eraser" title="Eraser" onclick="setPaintTool('eraser')">◻</div>
+          <div class="pt-tool-btn" id="tool-fill" title="Fill" onclick="setPaintTool('fill')" style="font-size:12px;">🪣</div>
+          <div class="pt-tool-btn" id="tool-picker" title="Color Picker" onclick="setPaintTool('picker')" style="font-size:12px;">💉</div>
+          <div class="pt-tool-btn" id="tool-pencil" title="Pencil" onclick="setPaintTool('pencil')" style="font-size:12px;">✏️</div>
+          <div class="pt-tool-btn active" id="tool-brush" title="Brush" onclick="setPaintTool('brush')" style="font-size:12px;">🖌️</div>
+          <div class="pt-tool-btn" id="tool-line" title="Line" onclick="setPaintTool('line')" style="font-weight:bold;font-family:monospace;">/</div>
+          <div class="pt-tool-btn" id="tool-rect" title="Rectangle" onclick="setPaintTool('rect')">▭</div>
+        </div>
+        <div class="pt-tool-sep"></div>
+        <!-- Brush size -->
+        <div class="pt-brush-sizes" id="pt-brush-sizes">
+          <div class="pt-brush-opt active" onclick="setPaintBrush(2)" id="bs-2">
+            <div class="pt-brush-dot" style="width:2px;height:2px;"></div>
+          </div>
+          <div class="pt-brush-opt" onclick="setPaintBrush(4)" id="bs-4">
+            <div class="pt-brush-dot" style="width:4px;height:4px;"></div>
+          </div>
+          <div class="pt-brush-opt" onclick="setPaintBrush(7)" id="bs-7">
+            <div class="pt-brush-dot" style="width:7px;height:7px;"></div>
+          </div>
+          <div class="pt-brush-opt" onclick="setPaintBrush(12)" id="bs-12">
+            <div class="pt-brush-dot" style="width:12px;height:12px;"></div>
+          </div>
+        </div>
+      </div>
+      <!-- Canvas area -->
+      <div class="pt-canvas-wrap">
+        <canvas id="paint-canvas" width="640" height="480"></canvas>
+      </div>
+    </div>
+    <!-- Color palette + status -->
+    <div class="pt-bottom">
+      <div class="pt-palette-row">
+        <div class="pt-color-preview" id="pt-color-preview">
+          <div class="pt-fg-swatch" id="pt-fg-swatch" style="background:#000;"></div>
+          <div class="pt-bg-swatch" id="pt-bg-swatch" style="background:#fff;"></div>
+        </div>
+        <div id="pt-palette"></div>
+      </div>
+      <div class="pt-statusbar">
+        <div class="pt-status-panel" id="pt-coord">0, 0</div>
+        <div class="pt-status-panel" id="pt-size">640 x 480</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- My Documents Window -->
+  <div id="mydocs-window">
+    <div class="md-titlebar" id="md-titlebar">
+      <div class="md-titlebar-left">
+        <span style="font-size:13px;">📁</span> My Documents
+      </div>
+      <div class="md-win-btns">
+        <div class="md-win-btn" onclick="closeMyDocs()">_</div>
+        <div class="md-win-btn">□</div>
+        <div class="md-win-btn" onclick="closeMyDocs()">✕</div>
+      </div>
+    </div>
+    <div class="md-menubar">
+      <span class="md-menu"><u>F</u>ile</span>
+      <span class="md-menu"><u>E</u>dit</span>
+      <span class="md-menu"><u>V</u>iew</span>
+      <span class="md-menu"><u>G</u>o</span>
+      <span class="md-menu">F<u>a</u>vorites</span>
+      <span class="md-menu"><u>H</u>elp</span>
+    </div>
+    <div class="md-addressbar">
+      <span style="font-size:11px;font-family:'Tahoma',Arial;">Address</span>
+      <span style="font-size:14px;margin:0 2px;">📁</span>
+      <div class="md-addr-box">C:\My Documents</div>
+    </div>
+    <div class="md-icon-area">
+      <div class="md-icon-grid" id="md-icon-grid">
+        <!-- populated by JS -->
+      </div>
+    </div>
+    <div class="md-statusbar">
+      <div class="md-status-panel" id="md-status">0 object(s)</div>
     </div>
   </div>
 
@@ -4719,6 +5121,238 @@
   document.getElementById('chatroom-window').addEventListener('mousedown', function() {
     document.getElementById('chatroom-window').style.zIndex = ++chatZBase + 100;
   });
+
+  // ════════════════════════════════════════
+  // MS PAINT
+  // ════════════════════════════════════════
+  var ptTool = 'brush';
+  var ptBrushSize = 2;
+  var ptFgColor = '#000000';
+  var ptBgColor = '#ffffff';
+  var ptDrawing = false;
+  var ptLastX = 0; var ptLastY = 0;
+  var ptLineStart = null;
+  var ptUndoStack = [];
+  var ptCurrentFile = null;
+  var ptInited = false;
+
+  var PT_COLORS = [
+    '#000000','#808080','#800000','#808000','#008000','#008080',
+    '#000080','#800080','#c0c0c0','#ffffff','#ff0000','#ffff00',
+    '#00ff00','#00ffff','#0000ff','#ff00ff','#ff8040','#804000',
+    '#804040','#408080','#4040ff','#ff40ff','#ffff80','#80ff80',
+    '#80ffff','#8080ff','#ff8080','#ff8000'
+  ];
+
+  function initPaint() {
+    if (ptInited) return;
+    ptInited = true;
+    var pal = document.getElementById('pt-palette');
+    pal.style.cssText = 'display:flex;flex-wrap:wrap;width:' + (PT_COLORS.length/2*20) + 'px;';
+    PT_COLORS.forEach(function(c) {
+      var btn = document.createElement('div');
+      btn.className = 'pt-color-btn';
+      btn.style.background = c;
+      btn.title = c;
+      btn.addEventListener('click', function() { ptFgColor = c; document.getElementById('pt-fg-swatch').style.background = c; });
+      btn.addEventListener('contextmenu', function(e) { e.preventDefault(); ptBgColor = c; document.getElementById('pt-bg-swatch').style.background = c; });
+      pal.appendChild(btn);
+    });
+    var ctx = getCtx();
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0,0,640,480);
+    var canvas = document.getElementById('paint-canvas');
+    canvas.addEventListener('mousedown', ptMouseDown);
+    canvas.addEventListener('mousemove', ptMouseMove);
+    canvas.addEventListener('mouseup',   ptMouseUp);
+    canvas.addEventListener('mouseleave',function(e){ if(ptDrawing) ptMouseUp(e); });
+    canvas.addEventListener('mousemove', function(e) {
+      var r = canvas.getBoundingClientRect();
+      document.getElementById('pt-coord').textContent = Math.round(e.clientX-r.left) + ', ' + Math.round(e.clientY-r.top);
+    });
+    canvas.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+  }
+
+  function getCtx() { return document.getElementById('paint-canvas').getContext('2d'); }
+
+  function ptSaveUndo() {
+    ptUndoStack.push(document.getElementById('paint-canvas').toDataURL());
+    if (ptUndoStack.length > 20) ptUndoStack.shift();
+  }
+
+  function ptMouseDown(e) {
+    e.preventDefault();
+    ptDrawing = true;
+    var r = e.target.getBoundingClientRect();
+    ptLastX = e.clientX - r.left; ptLastY = e.clientY - r.top;
+    var isRight = e.button === 2;
+    var color = isRight ? ptBgColor : ptFgColor;
+    var ctx = getCtx();
+    if (ptTool==='pencil'||ptTool==='brush'||ptTool==='eraser') {
+      ptSaveUndo();
+      ctx.beginPath();
+      ctx.arc(ptLastX, ptLastY, (ptTool==='eraser'?ptBrushSize*3:ptBrushSize)/2, 0, Math.PI*2);
+      ctx.fillStyle = ptTool==='eraser' ? ptBgColor : color;
+      ctx.fill();
+    } else if (ptTool==='fill') {
+      ptSaveUndo(); ptFloodFill(Math.round(ptLastX), Math.round(ptLastY), color);
+    } else if (ptTool==='picker') {
+      var px = ctx.getImageData(Math.round(ptLastX), Math.round(ptLastY), 1, 1).data;
+      var hex = '#'+('0'+px[0].toString(16)).slice(-2)+('0'+px[1].toString(16)).slice(-2)+('0'+px[2].toString(16)).slice(-2);
+      if (isRight) { ptBgColor=hex; document.getElementById('pt-bg-swatch').style.background=hex; }
+      else { ptFgColor=hex; document.getElementById('pt-fg-swatch').style.background=hex; }
+    } else if (ptTool==='line'||ptTool==='rect') {
+      ptSaveUndo(); ptLineStart = { x:ptLastX, y:ptLastY, color:color };
+    }
+  }
+
+  function ptMouseMove(e) {
+    if (!ptDrawing) return;
+    var r = e.target.getBoundingClientRect();
+    var x = e.clientX-r.left, y = e.clientY-r.top;
+    var isRight = e.button===2;
+    var color = isRight ? ptBgColor : ptFgColor;
+    var ctx = getCtx();
+    if (ptTool==='pencil') {
+      ctx.beginPath(); ctx.moveTo(ptLastX,ptLastY); ctx.lineTo(x,y);
+      ctx.strokeStyle=color; ctx.lineWidth=1; ctx.lineCap='round'; ctx.stroke();
+    } else if (ptTool==='brush') {
+      ctx.beginPath(); ctx.moveTo(ptLastX,ptLastY); ctx.lineTo(x,y);
+      ctx.strokeStyle=color; ctx.lineWidth=ptBrushSize; ctx.lineCap='round'; ctx.lineJoin='round'; ctx.stroke();
+    } else if (ptTool==='eraser') {
+      ctx.beginPath(); ctx.moveTo(ptLastX,ptLastY); ctx.lineTo(x,y);
+      ctx.strokeStyle=ptBgColor; ctx.lineWidth=ptBrushSize*3; ctx.lineCap='square'; ctx.stroke();
+    }
+    ptLastX=x; ptLastY=y;
+  }
+
+  function ptMouseUp(e) {
+    if (!ptDrawing) return;
+    ptDrawing = false;
+    var r = e.target.getBoundingClientRect();
+    var x = e.clientX-r.left, y = e.clientY-r.top;
+    var ctx = getCtx();
+    if (ptTool==='line' && ptLineStart) {
+      ctx.beginPath(); ctx.moveTo(ptLineStart.x,ptLineStart.y); ctx.lineTo(x,y);
+      ctx.strokeStyle=ptLineStart.color; ctx.lineWidth=ptBrushSize; ctx.lineCap='round'; ctx.stroke();
+      ptLineStart=null;
+    } else if (ptTool==='rect' && ptLineStart) {
+      ctx.strokeStyle=ptLineStart.color; ctx.lineWidth=ptBrushSize;
+      ctx.strokeRect(ptLineStart.x,ptLineStart.y,x-ptLineStart.x,y-ptLineStart.y);
+      ptLineStart=null;
+    }
+  }
+
+  function ptFloodFill(sx, sy, fillColor) {
+    var canvas = document.getElementById('paint-canvas');
+    var ctx = canvas.getContext('2d');
+    var imgData = ctx.getImageData(0,0,canvas.width,canvas.height);
+    var d = imgData.data;
+    function idx(x,y){ return (y*canvas.width+x)*4; }
+    var ti=idx(sx,sy), tr=d[ti], tg=d[ti+1], tb=d[ti+2];
+    var fr=parseInt(fillColor.slice(1,3),16), fg2=parseInt(fillColor.slice(3,5),16), fb=parseInt(fillColor.slice(5,7),16);
+    if (tr===fr&&tg===fg2&&tb===fb) return;
+    var stack=[[sx,sy]];
+    while (stack.length) {
+      var p=stack.pop(), x=p[0], y=p[1];
+      if (x<0||x>=canvas.width||y<0||y>=canvas.height) continue;
+      var i2=idx(x,y);
+      if (d[i2]!==tr||d[i2+1]!==tg||d[i2+2]!==tb) continue;
+      d[i2]=fr; d[i2+1]=fg2; d[i2+2]=fb; d[i2+3]=255;
+      stack.push([x+1,y],[x-1,y],[x,y+1],[x,y-1]);
+    }
+    ctx.putImageData(imgData,0,0);
+  }
+
+  function setPaintTool(t) {
+    ptTool = t;
+    document.querySelectorAll('.pt-tool-btn').forEach(function(b){ b.classList.remove('active'); });
+    var el = document.getElementById('tool-'+t);
+    if (el) el.classList.add('active');
+  }
+  function setPaintBrush(s) {
+    ptBrushSize = s;
+    document.querySelectorAll('.pt-brush-opt').forEach(function(b){ b.classList.remove('active'); });
+    var el = document.getElementById('bs-'+s);
+    if (el) el.classList.add('active');
+  }
+  function paintNew() {
+    ptSaveUndo(); getCtx().fillStyle='#ffffff'; getCtx().fillRect(0,0,640,480);
+    ptCurrentFile=null;
+    document.querySelector('#paint-window .pt-titlebar-left').lastChild.textContent=' untitled - Paint';
+  }
+  function paintClear() { ptSaveUndo(); getCtx().fillStyle=ptBgColor; getCtx().fillRect(0,0,640,480); }
+  function paintUndo() {
+    if (!ptUndoStack.length) return;
+    var img=new Image(); img.onload=function(){ getCtx().clearRect(0,0,640,480); getCtx().drawImage(img,0,0); }; img.src=ptUndoStack.pop();
+  }
+  function paintSaveDialog() {
+    var inp=document.getElementById('paint-save-input');
+    inp.value = ptCurrentFile||'.bmp';
+    document.getElementById('paint-save-overlay').classList.add('open');
+    setTimeout(function(){ inp.focus(); var pos=inp.value.indexOf('.bmp'); inp.selectionStart=0; inp.selectionEnd=pos>0?pos:0; },50);
+  }
+  function paintCancelSave() { document.getElementById('paint-save-overlay').classList.remove('open'); }
+  function paintConfirmSave() {
+    var raw=document.getElementById('paint-save-input').value.trim();
+    if (!raw) return;
+    var filename=raw.endsWith('.bmp')?raw:raw+'.bmp';
+    var dataUrl=document.getElementById('paint-canvas').toDataURL('image/png');
+    var now=new Date();
+    var dateStr=now.toLocaleDateString()+' '+now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+    var files=loadMyDocsFiles();
+    var existing=files.findIndex(function(f){ return f.name===filename; });
+    var entry={name:filename,data:dataUrl,date:dateStr};
+    if (existing>=0) files[existing]=entry; else files.unshift(entry);
+    saveMyDocsFiles(files);
+    ptCurrentFile=filename;
+    document.querySelector('#paint-window .pt-titlebar-left').lastChild.textContent=' '+filename+' - Paint';
+    document.getElementById('paint-save-overlay').classList.remove('open');
+    if (document.getElementById('mydocs-window').classList.contains('open')) renderMyDocs();
+  }
+  function openPaint(filename, dataUrl) {
+    var win=document.getElementById('paint-window');
+    initPaint();
+    win.classList.add('open');
+    win.style.zIndex=++chatZBase;
+    if (filename&&dataUrl) {
+      ptCurrentFile=filename;
+      var img=new Image();
+      img.onload=function(){ getCtx().clearRect(0,0,640,480); getCtx().drawImage(img,0,0); };
+      img.src=dataUrl;
+      document.querySelector('#paint-window .pt-titlebar-left').lastChild.textContent=' '+filename+' - Paint';
+    }
+  }
+  function closePaint() { document.getElementById('paint-window').classList.remove('open'); }
+
+  // ── My Documents ──
+  function loadMyDocsFiles() { try { return JSON.parse(localStorage.getItem('win95_mydocs')||'[]'); } catch(e){ return []; } }
+  function saveMyDocsFiles(arr) { try { localStorage.setItem('win95_mydocs',JSON.stringify(arr)); } catch(e){} }
+  function openMyDocs() {
+    var win=document.getElementById('mydocs-window');
+    win.classList.add('open'); win.style.zIndex=++chatZBase; renderMyDocs();
+  }
+  function closeMyDocs() { document.getElementById('mydocs-window').classList.remove('open'); }
+  function renderMyDocs() {
+    var files=loadMyDocsFiles(), grid=document.getElementById('md-icon-grid');
+    grid.innerHTML='';
+    if (!files.length) { grid.innerHTML='<div style="padding:12px;font-size:11px;color:#808080;font-family:Tahoma,Arial;">No paintings saved yet.</div>'; document.getElementById('md-status').textContent='0 object(s)'; return; }
+    files.forEach(function(f) {
+      var item=document.createElement('div');
+      item.className='md-icon-item';
+      item.innerHTML='<svg class="md-icon-svg" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="28" height="28" fill="#fff" stroke="#808080" stroke-width="1"/><rect x="2" y="2" width="28" height="4" fill="#000080"/><circle cx="9" cy="18" r="4" fill="#ff0000" opacity="0.8"/><circle cx="16" cy="13" r="4" fill="#00aa00" opacity="0.8"/><circle cx="23" cy="18" r="4" fill="#0000ff" opacity="0.8"/></svg><div class="md-icon-label">'+esc(f.name)+'</div>';
+      item.addEventListener('click',function(){ document.querySelectorAll('.md-icon-item').forEach(function(i){ i.classList.remove('selected'); }); item.classList.add('selected'); });
+      item.addEventListener('dblclick',function(){ openPaint(f.name,f.data); });
+      grid.appendChild(item);
+    });
+    document.getElementById('md-status').textContent=files.length+' object(s)';
+  }
+
+  document.getElementById('paint-window').addEventListener('mousedown',function(){ document.getElementById('paint-window').style.zIndex=++chatZBase; });
+  document.getElementById('mydocs-window').addEventListener('mousedown',function(){ document.getElementById('mydocs-window').style.zIndex=++chatZBase; });
+  makeDraggable(document.getElementById('paint-window'),document.getElementById('pt-titlebar'));
+  makeDraggable(document.getElementById('mydocs-window'),document.getElementById('md-titlebar'));
+  initPaint();
 
   window.addEventListener('load', function(){
     showScreen('screen-poweron');
