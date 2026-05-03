@@ -342,6 +342,58 @@
     padding: 0 6px; height: 14px; display: flex; align-items: center;
   }
 
+  /* ── Mail Extras — Background Color picker ── */
+  #mail-bg-picker {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.3); z-index: 900; display: none;
+    align-items: center; justify-content: center;
+  }
+  #mail-bg-picker.open { display: flex; }
+  #mail-bg-dialog {
+    background: #d4d0c8; width: 300px;
+    border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    box-shadow: 2px 2px 0 #000;
+  }
+  .mbp-titlebar {
+    background: linear-gradient(to bottom, #2a7a8c, #1a5a6c);
+    color: #c8f0ff; font-size: 12px; font-weight: bold;
+    padding: 2px 5px; display: flex; align-items: center;
+    justify-content: space-between; height: 20px;
+  }
+  .mbp-close-btn {
+    width: 14px; height: 12px; background: #c0c0c0;
+    border: 1px solid; border-color: #fff #808080 #808080 #fff;
+    font-size: 8px; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: #000; font-weight: bold;
+  }
+  .mbp-body { padding: 12px; }
+  .mbp-label { font-size: 12px; font-family: 'Tahoma', Arial; color: #000; margin-bottom: 10px; font-weight: bold; }
+  .mbp-sublabel { font-size: 11px; color: #000; margin-bottom: 6px; font-family: 'Tahoma', Arial; }
+  .mbp-swatch-grid {
+    display: grid; grid-template-columns: repeat(10, 22px); gap: 2px; margin-bottom: 10px;
+  }
+  .mbp-swatch {
+    width: 22px; height: 18px; cursor: pointer;
+    border: 2px solid; border-color: #fff #808080 #808080 #fff;
+  }
+  .mbp-swatch:hover { border-color: #000; }
+  .mbp-swatch.selected { border-color: #000 #fff #fff #000; }
+  .mbp-preview-row {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
+    font-size: 11px; font-family: 'Tahoma', Arial; color: #000;
+  }
+  .mbp-preview-box {
+    width: 60px; height: 22px;
+    border: 2px solid; border-color: #808080 #fff #fff #808080;
+  }
+  .mbp-footer { display: flex; justify-content: flex-end; gap: 6px; }
+  .mbp-btn {
+    background: #4a7ab0; border: 2px solid; border-color: #8ab4e0 #2a5a90 #2a5a90 #8ab4e0;
+    color: #fff; font-family: 'Tahoma', Arial; font-size: 11px; font-weight: bold;
+    padding: 3px 14px; cursor: pointer;
+  }
+  .mbp-btn.cancel { background: #c0c0c0; border-color: #fff #808080 #808080 #fff; color: #000; }
+
   /* Paint Save dialog */
   #paint-save-overlay {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -2332,9 +2384,35 @@
             <span class="wm-side-icon">📖</span>
             <span class="wm-side-label">Address Book</span>
           </div>
-          <div class="wm-side-btn">
+          <div class="wm-side-btn" onclick="openMailBgPicker()">
             <span class="wm-side-icon">✨</span>
             <span class="wm-side-label">Mail Extras</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mail Background Color Picker -->
+    <div id="mail-bg-picker">
+      <div id="mail-bg-dialog">
+        <div class="mbp-titlebar">
+          <div style="display:flex;align-items:center;gap:4px;">
+            <span style="font-size:12px;">🎨</span> Mail Extras — Background Color
+          </div>
+          <div class="mbp-close-btn" onclick="closeMailBgPicker()">✕</div>
+        </div>
+        <div class="mbp-body">
+          <div class="mbp-label">Select a Background Color for your email:</div>
+          <div class="mbp-sublabel">Click a color, then click Apply.</div>
+          <div class="mbp-swatch-grid" id="mbp-swatch-grid"></div>
+          <div class="mbp-preview-row">
+            <span>Preview:</span>
+            <div class="mbp-preview-box" id="mbp-preview"></div>
+            <span id="mbp-color-name" style="font-size:10px;color:#808080;"></span>
+          </div>
+          <div class="mbp-footer">
+            <button class="mbp-btn cancel" onclick="closeMailBgPicker()">Cancel</button>
+            <button class="mbp-btn" onclick="applyMailBg()">Apply</button>
           </div>
         </div>
       </div>
@@ -5353,6 +5431,56 @@
   makeDraggable(document.getElementById('paint-window'),document.getElementById('pt-titlebar'));
   makeDraggable(document.getElementById('mydocs-window'),document.getElementById('md-titlebar'));
   initPaint();
+
+  // ── Mail Background Color Picker ──
+  var MBP_COLORS = [
+    { hex: '#ffffff', name: 'White'       }, { hex: '#ffffc0', name: 'Light Yellow' },
+    { hex: '#c0ffc0', name: 'Light Green' }, { hex: '#c0ffff', name: 'Light Cyan'  },
+    { hex: '#ffc0c0', name: 'Light Pink'  }, { hex: '#ffc0ff', name: 'Light Violet'},
+    { hex: '#c0c0ff', name: 'Light Blue'  }, { hex: '#ffd680', name: 'Peach'       },
+    { hex: '#d0c0ff', name: 'Lavender'    }, { hex: '#ffb0b0', name: 'Salmon'      },
+    { hex: '#f0f0f0', name: 'Light Gray'  }, { hex: '#e0e8ff', name: 'Periwinkle'  },
+    { hex: '#e8ffe8', name: 'Mint'        }, { hex: '#fff0e0', name: 'Cream'       },
+    { hex: '#ffe0f0', name: 'Rose'        }, { hex: '#e0f8ff', name: 'Sky'         },
+    { hex: '#000080', name: 'Navy'        }, { hex: '#800000', name: 'Maroon'      },
+    { hex: '#008000', name: 'Forest'      }, { hex: '#000000', name: 'Black'       }
+  ];
+  var mbpSelected = '#ffffff';
+
+  function openMailBgPicker() {
+    // Build swatches if not yet built
+    var grid = document.getElementById('mbp-swatch-grid');
+    if (!grid.children.length) {
+      MBP_COLORS.forEach(function(c) {
+        var sw = document.createElement('div');
+        sw.className = 'mbp-swatch';
+        sw.style.background = c.hex;
+        sw.title = c.name;
+        if (c.hex === mbpSelected) sw.classList.add('selected');
+        sw.addEventListener('click', function() {
+          mbpSelected = c.hex;
+          document.querySelectorAll('.mbp-swatch').forEach(function(s){ s.classList.remove('selected'); });
+          sw.classList.add('selected');
+          document.getElementById('mbp-preview').style.background = c.hex;
+          document.getElementById('mbp-color-name').textContent = c.name;
+        });
+        grid.appendChild(sw);
+      });
+    }
+    // Set preview to current body bg
+    var currentBg = document.getElementById('wm-body').style.backgroundColor || '#ffffff';
+    document.getElementById('mbp-preview').style.background = currentBg;
+    document.getElementById('mail-bg-picker').classList.add('open');
+  }
+
+  function closeMailBgPicker() {
+    document.getElementById('mail-bg-picker').classList.remove('open');
+  }
+
+  function applyMailBg() {
+    document.getElementById('wm-body').style.backgroundColor = mbpSelected;
+    closeMailBgPicker();
+  }
 
   window.addEventListener('load', function(){
     showScreen('screen-poweron');
