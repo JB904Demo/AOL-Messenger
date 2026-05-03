@@ -394,6 +394,168 @@
   }
   .mbp-btn.cancel { background: #c0c0c0; border-color: #fff #808080 #808080 #fff; color: #000; }
 
+  /* ── Minesweeper ── */
+  #mines-window {
+    position: absolute; top: 80px; left: 200px;
+    background: #c0c0c0;
+    border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    box-shadow: 2px 2px 0 #000;
+    display: none; flex-direction: column; z-index: 500;
+    width: auto; /* sized by content */
+  }
+  #mines-window.open { display: flex; }
+  .ms-titlebar {
+    background: #000080; color: #fff; font-size: 12px; font-weight: bold;
+    padding: 2px 5px; display: flex; align-items: center;
+    justify-content: space-between; height: 20px; cursor: grab; flex-shrink: 0;
+  }
+  .ms-titlebar:active { cursor: grabbing; }
+  .ms-win-btns { display: flex; gap: 2px; }
+  .ms-win-btn {
+    width: 16px; height: 14px; background: #c0c0c0;
+    border: 1px solid; border-color: #fff #808080 #808080 #fff;
+    font-size: 9px; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: #000; font-weight: bold;
+  }
+  .ms-menubar {
+    display: flex; background: #c0c0c0; padding: 1px 2px;
+    border-bottom: 1px solid #808080; flex-shrink: 0;
+  }
+  .ms-menu { font-size: 12px; padding: 2px 6px; cursor: pointer; color: #000; position: relative; }
+  .ms-menu:hover { background: #000080; color: #fff; }
+  .ms-menu-dropdown {
+    display: none; position: absolute; top: 100%; left: 0;
+    background: #c0c0c0; border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    box-shadow: 2px 2px 0 #000; z-index: 600; min-width: 140px;
+  }
+  .ms-menu:hover .ms-menu-dropdown { display: block; }
+  .ms-menu-item { font-size: 12px; padding: 3px 20px; color: #000; cursor: pointer; white-space: nowrap; }
+  .ms-menu-item:hover { background: #000080; color: #fff; }
+  .ms-menu-item.checked::before { content: '✓ '; }
+  .ms-menu-sep { height: 1px; background: #808080; margin: 2px 0; border-bottom: 1px solid #fff; }
+  /* Panel with counter, smiley, timer */
+  .ms-panel {
+    margin: 6px 6px 4px;
+    border: 2px solid; border-color: #808080 #fff #fff #808080;
+    padding: 4px 6px; display: flex; align-items: center; justify-content: space-between;
+    background: #c0c0c0;
+  }
+  .ms-lcd {
+    background: #000; color: #ff0000; font-family: 'Courier New', monospace;
+    font-size: 18px; font-weight: bold; padding: 1px 4px; min-width: 40px; text-align: center;
+    border: 1px solid; border-color: #808080 #fff #fff #808080;
+    letter-spacing: 2px;
+  }
+  .ms-smiley {
+    width: 28px; height: 28px; background: #c0c0c0;
+    border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    font-size: 18px; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; user-select: none;
+  }
+  .ms-smiley:active { border-color: #808080 #fff #fff #808080; }
+  /* Grid */
+  .ms-grid-wrap {
+    margin: 0 6px 6px;
+    border: 3px solid; border-color: #808080 #fff #fff #808080;
+    display: inline-block;
+  }
+  .ms-grid { display: grid; }
+  .ms-cell {
+    width: 20px; height: 20px;
+    background: #c0c0c0;
+    border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 11px; font-weight: bold;
+    user-select: none; font-family: 'Tahoma', Arial;
+  }
+  .ms-cell.revealed {
+    border: 1px solid #808080; background: #c0c0c0; cursor: default;
+  }
+  .ms-cell.flagged { background: #c0c0c0; }
+  .ms-cell.mine-hit { background: #ff0000; }
+  .ms-cell[data-n="1"] { color: #0000ff; }
+  .ms-cell[data-n="2"] { color: #008000; }
+  .ms-cell[data-n="3"] { color: #ff0000; }
+  .ms-cell[data-n="4"] { color: #000080; }
+  .ms-cell[data-n="5"] { color: #800000; }
+  .ms-cell[data-n="6"] { color: #008080; }
+  .ms-cell[data-n="7"] { color: #000000; }
+  .ms-cell[data-n="8"] { color: #808080; }
+
+  /* ── Clock / Calendar ── */
+  #clock-window {
+    position: absolute; top: 150px; left: 250px;
+    width: 320px;
+    background: #c0c0c0;
+    border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    box-shadow: 2px 2px 0 #000;
+    display: none; flex-direction: column; z-index: 500;
+  }
+  #clock-window.open { display: flex; }
+  .cw-titlebar {
+    background: #000080; color: #fff; font-size: 12px; font-weight: bold;
+    padding: 2px 5px; display: flex; align-items: center;
+    justify-content: space-between; height: 20px; cursor: grab; flex-shrink: 0;
+  }
+  .cw-titlebar:active { cursor: grabbing; }
+  .cw-titlebar-left { display: flex; align-items: center; gap: 5px; }
+  .cw-win-btns { display: flex; gap: 2px; }
+  .cw-win-btn {
+    width: 16px; height: 14px; background: #c0c0c0;
+    border: 1px solid; border-color: #fff #808080 #808080 #fff;
+    font-size: 9px; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: #000; font-weight: bold;
+  }
+  .cw-body { display: flex; gap: 0; padding: 8px; }
+  /* Calendar */
+  .cw-cal { flex: 1; }
+  .cw-cal-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 6px;
+  }
+  .cw-month-label {
+    font-size: 12px; font-weight: bold; color: #000; font-family: 'Tahoma', Arial;
+    flex: 1; text-align: center;
+  }
+  .cw-nav-btn {
+    width: 18px; height: 18px; background: #c0c0c0;
+    border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    color: #000; font-weight: bold;
+  }
+  .cw-nav-btn:active { border-color: #808080 #fff #fff #808080; }
+  .cw-cal-grid {
+    display: grid; grid-template-columns: repeat(7,26px);
+    gap: 1px; font-size: 11px; font-family: 'Tahoma', Arial;
+  }
+  .cw-day-hdr { text-align: center; color: #000; font-weight: bold; padding: 1px 0; }
+  .cw-day {
+    text-align: center; padding: 1px 0; cursor: pointer; color: #000;
+    border: 1px solid transparent;
+  }
+  .cw-day:hover { background: #000080; color: #fff; }
+  .cw-day.today { background: #000080; color: #fff; font-weight: bold; }
+  .cw-day.other-month { color: #808080; }
+  /* Divider */
+  .cw-divider { width: 1px; background: #808080; margin: 0 10px; }
+  /* Clock analog */
+  .cw-clock-area { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  #cw-clock-svg { display: block; }
+  .cw-time-label {
+    font-size: 14px; font-weight: bold; color: #000;
+    font-family: 'Tahoma', Arial; letter-spacing: 1px;
+  }
+  .cw-footer {
+    display: flex; justify-content: flex-end; gap: 6px;
+    padding: 0 8px 8px;
+  }
+  .cw-btn {
+    background: #c0c0c0; border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    font-family: 'Tahoma', Arial; font-size: 12px;
+    padding: 3px 14px; cursor: pointer; color: #000; min-width: 70px; text-align: center;
+  }
+  .cw-btn:active { border-color: #808080 #fff #fff #808080; }
+
   /* Paint Save dialog */
   #paint-save-overlay {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -2586,7 +2748,7 @@
         <span>Start</span>
       </button>
       <div style="flex:1;"></div>
-      <div id="win95-clock">12:00 AM</div>
+      <div id="win95-clock" ondblclick="openClockCalendar()" style="cursor:default;" title="Double-click to adjust date/time">12:00 AM</div>
     </div>
     <div id="start-menu">
       <div class="start-menu-header">Windows 95</div>
@@ -2657,6 +2819,17 @@
         <div class="start-menu-item">
           <span class="smi-icon">🎮</span>
           <div><span class="smi-label">Games</span><span class="smi-sub">Minesweeper, Solitaire</span></div>
+          <span class="smi-arrow">▶</span>
+          <div class="smi-submenu">
+            <div class="start-menu-item" onclick="openMinesweeper();toggleStartMenu();" style="border:none;">
+              <span class="smi-icon">💣</span>
+              <div><span class="smi-label">Minesweeper</span></div>
+            </div>
+            <div class="start-menu-item" style="border:none;">
+              <span class="smi-icon">🃏</span>
+              <div><span class="smi-label">Solitaire</span><span class="smi-sub">Coming soon</span></div>
+            </div>
+          </div>
         </div>
         <div class="start-menu-item">
           <span class="smi-icon">🔊</span>
@@ -3020,6 +3193,93 @@
     </div>
     <div class="md-statusbar">
       <div class="md-status-panel" id="md-status">0 object(s)</div>
+    </div>
+  </div>
+  <!-- Minesweeper -->
+  <div id="mines-window">
+    <div class="ms-titlebar" id="ms-titlebar">
+      <div style="display:flex;align-items:center;gap:5px;">
+        <span style="font-size:12px;">💣</span> Minesweeper
+      </div>
+      <div class="ms-win-btns">
+        <div class="ms-win-btn" onclick="closeMinesweeper()">_</div>
+        <div class="ms-win-btn">□</div>
+        <div class="ms-win-btn" onclick="closeMinesweeper()">✕</div>
+      </div>
+    </div>
+    <div class="ms-menubar">
+      <div class="ms-menu">Game
+        <div class="ms-menu-dropdown">
+          <div class="ms-menu-item" onclick="msNewGame()">New</div>
+          <div class="ms-menu-sep"></div>
+          <div class="ms-menu-item checked" id="ms-diff-beg" onclick="msSetDiff('beginner')">Beginner</div>
+          <div class="ms-menu-item" id="ms-diff-int" onclick="msSetDiff('intermediate')">Intermediate</div>
+          <div class="ms-menu-item" id="ms-diff-exp" onclick="msSetDiff('expert')">Expert</div>
+          <div class="ms-menu-sep"></div>
+          <div class="ms-menu-item" onclick="closeMinesweeper()">Exit</div>
+        </div>
+      </div>
+      <div class="ms-menu">Help
+        <div class="ms-menu-dropdown">
+          <div class="ms-menu-item" style="color:#808080;">How to Play</div>
+        </div>
+      </div>
+    </div>
+    <div class="ms-panel">
+      <div class="ms-lcd" id="ms-mine-count">010</div>
+      <div class="ms-smiley" id="ms-smiley" onclick="msNewGame()">🙂</div>
+      <div class="ms-lcd" id="ms-timer">000</div>
+    </div>
+    <div class="ms-grid-wrap">
+      <div class="ms-grid" id="ms-grid"></div>
+    </div>
+  </div>
+
+  <!-- Clock / Calendar -->
+  <div id="clock-window">
+    <div class="cw-titlebar" id="cw-titlebar">
+      <div class="cw-titlebar-left">
+        <span style="font-size:12px;">🕐</span> Date/Time Properties
+      </div>
+      <div class="cw-win-btns">
+        <div class="cw-win-btn" onclick="closeClockCalendar()">_</div>
+        <div class="cw-win-btn">□</div>
+        <div class="cw-win-btn" onclick="closeClockCalendar()">✕</div>
+      </div>
+    </div>
+    <div class="cw-body">
+      <!-- Calendar left -->
+      <div class="cw-cal">
+        <div class="cw-cal-header">
+          <div class="cw-nav-btn" onclick="cwPrevMonth()">◀</div>
+          <div class="cw-month-label" id="cw-month-label">April 1999</div>
+          <div class="cw-nav-btn" onclick="cwNextMonth()">▶</div>
+        </div>
+        <div class="cw-cal-grid" id="cw-cal-grid"></div>
+      </div>
+      <div class="cw-divider"></div>
+      <!-- Analog clock right -->
+      <div class="cw-clock-area">
+        <svg id="cw-clock-svg" width="120" height="120" viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r="58" fill="#fff" stroke="#808080" stroke-width="2"/>
+          <!-- Hour markers -->
+          <line x1="60" y1="6"  x2="60" y2="14" stroke="#000" stroke-width="2"/>
+          <line x1="60" y1="106" x2="60" y2="114" stroke="#000" stroke-width="2"/>
+          <line x1="6"  y1="60" x2="14" y2="60" stroke="#000" stroke-width="2"/>
+          <line x1="106" y1="60" x2="114" y2="60" stroke="#000" stroke-width="2"/>
+          <!-- Hands -->
+          <line id="cw-hour"   x1="60" y1="60" x2="60" y2="30" stroke="#000" stroke-width="3" stroke-linecap="round"/>
+          <line id="cw-minute" x1="60" y1="60" x2="60" y2="18" stroke="#000" stroke-width="2" stroke-linecap="round"/>
+          <line id="cw-second" x1="60" y1="60" x2="60" y2="15" stroke="#ff0000" stroke-width="1" stroke-linecap="round"/>
+          <circle cx="60" cy="60" r="3" fill="#000"/>
+        </svg>
+        <div class="cw-time-label" id="cw-time-label">12:00:00 AM</div>
+      </div>
+    </div>
+    <div class="cw-footer">
+      <button class="cw-btn" onclick="closeClockCalendar()">OK</button>
+      <button class="cw-btn" onclick="closeClockCalendar()">Cancel</button>
+      <button class="cw-btn" onclick="closeClockCalendar()">Apply</button>
     </div>
   </div>
 
@@ -5481,6 +5741,259 @@
     document.getElementById('wm-body').style.backgroundColor = mbpSelected;
     closeMailBgPicker();
   }
+
+  // ════════════════════════════════════════
+  // MINESWEEPER
+  // ════════════════════════════════════════
+  var MS_DIFFS = {
+    beginner:     { rows: 9,  cols: 9,  mines: 10 },
+    intermediate: { rows: 16, cols: 16, mines: 40 },
+    expert:       { rows: 16, cols: 30, mines: 99 }
+  };
+  var msDiff = 'beginner';
+  var msBoard = [], msRevealed = [], msFlagged = [];
+  var msRows = 9, msCols = 9, msMines = 10;
+  var msGameOver = false, msWon = false, msStarted = false;
+  var msTimerInterval = null, msSeconds = 0;
+  var msFirstClick = true;
+
+  function openMinesweeper() {
+    var win = document.getElementById('mines-window');
+    win.classList.add('open');
+    win.style.zIndex = ++chatZBase;
+    msNewGame();
+  }
+  function closeMinesweeper() {
+    document.getElementById('mines-window').classList.remove('open');
+    if (msTimerInterval) { clearInterval(msTimerInterval); msTimerInterval = null; }
+  }
+
+  function msSetDiff(d) {
+    msDiff = d;
+    ['beginner','intermediate','expert'].forEach(function(x) {
+      var el = document.getElementById('ms-diff-'+x.slice(0,3));
+      if (el) el.className = 'ms-menu-item' + (x===d?' checked':'');
+    });
+    msNewGame();
+  }
+
+  function msNewGame() {
+    var cfg = MS_DIFFS[msDiff];
+    msRows = cfg.rows; msCols = cfg.cols; msMines = cfg.mines;
+    msGameOver = false; msWon = false; msFirstClick = true; msStarted = false;
+    if (msTimerInterval) { clearInterval(msTimerInterval); msTimerInterval = null; }
+    msSeconds = 0;
+    msLcdSet('ms-timer', 0);
+    msLcdSet('ms-mine-count', msMines);
+    document.getElementById('ms-smiley').textContent = '🙂';
+
+    // Init arrays
+    msBoard    = Array(msRows).fill(null).map(function(){ return Array(msCols).fill(0); });
+    msRevealed = Array(msRows).fill(null).map(function(){ return Array(msCols).fill(false); });
+    msFlagged  = Array(msRows).fill(null).map(function(){ return Array(msCols).fill(false); });
+
+    // Build grid DOM
+    var grid = document.getElementById('ms-grid');
+    grid.style.gridTemplateColumns = 'repeat('+msCols+',20px)';
+    grid.innerHTML = '';
+    for (var r=0; r<msRows; r++) {
+      for (var c=0; c<msCols; c++) {
+        var cell = document.createElement('div');
+        cell.className = 'ms-cell';
+        cell.dataset.r = r; cell.dataset.c = c;
+        cell.addEventListener('click',     msClickCell);
+        cell.addEventListener('contextmenu', msRightClick);
+        grid.appendChild(cell);
+      }
+    }
+  }
+
+  function msPlaceMines(skipR, skipC) {
+    var placed = 0;
+    while (placed < msMines) {
+      var r = Math.floor(Math.random()*msRows);
+      var c = Math.floor(Math.random()*msCols);
+      if (msBoard[r][c] === -1) continue;
+      if (Math.abs(r-skipR)<=1 && Math.abs(c-skipC)<=1) continue;
+      msBoard[r][c] = -1;
+      placed++;
+    }
+    // Calculate numbers
+    for (var r2=0; r2<msRows; r2++) for (var c2=0; c2<msCols; c2++) {
+      if (msBoard[r2][c2]===-1) continue;
+      var count=0;
+      msNeighbors(r2,c2,function(nr,nc){ if(msBoard[nr][nc]===-1) count++; });
+      msBoard[r2][c2]=count;
+    }
+  }
+
+  function msNeighbors(r,c,fn) {
+    for (var dr=-1;dr<=1;dr++) for (var dc=-1;dc<=1;dc++) {
+      if (dr===0&&dc===0) continue;
+      var nr=r+dr, nc=c+dc;
+      if (nr>=0&&nr<msRows&&nc>=0&&nc<msCols) fn(nr,nc);
+    }
+  }
+
+  function msClickCell(e) {
+    var r=+this.dataset.r, c=+this.dataset.c;
+    if (msGameOver||msWon||msFlagged[r][c]||msRevealed[r][c]) return;
+    if (msFirstClick) {
+      msFirstClick=false;
+      msPlaceMines(r,c);
+      msTimerInterval=setInterval(function(){
+        msSeconds=Math.min(999,msSeconds+1);
+        msLcdSet('ms-timer',msSeconds);
+      },1000);
+    }
+    if (msBoard[r][c]===-1) {
+      msRevealAll(); msGameOver=true;
+      document.getElementById('ms-smiley').textContent='😵';
+      this.classList.add('mine-hit');
+      clearInterval(msTimerInterval); msTimerInterval=null;
+      return;
+    }
+    msReveal(r,c);
+    msCheckWin();
+  }
+
+  function msRightClick(e) {
+    e.preventDefault();
+    var r=+this.dataset.r, c=+this.dataset.c;
+    if (msGameOver||msWon||msRevealed[r][c]) return;
+    msFlagged[r][c]=!msFlagged[r][c];
+    this.textContent = msFlagged[r][c]?'🚩':'';
+    var flagCount=0;
+    for(var i=0;i<msRows;i++) for(var j=0;j<msCols;j++) if(msFlagged[i][j]) flagCount++;
+    msLcdSet('ms-mine-count',msMines-flagCount);
+  }
+
+  function msReveal(r,c) {
+    if (r<0||r>=msRows||c<0||c>=msCols) return;
+    if (msRevealed[r][c]||msFlagged[r][c]) return;
+    msRevealed[r][c]=true;
+    var cell=msGetCell(r,c);
+    cell.classList.add('revealed');
+    cell.classList.remove('ms-cell');
+    cell.style.border='1px solid #808080';
+    cell.style.background='#c0c0c0';
+    if (msBoard[r][c]>0) {
+      cell.textContent=msBoard[r][c];
+      cell.dataset.n=msBoard[r][c];
+    } else if (msBoard[r][c]===0) {
+      cell.textContent='';
+      msNeighbors(r,c,function(nr,nc){ msReveal(nr,nc); });
+    }
+  }
+
+  function msRevealAll() {
+    for (var r=0;r<msRows;r++) for (var c=0;c<msCols;c++) {
+      if (msBoard[r][c]===-1) {
+        var cell=msGetCell(r,c);
+        if (!msFlagged[r][c]) cell.textContent='💣';
+      }
+    }
+  }
+
+  function msCheckWin() {
+    var unrevealed=0;
+    for(var r=0;r<msRows;r++) for(var c=0;c<msCols;c++) if(!msRevealed[r][c]) unrevealed++;
+    if (unrevealed===msMines) {
+      msWon=true;
+      document.getElementById('ms-smiley').textContent='😎';
+      clearInterval(msTimerInterval); msTimerInterval=null;
+    }
+  }
+
+  function msGetCell(r,c) {
+    return document.getElementById('ms-grid').children[r*msCols+c];
+  }
+
+  function msLcdSet(id,n) {
+    document.getElementById(id).textContent=String(Math.max(0,Math.min(999,n))).padStart(3,'0');
+  }
+
+  document.getElementById('mines-window').addEventListener('mousedown',function(){ document.getElementById('mines-window').style.zIndex=++chatZBase; });
+  makeDraggable(document.getElementById('mines-window'),document.getElementById('ms-titlebar'));
+
+  // ════════════════════════════════════════
+  // CLOCK / CALENDAR
+  // ════════════════════════════════════════
+  var cwDate = new Date(); // displayed month/year (not editable, just for navigation)
+  var cwClockInterval = null;
+
+  function openClockCalendar() {
+    var win=document.getElementById('clock-window');
+    cwDate = new Date();
+    win.classList.add('open');
+    win.style.zIndex=++chatZBase;
+    cwRenderCalendar();
+    cwStartClock();
+  }
+  function closeClockCalendar() {
+    document.getElementById('clock-window').classList.remove('open');
+    if (cwClockInterval) { clearInterval(cwClockInterval); cwClockInterval=null; }
+  }
+
+  function cwStartClock() {
+    if (cwClockInterval) clearInterval(cwClockInterval);
+    cwTickClock();
+    cwClockInterval=setInterval(cwTickClock,1000);
+  }
+
+  function cwTickClock() {
+    var now=new Date();
+    var h=now.getHours(), m=now.getMinutes(), s=now.getSeconds();
+    // Analog hands
+    var hAngle=(h%12+m/60)*30-90;
+    var mAngle=(m+s/60)*6-90;
+    var sAngle=s*6-90;
+    function rotate(angle,len,cx,cy){
+      var rad=angle*Math.PI/180;
+      return { x2: Math.round(cx+Math.cos(rad)*len), y2: Math.round(cy+Math.sin(rad)*len) };
+    }
+    var hp=rotate(hAngle,28,60,60), mp=rotate(mAngle,38,60,60), sp=rotate(sAngle,40,60,60);
+    var hEl=document.getElementById('cw-hour'), mEl=document.getElementById('cw-minute'), sEl=document.getElementById('cw-second');
+    if(hEl){hEl.setAttribute('x2',hp.x2);hEl.setAttribute('y2',hp.y2);}
+    if(mEl){mEl.setAttribute('x2',mp.x2);mEl.setAttribute('y2',mp.y2);}
+    if(sEl){sEl.setAttribute('x2',sp.x2);sEl.setAttribute('y2',sp.y2);}
+    // Digital label
+    var ampm=h>=12?'PM':'AM', h12=h%12||12;
+    var ts=(h12<10?'0':'')+h12+':'+(m<10?'0':'')+m+':'+(s<10?'0':'')+s+' '+ampm;
+    var lbl=document.getElementById('cw-time-label');
+    if(lbl) lbl.textContent=ts;
+  }
+
+  var MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var DAYS=['Su','Mo','Tu','We','Th','Fr','Sa'];
+
+  function cwRenderCalendar() {
+    var y=cwDate.getFullYear(), m=cwDate.getMonth();
+    document.getElementById('cw-month-label').textContent=MONTHS[m]+' '+y;
+    var grid=document.getElementById('cw-cal-grid');
+    grid.innerHTML='';
+    DAYS.forEach(function(d){
+      var el=document.createElement('div'); el.className='cw-day-hdr'; el.textContent=d; grid.appendChild(el);
+    });
+    var first=new Date(y,m,1).getDay();
+    var daysInMonth=new Date(y,m+1,0).getDate();
+    var today=new Date();
+    // Blanks before first
+    for(var i=0;i<first;i++){
+      var bl=document.createElement('div'); bl.className='cw-day other-month'; bl.textContent=''; grid.appendChild(bl);
+    }
+    for(var d2=1;d2<=daysInMonth;d2++){
+      var el2=document.createElement('div'); el2.className='cw-day';
+      el2.textContent=d2;
+      if(d2===today.getDate()&&m===today.getMonth()&&y===today.getFullYear()) el2.classList.add('today');
+      grid.appendChild(el2);
+    }
+  }
+  function cwPrevMonth(){ cwDate.setMonth(cwDate.getMonth()-1); cwRenderCalendar(); }
+  function cwNextMonth(){ cwDate.setMonth(cwDate.getMonth()+1); cwRenderCalendar(); }
+
+  document.getElementById('clock-window').addEventListener('mousedown',function(){ document.getElementById('clock-window').style.zIndex=++chatZBase; });
+  makeDraggable(document.getElementById('clock-window'),document.getElementById('cw-titlebar'));
 
   window.addEventListener('load', function(){
     showScreen('screen-poweron');
