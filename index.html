@@ -485,7 +485,7 @@
   /* ── Clock / Calendar ── */
   #clock-window {
     position: absolute; top: 150px; left: 250px;
-    width: 320px;
+    width: 420px;
     background: #c0c0c0;
     border: 2px solid; border-color: #fff #808080 #808080 #fff;
     box-shadow: 2px 2px 0 #000;
@@ -506,9 +506,9 @@
     font-size: 9px; display: flex; align-items: center; justify-content: center;
     cursor: pointer; color: #000; font-weight: bold;
   }
-  .cw-body { display: flex; gap: 0; padding: 8px; }
+  .cw-body { display: flex; gap: 0; padding: 12px 14px 8px; align-items: center; }
   /* Calendar */
-  .cw-cal { flex: 1; }
+  .cw-cal { flex: 0 0 auto; }
   .cw-cal-header {
     display: flex; align-items: center; justify-content: space-between;
     margin-bottom: 6px;
@@ -537,10 +537,10 @@
   .cw-day.today { background: #000080; color: #fff; font-weight: bold; }
   .cw-day.other-month { color: #808080; }
   /* Divider */
-  .cw-divider { width: 1px; background: #808080; margin: 0 10px; }
-  /* Clock analog */
-  .cw-clock-area { display: flex; flex-direction: column; align-items: center; gap: 8px; }
-  #cw-clock-svg { display: block; }
+  .cw-divider { width: 1px; background: #808080; margin: 0 16px; align-self: stretch; }
+  /* Analog clock right */
+  .cw-clock-area { display: flex; flex-direction: column; align-items: center; gap: 10px; flex: 1; }
+  #cw-clock-svg { display: block; overflow: visible; }
   .cw-time-label {
     font-size: 14px; font-weight: bold; color: #000;
     font-family: 'Tahoma', Arial; letter-spacing: 1px;
@@ -586,6 +586,32 @@
     background: #c0c0c0; border-bottom: 1px solid #808080;
     padding: 2px 6px; display: flex; align-items: center; gap: 8px;
     flex-shrink: 0;
+  }
+  /* Bookmarks menu */
+  .ns-bookmarks-wrap { position: relative; }
+  .ns-bookmarks-btn {
+    background: #c0c0c0; border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    font-size: 11px; font-family: 'Tahoma', Arial; padding: 2px 8px;
+    cursor: pointer; color: #000; font-weight: bold; white-space: nowrap;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .ns-bookmarks-btn:active { border-color: #808080 #fff #fff #808080; }
+  .ns-bm-dropdown {
+    display: none; position: absolute; top: 100%; left: 0;
+    background: #c0c0c0; border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    box-shadow: 2px 2px 0 #000; z-index: 700; min-width: 240px;
+    max-height: 520px; overflow-y: auto;
+  }
+  .ns-bookmarks-wrap:hover .ns-bm-dropdown { display: block; }
+  .ns-bm-item {
+    padding: 3px 16px 3px 26px; font-size: 12px; font-family: 'Tahoma', Arial;
+    color: #000; cursor: pointer; white-space: nowrap; display: flex; align-items: center; gap: 6px;
+  }
+  .ns-bm-item:hover { background: #000080; color: #fff; }
+  .ns-bm-sep { height: 1px; background: #808080; margin: 2px 0; border-bottom: 1px solid #fff; }
+  .ns-bm-header {
+    padding: 3px 10px; font-size: 11px; font-family: 'Tahoma', Arial;
+    color: #808080; font-weight: bold; cursor: default;
   }
   #netscape-back-btn {
     background: #c0c0c0; border: 2px solid;
@@ -2002,6 +2028,52 @@
       <img id="netscape-header-img" src="netscape.jpg" alt="Netscape Navigator">
       <div id="netscape-nav-bar">
         <button id="netscape-back-btn" onclick="showScreen('screen-windesktop')">◀ Back to Desktop</button>
+        <!-- Bookmarks dropdown -->
+        <div class="ns-bookmarks-wrap">
+          <div class="ns-bookmarks-btn">📖 Bookmarks ▾</div>
+          <div class="ns-bm-dropdown">
+            <div class="ns-bm-header">── Wrestling ──</div>
+            <div class="ns-bm-item" onclick="nsGoTo('http://www.wwf.com/')">🤼 WWF.com</div>
+            <div class="ns-bm-item" onclick="nsGoTo('http://www.wcw.com/')">🤼 WCW.com</div>
+            <div class="ns-bm-item" onclick="nsGoTo('http://www.wrestleboard.com/')">🤼 WrestleBoard.com</div>
+            <div class="ns-bm-sep"></div>
+            <div class="ns-bm-header">── Sports ──</div>
+            <div class="ns-bm-item" onclick="nsGoTo('http://www.espn.com/')">🏈 ESPN.com</div>
+            <div class="ns-bm-item" onclick="nsGoTo('http://www.sportsline.com/')">🏀 SportsLine.com</div>
+            <div class="ns-bm-sep"></div>
+            <div class="ns-bm-header">── Search ──</div>
+            <div class="ns-bm-item" onclick="nsGoTo('http://www.altavista.com/')">🔍 AltaVista</div>
+            <div class="ns-bm-item" onclick="nsGoTo('http://www.yahoo.com/')">🔍 Yahoo!</div>
+            <div class="ns-bm-item" onclick="nsGoTo('http://www.excite.com/')">🔍 Excite</div>
+            <div class="ns-bm-item" onclick="nsGoTo('http://www.lycos.com/')">🔍 Lycos</div>
+            <div class="ns-bm-item" onclick="nsGoTo('http://www.askjeeves.com/')">🔍 Ask Jeeves</div>
+            <div class="ns-bm-sep"></div>
+            <div class="ns-bm-header">── News ──</div>
+            <div class="ns-bm-item" onclick="nsGoTo('http://www.cnn.com/')">📰 CNN.com</div>
+            <div class="ns-bm-item" onclick="nsGoTo('http://www.msnbc.com/')">📰 MSNBC.com</div>
+            <div class="ns-bm-item" onclick="nsGoTo('http://www.drudgereport.com/')">📰 Drudge Report</div>
+            <div class="ns-bm-sep"></div>
+            <div class="ns-bm-header">── Entertainment ──</div>
+            <div class="ns-bm-item" onclick="nsGoTo('http://www.mtv.com/')">🎵 MTV.com</div>
+            <div class="ns-bm-item" onclick="nsGoTo('http://www.rollingstone.com/')">🎵 Rolling Stone</div>
+            <div class="ns-bm-item" onclick="nsGoTo('http://www.imdb.com/')">🎬 IMDb.com</div>
+            <div class="ns-bm-item" onclick="nsGoTo('http://www.eonline.com/')">⭐ E! Online</div>
+            <div class="ns-bm-item" onclick="nsGoTo('http://www.thebabysittersclub.com/')">📚 TheBabySittersClub.com</div>
+            <div class="ns-bm-sep"></div>
+            <div class="ns-bm-header">── Tech ──</div>
+            <div class="ns-bm-item" onclick="nsGoTo('http://www.zdnet.com/')">💻 ZDNet.com</div>
+            <div class="ns-bm-item" onclick="nsGoTo('http://www.download.com/')">💾 Download.com</div>
+            <div class="ns-bm-item" onclick="nsGoTo('http://www.slashdot.org/')">🖥️ Slashdot.org</div>
+            <div class="ns-bm-sep"></div>
+            <div class="ns-bm-header">── Shopping ──</div>
+            <div class="ns-bm-item" onclick="nsGoTo('http://www.amazon.com/')">📦 Amazon.com</div>
+            <div class="ns-bm-item" onclick="nsGoTo('http://www.ebay.com/')">🛒 eBay.com</div>
+            <div class="ns-bm-sep"></div>
+            <div class="ns-bm-header">── Community ──</div>
+            <div class="ns-bm-item" onclick="nsGoTo('http://www.geocities.com/')">🏠 GeoCities.com</div>
+            <div class="ns-bm-item" onclick="nsGoTo('http://www.tripod.com/')">🏠 Tripod.com</div>
+          </div>
+        </div>
         <input id="netscape-location-bar" type="text" value="http://www.wrestleboard.com/" readonly>
       </div>
       <div id="netscape-content">
@@ -3260,18 +3332,27 @@
       <div class="cw-divider"></div>
       <!-- Analog clock right -->
       <div class="cw-clock-area">
-        <svg id="cw-clock-svg" width="120" height="120" viewBox="0 0 120 120">
-          <circle cx="60" cy="60" r="58" fill="#fff" stroke="#808080" stroke-width="2"/>
-          <!-- Hour markers -->
-          <line x1="60" y1="6"  x2="60" y2="14" stroke="#000" stroke-width="2"/>
-          <line x1="60" y1="106" x2="60" y2="114" stroke="#000" stroke-width="2"/>
-          <line x1="6"  y1="60" x2="14" y2="60" stroke="#000" stroke-width="2"/>
-          <line x1="106" y1="60" x2="114" y2="60" stroke="#000" stroke-width="2"/>
+        <svg id="cw-clock-svg" width="150" height="150" viewBox="0 0 150 150">
+          <circle cx="75" cy="75" r="70" fill="#fff" stroke="#808080" stroke-width="2"/>
+          <!-- 12 hour tick marks -->
+          <line x1="75" y1="8"  x2="75" y2="20" stroke="#000" stroke-width="3"/>
+          <line x1="75" y1="130" x2="75" y2="142" stroke="#000" stroke-width="3"/>
+          <line x1="8"  y1="75" x2="20" y2="75" stroke="#000" stroke-width="3"/>
+          <line x1="130" y1="75" x2="142" y2="75" stroke="#000" stroke-width="3"/>
+          <!-- Minor ticks -->
+          <line x1="113" y1="16" x2="108" y2="25" stroke="#000" stroke-width="1.5"/>
+          <line x1="134" y1="37" x2="125" y2="42" stroke="#000" stroke-width="1.5"/>
+          <line x1="134" y1="113" x2="125" y2="108" stroke="#000" stroke-width="1.5"/>
+          <line x1="113" y1="134" x2="108" y2="125" stroke="#000" stroke-width="1.5"/>
+          <line x1="37"  y1="16" x2="42"  y2="25" stroke="#000" stroke-width="1.5"/>
+          <line x1="16"  y1="37" x2="25"  y2="42" stroke="#000" stroke-width="1.5"/>
+          <line x1="16"  y1="113" x2="25" y2="108" stroke="#000" stroke-width="1.5"/>
+          <line x1="37"  y1="134" x2="42" y2="125" stroke="#000" stroke-width="1.5"/>
           <!-- Hands -->
-          <line id="cw-hour"   x1="60" y1="60" x2="60" y2="30" stroke="#000" stroke-width="3" stroke-linecap="round"/>
-          <line id="cw-minute" x1="60" y1="60" x2="60" y2="18" stroke="#000" stroke-width="2" stroke-linecap="round"/>
-          <line id="cw-second" x1="60" y1="60" x2="60" y2="15" stroke="#ff0000" stroke-width="1" stroke-linecap="round"/>
-          <circle cx="60" cy="60" r="3" fill="#000"/>
+          <line id="cw-hour"   x1="75" y1="75" x2="75" y2="42" stroke="#000" stroke-width="4" stroke-linecap="round"/>
+          <line id="cw-minute" x1="75" y1="75" x2="75" y2="18" stroke="#000" stroke-width="2.5" stroke-linecap="round"/>
+          <line id="cw-second" x1="75" y1="75" x2="75" y2="15" stroke="#ff0000" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="75" cy="75" r="4" fill="#000"/>
         </svg>
         <div class="cw-time-label" id="cw-time-label">12:00:00 AM</div>
       </div>
@@ -4280,6 +4361,47 @@
     document.getElementById('start-menu').classList.remove('open');
     showScreen('screen-netscape');
     setTimeout(renderWrestleboard, 50);
+  }
+
+  function nsGoTo(url) {
+    document.getElementById('netscape-location-bar').value = url;
+    var isWrestleboard = url.indexOf('wrestleboard') !== -1;
+    var wb = document.getElementById('wb-page');
+    if (isWrestleboard) {
+      renderWrestleboard();
+    } else {
+      // Show authentic under-construction page
+      var siteName = url.replace('http://www.','').replace('http://','').replace('/','');
+      wb.innerHTML = [
+        '<div style="background:#fff;min-height:100%;padding:20px;font-family:Times New Roman,serif;text-align:center;">',
+        '<table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center">',
+        '<br>',
+        '<img src="data:image/svg+xml;utf8,',
+        encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60"><rect width="60" height="60" fill="#ffcc00" rx="4"/><text x="30" y="42" text-anchor="middle" font-size="36">🚧</text></svg>'),
+        '" width="60" height="60"><br><br>',
+        '<font size="6" color="#cc0000"><b>UNDER CONSTRUCTION</b></font><br><br>',
+        '<font size="4"><b>' + esc(siteName) + '</b></font><br><br>',
+        '<font size="3">This page is currently under construction.<br>',
+        'Please check back soon!<br><br>',
+        '<img src="data:image/svg+xml;utf8,',
+        encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="120" height="20" viewBox="0 0 120 20"><rect width="60" height="20" fill="#ff6600"/><rect x="60" width="60" height="20" fill="#000"/><text x="60" y="14" text-anchor="middle" font-size="11" fill="#fff" font-family="Arial">UNDER CONSTRUCTION</text></svg>'),
+        '" width="120" height="20"><br><br>',
+        '<font size="2" color="#808080">Best viewed in Netscape Navigator 4.0 at 800x600<br>',
+        '&copy; 1999 ' + esc(siteName) + ' All Rights Reserved<br><br>',
+        '<a href="#" style="color:#0000cc;">Home</a> | ',
+        '<a href="#" style="color:#0000cc;">About</a> | ',
+        '<a href="#" style="color:#0000cc;">Contact</a><br><br>',
+        '<img src="data:image/svg+xml;utf8,',
+        encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="88" height="31" viewBox="0 0 88 31"><rect width="88" height="31" fill="#000080" rx="2"/><text x="44" y="20" text-anchor="middle" font-size="12" fill="#fff" font-family="Arial" font-weight="bold">Netscape Now!</text></svg>'),
+        '" width="88" height="31">',
+        '<img src="data:image/svg+xml;utf8,',
+        encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="88" height="31" viewBox="0 0 88 31"><rect width="88" height="31" fill="#003399" rx="2"/><text x="44" y="20" text-anchor="middle" font-size="11" fill="#fff" font-family="Arial" font-weight="bold">Best in IE 5.0</text></svg>'),
+        '" width="88" height="31">',
+        '<br><br>',
+        '<font size="1">Visitors: <b>000247</b></font>',
+        '</font></td></tr></table></div>'
+      ].join('');
+    }
   }
 
   // ════════════════════════════════════════
@@ -5944,20 +6066,16 @@
   function cwTickClock() {
     var now=new Date();
     var h=now.getHours(), m=now.getMinutes(), s=now.getSeconds();
-    // Analog hands
+    var cx=75, cy=75;
     var hAngle=(h%12+m/60)*30-90;
     var mAngle=(m+s/60)*6-90;
     var sAngle=s*6-90;
-    function rotate(angle,len,cx,cy){
-      var rad=angle*Math.PI/180;
-      return { x2: Math.round(cx+Math.cos(rad)*len), y2: Math.round(cy+Math.sin(rad)*len) };
-    }
-    var hp=rotate(hAngle,28,60,60), mp=rotate(mAngle,38,60,60), sp=rotate(sAngle,40,60,60);
+    function pt(angle,len){ var rad=angle*Math.PI/180; return { x:cx+Math.cos(rad)*len, y:cy+Math.sin(rad)*len }; }
+    var hp=pt(hAngle,33), mp=pt(mAngle,52), sp=pt(sAngle,55);
     var hEl=document.getElementById('cw-hour'), mEl=document.getElementById('cw-minute'), sEl=document.getElementById('cw-second');
-    if(hEl){hEl.setAttribute('x2',hp.x2);hEl.setAttribute('y2',hp.y2);}
-    if(mEl){mEl.setAttribute('x2',mp.x2);mEl.setAttribute('y2',mp.y2);}
-    if(sEl){sEl.setAttribute('x2',sp.x2);sEl.setAttribute('y2',sp.y2);}
-    // Digital label
+    if(hEl){hEl.setAttribute('x2',hp.x.toFixed(1));hEl.setAttribute('y2',hp.y.toFixed(1));hEl.setAttribute('x1',cx);hEl.setAttribute('y1',cy);}
+    if(mEl){mEl.setAttribute('x2',mp.x.toFixed(1));mEl.setAttribute('y2',mp.y.toFixed(1));mEl.setAttribute('x1',cx);mEl.setAttribute('y1',cy);}
+    if(sEl){sEl.setAttribute('x2',sp.x.toFixed(1));sEl.setAttribute('y2',sp.y.toFixed(1));sEl.setAttribute('x1',cx);sEl.setAttribute('y1',cy);}
     var ampm=h>=12?'PM':'AM', h12=h%12||12;
     var ts=(h12<10?'0':'')+h12+':'+(m<10?'0':'')+m+':'+(s<10?'0':'')+s+' '+ampm;
     var lbl=document.getElementById('cw-time-label');
