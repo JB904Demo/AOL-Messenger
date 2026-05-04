@@ -1717,7 +1717,7 @@
   #chatroom-window {
     position: absolute;
     top: 140px; left: 180px;
-    width: 680px; height: 480px;
+    width: 544px; height: 480px;
     background: #c0c0c0;
     border: 2px solid; border-color: #ffffff #808080 #808080 #ffffff;
     box-shadow: 2px 2px 0 #000;
@@ -2711,6 +2711,84 @@
       </div>
     </div>
 
+    <!-- Buddy Away Message popup -->
+    <div class="profile-overlay" id="buddy-away-overlay">
+      <div class="profile-dialog" style="width:320px;">
+        <div class="profile-titlebar" style="background:#000080;">
+          <div class="profile-titlebar-left">
+            <svg width="11" height="11" viewBox="0 0 20 26"><circle cx="10" cy="3" r="3" fill="#ffcc00"/><line x1="10" y1="6" x2="10" y2="16" stroke="#ffcc00" stroke-width="2.5"/><line x1="10" y1="10" x2="3" y2="14" stroke="#ffcc00" stroke-width="2"/><line x1="10" y1="10" x2="17" y2="13" stroke="#ffcc00" stroke-width="2"/><line x1="10" y1="16" x2="5" y2="24" stroke="#ffcc00" stroke-width="2"/><line x1="10" y1="16" x2="15" y2="24" stroke="#ffcc00" stroke-width="2"/></svg>
+            Away Message
+          </div>
+          <div class="profile-close-btn" onclick="closeBuddyAway()">✕</div>
+        </div>
+        <div style="padding:12px;">
+          <div style="font-size:12px;font-family:'Tahoma',Arial;margin-bottom:8px;color:#000;">
+            <b id="buddy-away-name"></b> is away:
+          </div>
+          <div id="buddy-away-msg" style="background:#fff;border:2px solid;border-color:#808080 #fff #fff #808080;padding:8px;font-size:12px;font-family:'Tahoma',Arial;color:#000;min-height:50px;line-height:1.5;"></div>
+          <div style="margin-top:10px;display:flex;justify-content:flex-end;">
+            <button class="profile-bar-btn" onclick="closeBuddyAway()" style="min-width:70px;">OK</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- My Profile Editor overlay -->
+    <div class="profile-overlay" id="my-profile-edit-overlay">
+      <div class="profile-dialog" style="width:420px;">
+        <div class="profile-titlebar" style="background:#000080;">
+          <div class="profile-titlebar-left">
+            <svg width="11" height="11" viewBox="0 0 20 26"><circle cx="10" cy="3" r="3" fill="#ffcc00"/><line x1="10" y1="6" x2="10" y2="16" stroke="#ffcc00" stroke-width="2.5"/><line x1="10" y1="10" x2="3" y2="14" stroke="#ffcc00" stroke-width="2"/><line x1="10" y1="10" x2="17" y2="13" stroke="#ffcc00" stroke-width="2"/><line x1="10" y1="16" x2="5" y2="24" stroke="#ffcc00" stroke-width="2"/><line x1="10" y1="16" x2="15" y2="24" stroke="#ffcc00" stroke-width="2"/></svg>
+            Edit My Profile
+          </div>
+          <div class="profile-close-btn" onclick="closeMyProfileEdit()">✕</div>
+        </div>
+        <!-- AOL-style header -->
+        <div class="profile-header">
+          <div class="profile-header-text">
+            <div class="profile-for-label">My Profile:</div>
+            <div class="profile-sn-large" id="myp-sn" style="color:#000080;font-size:18px;">VANILA242</div>
+          </div>
+        </div>
+        <div style="padding:10px;">
+          <div class="profile-entry-grid" style="grid-template-columns:1fr 1fr;">
+            <div class="profile-entry-field">
+              <div class="profile-entry-label">Member Name:</div>
+              <input class="profile-entry-input" id="myp-name" type="text" placeholder="Your real name">
+            </div>
+            <div class="profile-entry-field">
+              <div class="profile-entry-label">Location:</div>
+              <input class="profile-entry-input" id="myp-location" type="text" placeholder="Fort Myers, FL">
+            </div>
+            <div class="profile-entry-field">
+              <div class="profile-entry-label">Age:</div>
+              <input class="profile-entry-input" id="myp-age" type="text" placeholder="17">
+            </div>
+            <div class="profile-entry-field">
+              <div class="profile-entry-label">Music:</div>
+              <input class="profile-entry-input" id="myp-music" type="text">
+            </div>
+            <div class="profile-entry-field">
+              <div class="profile-entry-label">Hobbies:</div>
+              <input class="profile-entry-input" id="myp-hobbies" type="text">
+            </div>
+            <div class="profile-entry-field">
+              <div class="profile-entry-label">TV / Movies:</div>
+              <input class="profile-entry-input" id="myp-tv" type="text">
+            </div>
+            <div class="profile-entry-field" style="grid-column:span 2;">
+              <div class="profile-entry-label">Personality / Quote:</div>
+              <input class="profile-entry-input" id="myp-personality" type="text" placeholder="Your quote or description...">
+            </div>
+          </div>
+        </div>
+        <div class="profile-btn-bar">
+          <button class="profile-bar-btn" onclick="closeMyProfileEdit()" style="background:#c0c0c0;border-color:#fff #808080 #808080 #fff;color:#000;">Cancel</button>
+          <button class="profile-bar-btn" onclick="saveMyProfile()">Save Profile</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Away Set/Edit window -->
     <div id="away-set-window">
       <div class="away-titlebar" id="away-set-titlebar">
@@ -3574,6 +3652,8 @@
   var selectedBuddy = null;
   var chatHistories = {};
   var openChats = {};      // name → chat window element
+  var warnLevels = {};     // name → warn percentage (0-100)
+  var myWarnLevel = 0;     // how much I've been warned
   var rotateTimer = null;
   var chatCascade = 0;     // offset for cascading new windows
 
@@ -3734,6 +3814,15 @@
   function stopRotation() {
     if (rotateTimer) { clearInterval(rotateTimer); rotateTimer = null; }
   }
+  var AWAY_MESSAGES = [
+    'brb dinner', 'at soccer practice back later', 'doing homework bbl',
+    'watching Dawsons Creek ttyl', 'at the mall with meagan, back tonight',
+    'brb phone', 'parents made me get off :( bbl', 'sleeping over at lisas tonight',
+    'at perkins, be back around 11', 'bbl :: away ::', 'i am not here right now. leave me a message! :)',
+    'if ur reading this i am away lol', 'gone. be back l8r', 'brb bathroom lol',
+    'at work :: back at 9 ::'
+  ];
+
   function rotateBuddy() {
     var members = buddyData[0].members;
     var online  = members.filter(function(m){ return m.online; });
@@ -3741,13 +3830,15 @@
     if (!online.length || !offline.length) return;
     var goOff = online[Math.floor(Math.random()*online.length)];
     goOff.online = false;
+    goOff.away   = true;
+    goOff.awayMsg = AWAY_MESSAGES[Math.floor(Math.random()*AWAY_MESSAGES.length)];
     playSound('close');
     renderBuddyList();
     setTimeout(function(){
       var stillOff = members.filter(function(m){ return !m.online; });
       if (!stillOff.length) return;
       var goOn = stillOff[Math.floor(Math.random()*stillOff.length)];
-      goOn.online = true;
+      goOn.online = true; goOn.away = false; goOn.awayMsg = '';
       playSound('open');
       renderBuddyList();
     }, 3000);
@@ -3773,7 +3864,7 @@
         meRow.textContent = currentUser + (isAway ? ' (Away)' : '');
         meRow.title = isAway ? 'Click to view your away message' : '';
         meRow.addEventListener('click', function() {
-          if (isAway) showAwayView();
+          if (isAway) showAwayView(); else showMyProfile();
         });
         area.appendChild(meRow);
       }
@@ -3781,7 +3872,8 @@
       group.members.forEach(function(m) {
         var item = document.createElement('div');
         item.className = 'bl-buddy '+(m.online?'online':'offline');
-        item.textContent = m.name;
+        item.textContent = m.name + (m.away ? ' (Away)' : '');
+        if (m.away) { item.style.fontStyle = 'italic'; item.title = 'Click to see away message'; }
         if (selectedBuddy===m.name) item.classList.add('selected');
         item.addEventListener('click', function(){ handleBuddyClick(item, m.name); });
         area.appendChild(item);
@@ -3790,6 +3882,13 @@
   }
 
   function handleBuddyClick(el, name) {
+    // Check if buddy is away — if so show their away message
+    var member = null;
+    buddyData[0].members.forEach(function(m){ if(m.name===name) member=m; });
+    if (member && member.away) {
+      showBuddyAwayMsg(name, member.awayMsg || 'I am away from my computer right now.');
+      return;
+    }
     if (selectedBuddy===name) {
       selectedBuddy = null;
       openChat(name);
@@ -3798,6 +3897,12 @@
     document.querySelectorAll('.bl-buddy').forEach(function(i){ i.classList.remove('selected'); });
     el.classList.add('selected');
     selectedBuddy = name;
+  }
+
+  function showBuddyAwayMsg(name, msg) {
+    document.getElementById('buddy-away-name').textContent = name;
+    document.getElementById('buddy-away-msg').textContent = msg;
+    document.getElementById('buddy-away-overlay').classList.add('open');
   }
 
   // ── Chat Windows ──
@@ -3838,7 +3943,7 @@
           <span class="chat-menu-item">View</span>
           <span class="chat-menu-item">People</span>
         </div>
-        <span class="chat-warning">${esc(name)}'s Warning Level: 0%</span>
+        <span class="chat-warning" id="warn-label-${name}">${esc(name)}'s Warning Level: 0%</span>
       </div>
       <div class="chat-area" id="chat-area-${name}"></div>
       <div class="chat-toolbar">
@@ -3855,7 +3960,7 @@
       <div class="chat-bottom">
         <div class="chat-bottom-icons">
           <div style="font-size:22px;line-height:1;margin-right:3px;">🐕</div>
-          <div class="chat-icon-btn"><span>⚡</span><span>Warn</span></div>
+          <div class="chat-icon-btn" onclick="warnBuddy('${name}')"><span>⚡</span><span>Warn</span></div>
           <div class="chat-icon-btn"><span>🚫</span><span>Block</span></div>
           <div style="width:10px;"></div>
           <div class="chat-icon-btn" onclick="openAwaySet()"><span>💤</span><span>Away</span></div>
@@ -4990,6 +5095,70 @@
     if (crMinimized.flashTimer) clearTimeout(crMinimized.flashTimer);
     if (crMinimized.flashInterval) clearInterval(crMinimized.flashInterval);
   }
+
+  // ── Warning System ──
+  function warnBuddy(name) {
+    warnLevels[name] = Math.min(100, (warnLevels[name] || 0) + 10);
+    var pct = warnLevels[name];
+    var lbl = document.getElementById('warn-label-' + name);
+    if (lbl) lbl.textContent = name + "'s Warning Level: " + pct + '%';
+    // Append system message in chat
+    var msgs = document.getElementById('chat-area-' + name);
+    if (msgs) {
+      var div = document.createElement('div');
+      div.style.cssText = 'color:#808080;font-style:italic;font-size:10px;padding:1px 0;';
+      div.textContent = 'You have warned ' + name + '. Their warning level is now ' + pct + '%.';
+      msgs.appendChild(div); msgs.scrollTop = msgs.scrollHeight;
+    }
+    // 30% chance buddy warns back after 3-6 seconds
+    if (Math.random() < 0.3) {
+      setTimeout(function() {
+        myWarnLevel = Math.min(100, myWarnLevel + 10);
+        var myMsgs = document.getElementById('chat-area-' + name);
+        if (myMsgs) {
+          var div2 = document.createElement('div');
+          div2.style.cssText = 'color:#808080;font-style:italic;font-size:10px;padding:1px 0;';
+          div2.textContent = name + ' has warned you! Your warning level is now ' + myWarnLevel + '%.';
+          myMsgs.appendChild(div2); myMsgs.scrollTop = myMsgs.scrollHeight;
+          playSound('imTone');
+        }
+      }, 3000 + Math.random() * 3000);
+    }
+  }
+
+  // ── Buddy Away Message Viewer ──
+  function closeBuddyAway() {
+    document.getElementById('buddy-away-overlay').classList.remove('open');
+  }
+
+  // ── My Profile Editor ──
+  var myProfileData = { name: '', age: '', location: '', hobbies: '', music: '', tv: '', personality: '' };
+
+  function showMyProfile() {
+    // Pre-fill from saved data
+    ['name','age','location','hobbies','music','tv','personality'].forEach(function(f) {
+      var el = document.getElementById('myp-' + f);
+      if (el) el.value = myProfileData[f] || '';
+    });
+    document.getElementById('myp-sn').textContent = currentUser;
+    document.getElementById('my-profile-edit-overlay').classList.add('open');
+  }
+  function closeMyProfileEdit() {
+    document.getElementById('my-profile-edit-overlay').classList.remove('open');
+  }
+  function saveMyProfile() {
+    ['name','age','location','hobbies','music','tv','personality'].forEach(function(f) {
+      var el = document.getElementById('myp-' + f);
+      if (el) myProfileData[f] = el.value.trim();
+    });
+    try { localStorage.setItem('aim_myprofile', JSON.stringify(myProfileData)); } catch(e){}
+    closeMyProfileEdit();
+  }
+  // Load saved profile on init
+  try {
+    var saved = JSON.parse(localStorage.getItem('aim_myprofile') || '{}');
+    if (saved) myProfileData = Object.assign(myProfileData, saved);
+  } catch(e) {}
 
   function makeDraggable(win, handle) {
     var dx=0, dy=0, startX=0, startY=0;
