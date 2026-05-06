@@ -476,22 +476,39 @@
   /* Paper area */
   .wp-paper-wrap {
     flex: 1; overflow-y: auto; background: #808080; padding: 16px;
-    display: flex; justify-content: center;
+    display: flex; flex-direction: column; align-items: center; gap: 0;
   }
-  #wp-paper {
-    background: #fff;
-    width: 620px;
-    min-height: 800px;
+  /* Each page */
+  .wp-page {
+    background: #fff; width: 620px;
+    height: 800px; /* fixed page height — letter at ~96dpi approx */
     box-shadow: 2px 2px 4px rgba(0,0,0,0.4);
-    padding-top: 20px; padding-bottom: 40px;
     position: relative; box-sizing: border-box;
+    flex-shrink: 0;
   }
+  /* Page number footer */
+  .wp-page-num {
+    position: absolute; bottom: 6px; left: 0; right: 0;
+    text-align: center; font-size: 9pt;
+    font-family: 'Times New Roman', serif; color: #808080;
+    pointer-events: none; user-select: none;
+  }
+  /* Page break gap */
+  .wp-page-gap {
+    width: 620px; height: 14px; background: #808080;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  /* The single hidden editor — off screen, we read content from it */
   #wp-editor {
-    width: 100%; min-height: 760px;
-    outline: none; box-sizing: border-box;
+    width: 100%; outline: none; box-sizing: border-box;
     font-family: 'Times New Roman', serif; font-size: 12pt;
     color: #000; line-height: 1.5; word-wrap: break-word;
-    padding: 0; /* controlled by margin JS */
+    min-height: 100%; padding: 0;
+  }
+  /* First visible page hosts the editor directly */
+  .wp-page.active-page #wp-editor {
+    height: 100%;
   }
   .wp-statusbar {
     height: 18px; background: #c0c0c0; border-top: 1px solid #808080;
@@ -3733,10 +3750,11 @@
       <canvas id="wp-ruler" width="700" height="22"></canvas>
     </div>
 
-    <!-- Paper area -->
+    <!-- Paper area — paginated -->
     <div class="wp-paper-wrap" id="wp-paper-wrap">
-      <div id="wp-paper">
+      <div class="wp-page active-page" id="wp-page-1">
         <div id="wp-editor" contenteditable="true" spellcheck="false"></div>
+        <div class="wp-page-num">- 1 -</div>
       </div>
     </div>
 
@@ -6618,7 +6636,7 @@
       document.querySelector('#wordpad-window .wp-titlebar-left').lastChild.textContent = ' Document - WordPad';
     }
     wpDrawRuler();
-    setTimeout(function(){ document.getElementById('wp-editor').focus(); }, 80);
+    setTimeout(function(){ wpCheckPages(); document.getElementById('wp-editor').focus(); }, 100);
   }
 
   function closeWordPad() {
@@ -6673,12 +6691,69 @@
     document.getElementById('wp-editor').focus();
   }
 
+  var WP_PAGE_H = 800;        // px height of each page div
+  var WP_PAGE_CONTENT_H = 760; // usable content height per page (leaves room for footer)
+
   // ── Apply margins to paper ──
   function wpApplyMargins() {
     var editor = document.getElementById('wp-editor');
-    editor.style.paddingLeft  = wpMarginLeft  + 'px';
-    editor.style.paddingRight = wpMarginRight + 'px';
+    editor.style.paddingLeft   = wpMarginLeft  + 'px';
+    editor.style.paddingRight  = wpMarginRight + 'px';
+    editor.style.paddingTop    = '20px';
+    editor.style.paddingBottom = '20px';
     wpDrawRuler();
+    wpCheckPages();
+  }
+
+  // ── Dynamic pagination ──
+  function wpCheckPages() {
+    var editor = document.getElementById('wp-editor');
+    if (!editor) return;
+    var wrap = document.getElementById('wp-paper-wrap');
+
+    // Calculate how many pages we need based on scroll height
+    var contentH = editor.scrollHeight;
+    var pagesNeeded = Math.max(1, Math.ceil(contentH / WP_PAGE_CONTENT_H));
+
+    // Count current page divs
+    var currentPages = wrap.querySelectorAll('.wp-page').length;
+
+    if (pagesNeeded > currentPages) {
+      // Add pages
+      for (var i = currentPages + 1; i <= pagesNeeded; i++) {
+        var gap = document.createElement('div');
+        gap.className = 'wp-page-gap';
+        wrap.appendChild(gap);
+        var page = document.createElement('div');
+        page.className = 'wp-page';
+        page.id = 'wp-page-' + i;
+        var numDiv = document.createElement('div');
+        numDiv.className = 'wp-page-num';
+        numDiv.textContent = '- ' + i + ' -';
+        page.appendChild(numDiv);
+        wrap.appendChild(page);
+      }
+    } else if (pagesNeeded < currentPages) {
+      // Remove excess pages (always keep at least 1)
+      var gaps  = wrap.querySelectorAll('.wp-page-gap');
+      var pages = wrap.querySelectorAll('.wp-page:not(.active-page)');
+      for (var j = currentPages - 1; j >= pagesNeeded; j--) {
+        if (pages[j - 1]) pages[j - 1].remove();
+        if (gaps[j - 1])  gaps[j - 1].remove();
+      }
+    }
+
+    // Size the active (editor) page: it should be at least WP_PAGE_H
+    // but expand to hold all content — overflow into visual pages below
+    var page1 = document.getElementById('wp-page-1');
+    if (page1) {
+      page1.style.height = Math.max(WP_PAGE_H, contentH + 40) + 'px';
+    }
+
+    // Update all page numbers in case count changed
+    wrap.querySelectorAll('.wp-page-num').forEach(function(el, idx) {
+      el.textContent = '- ' + (idx + 1) + ' -';
+    });
   }
 
   // ── Ruler ──
@@ -6853,10 +6928,12 @@
   // Update bold/italic/underline button states on selection change
   document.getElementById('wp-editor').addEventListener('keyup',    wpUpdateFormatState);
   document.getElementById('wp-editor').addEventListener('mouseup',  wpUpdateFormatState);
+  document.getElementById('wp-editor').addEventListener('input',    wpCheckPages);
   function wpUpdateFormatState() {
     document.getElementById('wp-bold').classList.toggle('active',   document.queryCommandState('bold'));
     document.getElementById('wp-italic').classList.toggle('active', document.queryCommandState('italic'));
     document.getElementById('wp-under').classList.toggle('active',  document.queryCommandState('underline'));
+    wpCheckPages();
   }
   function openMyComputer() {
     var win = document.getElementById('mycomp-window');
