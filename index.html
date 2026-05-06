@@ -853,11 +853,12 @@
     flex: 1; height: 20px; font-size: 11px; font-family: 'Tahoma', Arial;
     border: 2px solid; border-color: #808080 #fff #fff #808080;
     background: #fff; padding: 0 4px; color: #000; outline: none;
+    user-select: text;
   }
 
   /* Wrestleboard content area */
   #netscape-content {
-    height: calc(768px - 160px - 28px);
+    height: calc(768px - 160px - 28px - 16px);
     overflow-y: auto; background: #000;
     border-top: 2px solid #808080;
   }
@@ -2256,7 +2257,8 @@
     <div class="netscape-inner">
       <img id="netscape-header-img" src="netscape.jpg" alt="Netscape Navigator">
       <div id="netscape-nav-bar">
-        <button id="netscape-back-btn" onclick="showScreen('screen-windesktop')">◀ Back to Desktop</button>
+        <button id="netscape-back-btn" onclick="nsNavBack()">◀ Back</button>
+        <button id="netscape-desktop-btn" onclick="showScreen('screen-windesktop')" style="background:#c0c0c0;border:2px solid;border-color:#fff #808080 #808080 #fff;font-size:11px;font-family:'Tahoma',Arial;padding:2px 8px;cursor:pointer;color:#000;">🖥 Desktop</button>
         <!-- Bookmarks dropdown -->
         <div class="ns-bookmarks-wrap">
           <div class="ns-bookmarks-btn">📖 Bookmarks ▾</div>
@@ -2303,10 +2305,15 @@
             <div class="ns-bm-item" onclick="nsGoTo('http://www.tripod.com/')">🏠 Tripod.com</div>
           </div>
         </div>
-        <input id="netscape-location-bar" type="text" value="http://www.wrestleboard.com/" readonly>
+        <input id="netscape-location-bar" type="text" value="http://www.wrestleboard.com/" onkeydown="if(event.key==='Enter'){event.preventDefault();nsBrowse();}">
+        <button id="ns-go-btn" onclick="nsBrowse()" style="background:#c0c0c0;border:2px solid;border-color:#fff #808080 #808080 #fff;font-size:11px;font-family:'Tahoma',Arial;padding:2px 10px;cursor:pointer;color:#000;font-weight:bold;white-space:nowrap;">Go</button>
+        <span id="ns-loading" style="font-size:10px;color:#808080;font-family:'Tahoma',Arial;display:none;">Loading...</span>
       </div>
       <div id="netscape-content">
         <div id="wb-page"></div>
+      </div>
+      <div id="ns-statusbar" style="height:16px;background:#c0c0c0;border-top:1px solid #808080;font-size:10px;font-family:'Tahoma',Arial;color:#000;padding:0 6px;display:flex;align-items:center;flex-shrink:0;">
+        <span id="ns-status">Document: Done</span>
       </div>
     </div>
   </div>
@@ -5009,53 +5016,242 @@
     setTimeout(function(){ document.getElementById('pw-input').focus(); }, 100);
   }
 
+  var nsHistory = ['http://www.wrestleboard.com/'];
+  var nsHistoryPos = 0;
+
   function launchNetscape() {
     document.getElementById('start-menu').classList.remove('open');
     showScreen('screen-netscape');
     setTimeout(renderWrestleboard, 50);
   }
 
-  function nsGoTo(url) {
-    document.getElementById('netscape-location-bar').value = url;
-    var isWrestleboard = url.indexOf('wrestleboard') !== -1;
-    var wb = document.getElementById('wb-page');
-    if (isWrestleboard) {
-      renderWrestleboard();
-    } else {
-      // Show authentic under-construction page
-      var siteName = url.replace('http://www.','').replace('http://','').replace('/','');
-      wb.innerHTML = [
-        '<div style="background:#fff;min-height:100%;padding:20px;font-family:Times New Roman,serif;text-align:center;">',
-        '<table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center">',
-        '<br>',
-        '<img src="data:image/svg+xml;utf8,',
-        encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60"><rect width="60" height="60" fill="#ffcc00" rx="4"/><text x="30" y="42" text-anchor="middle" font-size="36">🚧</text></svg>'),
-        '" width="60" height="60"><br><br>',
-        '<font size="6" color="#cc0000"><b>UNDER CONSTRUCTION</b></font><br><br>',
-        '<font size="4"><b>' + esc(siteName) + '</b></font><br><br>',
-        '<font size="3">This page is currently under construction.<br>',
-        'Please check back soon!<br><br>',
-        '<img src="data:image/svg+xml;utf8,',
-        encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="120" height="20" viewBox="0 0 120 20"><rect width="60" height="20" fill="#ff6600"/><rect x="60" width="60" height="20" fill="#000"/><text x="60" y="14" text-anchor="middle" font-size="11" fill="#fff" font-family="Arial">UNDER CONSTRUCTION</text></svg>'),
-        '" width="120" height="20"><br><br>',
-        '<font size="2" color="#808080">Best viewed in Netscape Navigator 4.0 at 800x600<br>',
-        '&copy; 1999 ' + esc(siteName) + ' All Rights Reserved<br><br>',
-        '<a href="#" style="color:#0000cc;">Home</a> | ',
-        '<a href="#" style="color:#0000cc;">About</a> | ',
-        '<a href="#" style="color:#0000cc;">Contact</a><br><br>',
-        '<img src="data:image/svg+xml;utf8,',
-        encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="88" height="31" viewBox="0 0 88 31"><rect width="88" height="31" fill="#000080" rx="2"/><text x="44" y="20" text-anchor="middle" font-size="12" fill="#fff" font-family="Arial" font-weight="bold">Netscape Now!</text></svg>'),
-        '" width="88" height="31">',
-        '<img src="data:image/svg+xml;utf8,',
-        encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="88" height="31" viewBox="0 0 88 31"><rect width="88" height="31" fill="#003399" rx="2"/><text x="44" y="20" text-anchor="middle" font-size="11" fill="#fff" font-family="Arial" font-weight="bold">Best in IE 5.0</text></svg>'),
-        '" width="88" height="31">',
-        '<br><br>',
-        '<font size="1">Visitors: <b>000247</b></font>',
-        '</font></td></tr></table></div>'
-      ].join('');
-    }
+  function nsSetStatus(msg) {
+    var el = document.getElementById('ns-status');
+    if (el) el.textContent = msg;
   }
 
+  function nsSetLoading(on) {
+    document.getElementById('ns-loading').style.display = on ? 'inline' : 'none';
+    document.getElementById('ns-go-btn').disabled = on;
+  }
+
+  // Called from bookmarks or Go button
+  function nsGoTo(url) {
+    document.getElementById('netscape-location-bar').value = url;
+    nsBrowse();
+  }
+
+  // Main browse function
+  async function nsBrowse() {
+    var url = document.getElementById('netscape-location-bar').value.trim();
+    if (!url) return;
+    // Auto-add http://
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      url = 'http://' + url;
+      document.getElementById('netscape-location-bar').value = url;
+    }
+
+    // Wrestleboard — use our custom render
+    if (url.indexOf('wrestleboard.com') !== -1) {
+      nsHistory = nsHistory.slice(0, nsHistoryPos + 1);
+      nsHistory.push(url); nsHistoryPos = nsHistory.length - 1;
+      renderWrestleboard();
+      nsSetStatus('Document: Done');
+      return;
+    }
+
+    nsSetLoading(true);
+    nsSetStatus('Connecting to ' + url + '...');
+
+    try {
+      var proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent(url);
+      var resp = await fetch(proxyUrl);
+      var data = await resp.json();
+      var html  = data.contents || '';
+
+      nsHistory = nsHistory.slice(0, nsHistoryPos + 1);
+      nsHistory.push(url); nsHistoryPos = nsHistory.length - 1;
+
+      nsRenderPage(html, url);
+      nsSetStatus('Document: Done');
+    } catch(e) {
+      nsRenderError(url, e.message);
+      nsSetStatus('Error: Could not load page');
+    }
+    nsSetLoading(false);
+  }
+
+  function nsNavBack() {
+    if (nsHistoryPos <= 0) return;
+    nsHistoryPos--;
+    var url = nsHistory[nsHistoryPos];
+    document.getElementById('netscape-location-bar').value = url;
+    if (url.indexOf('wrestleboard.com') !== -1) { renderWrestleboard(); return; }
+    nsGoTo(url);
+  }
+
+  // Strip and render HTML in authentic 90s text-only Netscape style
+  function nsRenderPage(rawHtml, baseUrl) {
+    var wb = document.getElementById('wb-page');
+
+    // Parse the HTML
+    var parser = new DOMParser();
+    var doc = parser.parseFromString(rawHtml, 'text/html');
+
+    // Get page title
+    var title = doc.title || baseUrl;
+
+    // Extract base URL for resolving relative links
+    var base = new URL(baseUrl);
+
+    // Build clean 90s-style text content
+    var content = nsExtractContent(doc.body || doc.documentElement, base);
+
+    wb.innerHTML = '';
+
+    // Inject 90s browser stylesheet
+    var style = document.createElement('style');
+    style.textContent = [
+      '#wb-page.ns-mode { background: #c0c0c0; color: #000; font-family: "Times New Roman", Times, serif; font-size: 14px; padding: 12px 16px; min-height: 100%; }',
+      '#wb-page.ns-mode a { color: #0000cc; text-decoration: underline; cursor: pointer; }',
+      '#wb-page.ns-mode a:hover { color: #cc0000; }',
+      '#wb-page.ns-mode h1 { font-size: 20px; font-weight: bold; margin: 10px 0 6px; border-bottom: 2px solid #000; }',
+      '#wb-page.ns-mode h2 { font-size: 17px; font-weight: bold; margin: 8px 0 4px; }',
+      '#wb-page.ns-mode h3, #wb-page.ns-mode h4 { font-size: 15px; font-weight: bold; margin: 6px 0 3px; }',
+      '#wb-page.ns-mode p { margin: 6px 0; line-height: 1.5; }',
+      '#wb-page.ns-mode ul, #wb-page.ns-mode ol { margin: 6px 0 6px 24px; }',
+      '#wb-page.ns-mode li { margin: 3px 0; line-height: 1.4; }',
+      '#wb-page.ns-mode hr { border: none; border-top: 2px solid #808080; margin: 8px 0; }',
+      '#wb-page.ns-mode .ns-title { font-size: 11px; color: #808080; margin-bottom: 10px; border-bottom: 1px solid #808080; padding-bottom: 4px; font-family: "Tahoma", Arial; }',
+      '#wb-page.ns-mode table { border-collapse: collapse; margin: 6px 0; width: 100%; }',
+      '#wb-page.ns-mode td, #wb-page.ns-mode th { border: 1px solid #808080; padding: 3px 6px; vertical-align: top; font-size: 13px; }',
+      '#wb-page.ns-mode th { font-weight: bold; background: #d0d0d0; }',
+      '#wb-page.ns-mode blockquote { border-left: 3px solid #808080; margin: 6px 0 6px 16px; padding-left: 10px; color: #333; }',
+      '#wb-page.ns-mode .ns-error { color: #cc0000; font-style: italic; }',
+    ].join('\n');
+    document.head.appendChild(style);
+
+    wb.className = 'ns-mode';
+
+    var titleDiv = document.createElement('div');
+    titleDiv.className = 'ns-title';
+    titleDiv.textContent = '📄 ' + title + ' — ' + baseUrl;
+    wb.appendChild(titleDiv);
+
+    wb.appendChild(content);
+  }
+
+  function nsExtractContent(node, base) {
+    var container = document.createElement('div');
+    if (!node) return container;
+
+    // Tags to skip entirely
+    var SKIP = new Set(['script','style','noscript','head','nav','footer','header',
+                        'aside','advertisement','iframe','object','embed','form',
+                        'button','input','select','textarea','svg','canvas','meta','link']);
+    // Block-level tags
+    var BLOCK = new Set(['p','div','section','article','main','h1','h2','h3','h4',
+                         'h5','h6','ul','ol','li','blockquote','table','tr','td','th',
+                         'thead','tbody','hr','br','figure','figcaption']);
+
+    function walk(domNode, out) {
+      if (!domNode) return;
+      if (domNode.nodeType === 3) { // text
+        var txt = domNode.textContent;
+        if (txt.trim()) {
+          out.appendChild(document.createTextNode(txt));
+        }
+        return;
+      }
+      if (domNode.nodeType !== 1) return;
+      var tag = domNode.tagName.toLowerCase();
+      if (SKIP.has(tag)) return;
+
+      if (tag === 'a') {
+        var href = domNode.getAttribute('href');
+        var a = document.createElement('a');
+        if (href) {
+          try {
+            var resolved = new URL(href, base.href).href;
+            a.href = '#';
+            a.onclick = (function(u){ return function(e){ e.preventDefault(); nsGoTo(u); }; })(resolved);
+            a.title = resolved;
+          } catch(e) {}
+        }
+        var childContainer = document.createElement('span');
+        domNode.childNodes.forEach(function(c){ walk(c, childContainer); });
+        a.appendChild(childContainer);
+        if (a.textContent.trim()) out.appendChild(a);
+        return;
+      }
+
+      if (tag === 'img') {
+        // Replace with [image] placeholder showing alt text
+        var alt = domNode.getAttribute('alt');
+        if (alt && alt.trim()) {
+          var span = document.createElement('em');
+          span.style.color = '#808080';
+          span.textContent = '[image: ' + alt.trim() + ']';
+          out.appendChild(span);
+        }
+        return;
+      }
+
+      if (tag === 'br') { out.appendChild(document.createElement('br')); return; }
+      if (tag === 'hr') { out.appendChild(document.createElement('hr')); return; }
+
+      // Map headings/block elements
+      var el;
+      if (['h1','h2','h3','h4','h5','h6'].includes(tag)) {
+        el = document.createElement(tag);
+      } else if (tag === 'ul' || tag === 'ol') {
+        el = document.createElement(tag);
+      } else if (tag === 'li') {
+        el = document.createElement('li');
+      } else if (tag === 'table') {
+        el = document.createElement('table');
+      } else if (tag === 'tr') {
+        el = document.createElement('tr');
+      } else if (tag === 'td') {
+        el = document.createElement('td');
+      } else if (tag === 'th') {
+        el = document.createElement('th');
+      } else if (tag === 'thead' || tag === 'tbody') {
+        el = document.createElement(tag);
+      } else if (tag === 'blockquote') {
+        el = document.createElement('blockquote');
+      } else if (BLOCK.has(tag)) {
+        el = document.createElement('p');
+      } else {
+        // Inline — use span
+        el = document.createElement('span');
+      }
+
+      domNode.childNodes.forEach(function(c){ walk(c, el); });
+
+      // Only add if has meaningful content
+      if (el.textContent.trim() || el.querySelector('a,img')) {
+        out.appendChild(el);
+      }
+    }
+
+    walk(node, container);
+    return container;
+  }
+
+  function nsRenderError(url, msg) {
+    var wb = document.getElementById('wb-page');
+    wb.className = 'ns-mode';
+    wb.innerHTML = [
+      '<div class="ns-title">Error loading page</div>',
+      '<h2 class="ns-error">Unable to locate the server</h2>',
+      '<p>Netscape is unable to find the server at <b>' + esc(url) + '</b>.</p>',
+      '<p>The server may not exist, or it may be temporarily unavailable.<br>',
+      'You might want to check the address and try again, or try again later.</p>',
+      '<hr>',
+      '<p><em style="font-size:11px;color:#808080;">' + esc(msg||'') + '</em></p>'
+    ].join('');
+  }
   // ════════════════════════════════════════
   // WRESTLEBOARD — inline render
   // ════════════════════════════════════════
