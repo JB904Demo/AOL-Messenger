@@ -5045,13 +5045,11 @@
   async function nsBrowse() {
     var url = document.getElementById('netscape-location-bar').value.trim();
     if (!url) return;
-    // Auto-add http://
     if (!url.startsWith('http://') && !url.startsWith('https://')) {
-      url = 'http://' + url;
+      url = 'https://' + url;
       document.getElementById('netscape-location-bar').value = url;
     }
 
-    // Wrestleboard — use our custom render
     if (url.indexOf('wrestleboard.com') !== -1) {
       nsHistory = nsHistory.slice(0, nsHistoryPos + 1);
       nsHistory.push(url); nsHistoryPos = nsHistory.length - 1;
@@ -5063,19 +5061,42 @@
     nsSetLoading(true);
     nsSetStatus('Connecting to ' + url + '...');
 
-    try {
-      var proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent(url);
-      var resp = await fetch(proxyUrl);
-      var data = await resp.json();
-      var html  = data.contents || '';
+    var html = null;
+    var err  = '';
 
+    // Try allorigins first, then corsproxy as fallback
+    var proxies = [
+      'https://api.allorigins.win/get?url=' + encodeURIComponent(url),
+      'https://corsproxy.io/?' + encodeURIComponent(url)
+    ];
+
+    for (var i = 0; i < proxies.length; i++) {
+      try {
+        nsSetStatus('Connecting... (attempt ' + (i+1) + ')');
+        var resp = await fetch(proxies[i]);
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        if (i === 0) {
+          // allorigins wraps in JSON
+          var data = await resp.json();
+          html = data.contents || '';
+        } else {
+          // corsproxy returns raw HTML
+          html = await resp.text();
+        }
+        if (html && html.length > 100) break; // got something useful
+      } catch(e) {
+        err = e.message;
+        html = null;
+      }
+    }
+
+    if (html && html.length > 100) {
       nsHistory = nsHistory.slice(0, nsHistoryPos + 1);
       nsHistory.push(url); nsHistoryPos = nsHistory.length - 1;
-
       nsRenderPage(html, url);
       nsSetStatus('Document: Done');
-    } catch(e) {
-      nsRenderError(url, e.message);
+    } else {
+      nsRenderError(url, err);
       nsSetStatus('Error: Could not load page');
     }
     nsSetLoading(false);
