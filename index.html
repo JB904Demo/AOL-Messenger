@@ -3451,6 +3451,8 @@
     <div class="pt-menubar">
       <div class="pt-menu"><u>F</u>ile
         <div class="pt-menu-dropdown">
+          <div class="pt-menu-item" onclick="paintImport()">Import Image...</div>
+          <div class="pt-menu-sep"></div>
           <div class="pt-menu-item" onclick="paintNew()">New</div>
           <div class="pt-menu-sep"></div>
           <div class="pt-menu-item" onclick="paintSaveDialog()">Save</div>
@@ -6668,8 +6670,37 @@
     var el = document.getElementById('bs-'+s);
     if (el) el.classList.add('active');
   }
+  function paintImport() {
+    var input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = function(e) {
+      var file = e.target.files[0];
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function(r) {
+        var img = new Image();
+        img.onload = function() {
+          ptSaveUndo();
+          var ctx = getCtx();
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, 640, 480);
+          // Scale to fit canvas while preserving aspect ratio
+          var scale = Math.min(640 / img.width, 480 / img.height, 1);
+          var w = Math.round(img.width  * scale);
+          var h = Math.round(img.height * scale);
+          var x = Math.round((640 - w) / 2);
+          var y = Math.round((480 - h) / 2);
+          ctx.drawImage(img, x, y, w, h);
+        };
+        img.src = r.result;
+      };
+      reader.readAsDataURL(file);
+    };
+    input.click();
+  }
+
   function paintNew() {
-    ptSaveUndo(); getCtx().fillStyle='#ffffff'; getCtx().fillRect(0,0,640,480);
     ptCurrentFile=null;
     document.querySelector('#paint-window .pt-titlebar-left').lastChild.textContent=' untitled - Paint';
   }
