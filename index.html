@@ -5066,7 +5066,8 @@
 
     // Try allorigins first, then corsproxy as fallback
     var proxies = [
-      'https://api.allorigins.win/get?url=' + encodeURIComponent(url),
+      'https://api.allorigins.win/raw?url=' + encodeURIComponent(url),
+      'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(url),
       'https://corsproxy.io/?' + encodeURIComponent(url)
     ];
 
@@ -5076,11 +5077,9 @@
         var resp = await fetch(proxies[i]);
         if (!resp.ok) throw new Error('HTTP ' + resp.status);
         if (i === 0) {
-          // allorigins wraps in JSON
-          var data = await resp.json();
-          html = data.contents || '';
+          // allorigins /raw returns plain HTML
+          html = await resp.text();
         } else {
-          // corsproxy returns raw HTML
           html = await resp.text();
         }
         if (html && html.length > 100) break; // got something useful
