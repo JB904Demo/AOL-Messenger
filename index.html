@@ -6671,28 +6671,38 @@
     if (el) el.classList.add('active');
   }
   function paintImport() {
+    // Ensure paint window is open and initialized
+    initPaint();
+    var win = document.getElementById('paint-window');
+    win.classList.add('open');
+    win.style.zIndex = ++chatZBase;
+
     var input = document.createElement('input');
     input.type = 'file';
     input.accept = 'image/*';
+    input.style.display = 'none';
+    document.body.appendChild(input);
     input.onchange = function(e) {
       var file = e.target.files[0];
-      if (!file) return;
+      if (!file) { document.body.removeChild(input); return; }
       var reader = new FileReader();
       reader.onload = function(r) {
         var img = new Image();
         img.onload = function() {
           ptSaveUndo();
-          var ctx = getCtx();
+          var canvas = document.getElementById('paint-canvas');
+          var ctx = canvas.getContext('2d');
           ctx.fillStyle = '#ffffff';
           ctx.fillRect(0, 0, 640, 480);
-          // Scale to fit canvas while preserving aspect ratio
           var scale = Math.min(640 / img.width, 480 / img.height, 1);
           var w = Math.round(img.width  * scale);
           var h = Math.round(img.height * scale);
           var x = Math.round((640 - w) / 2);
           var y = Math.round((480 - h) / 2);
           ctx.drawImage(img, x, y, w, h);
+          document.body.removeChild(input);
         };
+        img.onerror = function() { alert('Could not load image.'); document.body.removeChild(input); };
         img.src = r.result;
       };
       reader.readAsDataURL(file);
