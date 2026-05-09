@@ -115,26 +115,6 @@
     height: 22px;
   }
   #start-btn:active { border-color: #808080 #fff #fff #808080; }
-  #taskbar-programs {
-    display: flex; align-items: center; gap: 2px; padding: 0 2px;
-    flex-shrink: 0; max-width: 500px; overflow: hidden;
-  }
-  .taskbar-prog-btn {
-    height: 22px; min-width: 120px; max-width: 160px;
-    background: #c0c0c0;
-    border: 2px solid; border-color: #fff #808080 #808080 #fff;
-    display: flex; align-items: center; gap: 4px;
-    padding: 0 6px; cursor: pointer; flex-shrink: 0;
-    font-family: 'Tahoma', Arial; font-size: 11px; font-weight: bold;
-    color: #000; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    user-select: none;
-  }
-  .taskbar-prog-btn.active {
-    border-color: #808080 #fff #fff #808080;
-    background: #b0b0b0;
-  }
-  .taskbar-prog-btn:active { border-color: #808080 #fff #fff #808080; }
-  .taskbar-prog-icon { font-size: 12px; flex-shrink: 0; }
     background: #c0c0c0; border: 2px solid;
     border-color: #808080 #fff #fff #808080;
     padding: 2px 8px; font-size: 11px; font-family: 'Tahoma', Arial;
@@ -149,7 +129,7 @@
     background: #c0c0c0;
     border: 2px solid; border-color: #fff #808080 #808080 #fff;
     box-shadow: 2px 2px 0 #000;
-    display: none; z-index: 9999;
+    display: none; z-index: 1050;
   }
   #start-menu.open { display: block; }
   .start-menu-header {
@@ -159,12 +139,12 @@
     padding: 8px 4px; position: absolute; left: 0; top: 0; bottom: 0;
     width: 28px; letter-spacing: 3px;
   }
-  .start-menu-items { margin-left: 28px; width: 192px; box-sizing: border-box; }
+  .start-menu-items { margin-left: 28px; }
   .start-menu-item {
     display: flex; align-items: center; gap: 8px;
     padding: 5px 10px; font-size: 12px; font-family: 'Tahoma', Arial;
     color: #000; cursor: pointer; border-bottom: 1px solid #d0d0d0;
-    position: relative; box-sizing: border-box; width: 100%;
+    position: relative;
   }
   .start-menu-item:hover { background: #000080; color: #fff; }
   .start-menu-item .smi-icon { font-size: 18px; width: 22px; text-align: center; }
@@ -181,7 +161,7 @@
     display: none; position: absolute; left: 100%; top: -2px;
     background: #c0c0c0; border: 2px solid;
     border-color: #fff #808080 #808080 #fff;
-    box-shadow: 2px 2px 0 #000; min-width: 180px; z-index: 10000;
+    box-shadow: 2px 2px 0 #000; min-width: 180px; z-index: 1060;
   }
   .start-menu-item:hover > .smi-submenu { display: block; }
 
@@ -3154,123 +3134,120 @@
         <img src="windows.png" alt="" style="width:16px;height:16px;object-fit:contain;">
         <span>Start</span>
       </button>
-      <div id="taskbar-programs"></div>
       <div style="flex:1;"></div>
       <div id="win95-clock" ondblclick="openClockCalendar()" style="cursor:default;" title="Double-click to adjust date/time">12:00 AM</div>
     </div>
-  </div><!-- end global-taskbar -->
-
-  <!-- Start menu — outside global-taskbar to avoid stacking context clipping -->
-  <div id="start-menu">
-    <div class="start-menu-header">Windows 95</div>
-    <div class="start-menu-items">
-      <div class="start-menu-item" onclick="launchNetscape();toggleStartMenu();">
-        <span class="smi-icon">🌐</span>
-        <div><span class="smi-label">Netscape Navigator</span><span class="smi-sub">Browse the Web</span></div>
-      </div>
-      <div class="start-menu-item" onclick="launchAOL();toggleStartMenu();">
-        <span class="smi-icon">📡</span>
-        <div><span class="smi-label">America Online</span><span class="smi-sub">AOL 4.0</span></div>
-      </div>
-      <div class="start-menu-divider"></div>
-      <div class="start-menu-item">
-        <span class="smi-icon">📁</span>
-        <div><span class="smi-label">My Documents</span></div>
-        <span class="smi-arrow">▶</span>
-        <div class="smi-submenu" onclick="openMyDocs();toggleStartMenu();" style="min-width:140px;">
-          <div class="start-menu-item" onclick="openMyDocs();toggleStartMenu();" style="border:none;">
-            <span class="smi-icon">📁</span>
-            <div><span class="smi-label">Open My Documents</span></div>
-          </div>
+    <div id="start-menu">
+      <div class="start-menu-header">Windows 95</div>
+      <div class="start-menu-items">
+        <div class="start-menu-item" onclick="launchNetscape();toggleStartMenu();">
+          <span class="smi-icon">🌐</span>
+          <div><span class="smi-label">Netscape Navigator</span><span class="smi-sub">Browse the Web</span></div>
         </div>
-      </div>
-      <div class="start-menu-item" onclick="openBriefcase();toggleStartMenu();">
-        <span class="smi-icon">💼</span>
-        <div><span class="smi-label">My Briefcase</span></div>
-      </div>
-      <div class="start-menu-item" onclick="openMyComputer();toggleStartMenu();">
-        <span class="smi-icon">🖥️</span>
-        <div><span class="smi-label">My Computer</span></div>
-      </div>
-      <div class="start-menu-item">
-        <span class="smi-icon">🖨️</span>
-        <div><span class="smi-label">Printers</span></div>
-      </div>
-      <div class="start-menu-item">
-        <span class="smi-icon">📂</span>
-        <div><span class="smi-label">Programs</span></div>
-        <span class="smi-arrow">▶</span>
-        <div class="smi-submenu">
-          <div class="start-menu-item">
-            <span class="smi-icon">📂</span>
-            <div><span class="smi-label">Accessories</span></div>
-            <span class="smi-arrow">▶</span>
-            <div class="smi-submenu">
-              <div class="start-menu-item" onclick="openNotepad();toggleStartMenu();" style="border:none;">
-                <span class="smi-icon">📝</span>
-                <div><span class="smi-label">Notepad</span></div>
-              </div>
-              <div class="start-menu-item" onclick="openWordPad();toggleStartMenu();" style="border:none;">
-                <span class="smi-icon">📄</span>
-                <div><span class="smi-label">WordPad</span></div>
-              </div>
-              <div class="start-menu-item" onclick="openPaint();toggleStartMenu();" style="border:none;">
-                <span class="smi-icon">🎨</span>
-                <div><span class="smi-label">Paint</span></div>
-              </div>
+        <div class="start-menu-item" onclick="launchAOL();toggleStartMenu();">
+          <span class="smi-icon">📡</span>
+          <div><span class="smi-label">America Online</span><span class="smi-sub">AOL 4.0</span></div>
+        </div>
+        <div class="start-menu-divider"></div>
+        <div class="start-menu-item">
+          <span class="smi-icon">📁</span>
+          <div><span class="smi-label">My Documents</span></div>
+          <span class="smi-arrow">▶</span>
+          <div class="smi-submenu" onclick="openMyDocs();toggleStartMenu();">
+            <div class="start-menu-item" onclick="openMyDocs();toggleStartMenu();" style="border:none;">
+              <span class="smi-icon">📁</span>
+              <div><span class="smi-label">Open My Documents</span></div>
             </div>
           </div>
-          <div class="start-menu-item" onclick="launchNetscape();toggleStartMenu();" style="border:none;">
-            <span class="smi-icon">🌐</span>
-            <div><span class="smi-label">Netscape Navigator</span></div>
-          </div>
-          <div class="start-menu-item" onclick="launchAOL();toggleStartMenu();" style="border:none;">
-            <span class="smi-icon">📡</span>
-            <div><span class="smi-label">America Online 4.0</span></div>
+        </div>
+        <div class="start-menu-item" onclick="openBriefcase();toggleStartMenu();">
+          <span class="smi-icon">💼</span>
+          <div><span class="smi-label">My Briefcase</span></div>
+        </div>
+        <div class="start-menu-item" onclick="openMyComputer();toggleStartMenu();">
+          <span class="smi-icon">🖥️</span>
+          <div><span class="smi-label">My Computer</span></div>
+        </div>
+        <div class="start-menu-item">
+          <span class="smi-icon">🖨️</span>
+          <div><span class="smi-label">Printers</span></div>
+        </div>
+        <div class="start-menu-item">
+          <span class="smi-icon">📂</span>
+          <div><span class="smi-label">Programs</span></div>
+          <span class="smi-arrow">▶</span>
+          <div class="smi-submenu">
+            <div class="start-menu-item">
+              <span class="smi-icon">📂</span>
+              <div><span class="smi-label">Accessories</span></div>
+              <span class="smi-arrow">▶</span>
+              <div class="smi-submenu">
+                <div class="start-menu-item" onclick="openNotepad();toggleStartMenu();" style="border:none;">
+                  <span class="smi-icon">📝</span>
+                  <div><span class="smi-label">Notepad</span></div>
+                </div>
+                <div class="start-menu-item" onclick="openWordPad();toggleStartMenu();" style="border:none;">
+                  <span class="smi-icon">📄</span>
+                  <div><span class="smi-label">WordPad</span></div>
+                </div>
+                <div class="start-menu-item" onclick="openPaint();toggleStartMenu();" style="border:none;">
+                  <span class="smi-icon">🎨</span>
+                  <div><span class="smi-label">Paint</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="start-menu-item" onclick="launchNetscape();toggleStartMenu();" style="border:none;">
+              <span class="smi-icon">🌐</span>
+              <div><span class="smi-label">Netscape Navigator</span></div>
+            </div>
+            <div class="start-menu-item" onclick="launchAOL();toggleStartMenu();" style="border:none;">
+              <span class="smi-icon">📡</span>
+              <div><span class="smi-label">America Online 4.0</span></div>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="start-menu-item">
-        <span class="smi-icon">🎮</span>
-        <div><span class="smi-label">Games</span><span class="smi-sub">Minesweeper, Solitaire</span></div>
-        <span class="smi-arrow">▶</span>
-        <div class="smi-submenu">
-          <div class="start-menu-item" onclick="openMinesweeper();toggleStartMenu();" style="border:none;">
-            <span class="smi-icon">💣</span>
-            <div><span class="smi-label">Minesweeper</span></div>
-          </div>
-          <div class="start-menu-item" style="border:none;">
-            <span class="smi-icon">🃏</span>
-            <div><span class="smi-label">Solitaire</span><span class="smi-sub">Coming soon</span></div>
+        <div class="start-menu-item">
+          <span class="smi-icon">🎮</span>
+          <div><span class="smi-label">Games</span><span class="smi-sub">Minesweeper, Solitaire</span></div>
+          <span class="smi-arrow">▶</span>
+          <div class="smi-submenu">
+            <div class="start-menu-item" onclick="openMinesweeper();toggleStartMenu();" style="border:none;">
+              <span class="smi-icon">💣</span>
+              <div><span class="smi-label">Minesweeper</span></div>
+            </div>
+            <div class="start-menu-item" style="border:none;">
+              <span class="smi-icon">🃏</span>
+              <div><span class="smi-label">Solitaire</span><span class="smi-sub">Coming soon</span></div>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="start-menu-item">
-        <span class="smi-icon">🔊</span>
-        <div><span class="smi-label">Volume Control</span></div>
-      </div>
-      <div class="start-menu-divider"></div>
-      <div class="start-menu-item">
-        <span class="smi-icon">🔍</span>
-        <div><span class="smi-label">Find</span><span class="smi-sub">Files or Folders...</span></div>
-      </div>
-      <div class="start-menu-item">
-        <span class="smi-icon">❓</span>
-        <div><span class="smi-label">Help</span></div>
-      </div>
-      <div class="start-menu-item">
-        <span class="smi-icon">⚙️</span>
-        <div><span class="smi-label">Settings</span><span class="smi-sub">Control Panel, Taskbar...</span></div>
-      </div>
-      <div class="start-menu-divider"></div>
-      <div class="start-menu-item" onclick="toggleStartMenu()">
-        <span class="smi-icon">🔌</span>
-        <div><span class="smi-label">Shut Down...</span></div>
+        <div class="start-menu-item">
+          <span class="smi-icon">🔊</span>
+          <div><span class="smi-label">Volume Control</span></div>
+        </div>
+        <div class="start-menu-divider"></div>
+        <div class="start-menu-item">
+          <span class="smi-icon">🔍</span>
+          <div><span class="smi-label">Find</span><span class="smi-sub">Files or Folders...</span></div>
+        </div>
+        <div class="start-menu-item">
+          <span class="smi-icon">❓</span>
+          <div><span class="smi-label">Help</span></div>
+        </div>
+        <div class="start-menu-item">
+          <span class="smi-icon">⚙️</span>
+          <div><span class="smi-label">Settings</span><span class="smi-sub">Control Panel, Taskbar...</span></div>
+        </div>
+        <div class="start-menu-divider"></div>
+        <div class="start-menu-item" onclick="toggleStartMenu()">
+          <span class="smi-icon">🔌</span>
+          <div><span class="smi-label">Shut Down...</span></div>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Win95 Notepad — outside all screens, always accessible -->
+
   <div id="notepad-window">
     <div class="np-titlebar" id="np-titlebar">
       <div class="np-titlebar-left">
@@ -7481,94 +7458,6 @@
   makeDraggable(document.getElementById('clock-window'),document.getElementById('cw-titlebar'));
 
   // ════════════════════════════════════════
-  // TASKBAR PROGRAM MANAGER
-  // ════════════════════════════════════════
-  var taskbarProgs = {};
-
-  function tbAdd(id, icon, label) {
-    var existing = taskbarProgs[id];
-    if (existing) { tbSetActive(id); return; }
-    var btn = document.createElement('div');
-    btn.className = 'taskbar-prog-btn active';
-    btn.id = 'tb-btn-' + id;
-    btn.innerHTML = '<span class="taskbar-prog-icon">' + icon + '</span><span>' + label + '</span>';
-    btn.addEventListener('click', function() { tbClick(id); });
-    document.getElementById('taskbar-programs').appendChild(btn);
-    taskbarProgs[id] = { btn: btn, minimized: false };
-  }
-
-  function tbRemove(id) {
-    if (!taskbarProgs[id]) return;
-    taskbarProgs[id].btn.remove();
-    delete taskbarProgs[id];
-  }
-
-  function tbSetActive(id) {
-    Object.keys(taskbarProgs).forEach(function(k){ taskbarProgs[k].btn.classList.remove('active'); });
-    if (taskbarProgs[id]) taskbarProgs[id].btn.classList.add('active');
-  }
-
-  function tbSetInactive(id) {
-    if (taskbarProgs[id]) taskbarProgs[id].btn.classList.remove('active');
-  }
-
-  function tbMinimize(id) {
-    var win = document.getElementById(id + '-window');
-    if (!win) return;
-    win.style.display = 'none';
-    if (taskbarProgs[id]) { taskbarProgs[id].minimized = true; tbSetInactive(id); }
-  }
-
-  function tbClick(id) {
-    var prog = taskbarProgs[id];
-    if (!prog) return;
-    var win = document.getElementById(id + '-window');
-    if (!win) return;
-    if (prog.minimized) {
-      win.style.display = 'flex';
-      win.style.zIndex = ++chatZBase;
-      prog.minimized = false;
-      tbSetActive(id);
-    } else {
-      tbMinimize(id);
-    }
-  }
-
-  // ── Notepad taskbar integration ──
-  var _npOpen = openNotepad;
-  openNotepad = function(filename, content) {
-    _npOpen(filename, content);
-    tbAdd('notepad', '📝', filename ? filename + ' - Notepad' : 'Untitled - Notepad');
-  };
-  var _npClose = closeNotepad;
-  closeNotepad = function() { _npClose(); tbRemove('notepad'); };
-  minimizeNotepad = function() { tbMinimize('notepad'); };
-  document.getElementById('notepad-window').addEventListener('mousedown', function(){ tbSetActive('notepad'); }, true);
-
-  // ── WordPad taskbar integration ──
-  var _wpOpen = openWordPad;
-  openWordPad = function(filename, html) {
-    _wpOpen(filename, html);
-    tbAdd('wordpad', '📄', filename ? filename + ' - WordPad' : 'Document - WordPad');
-  };
-  var _wpClose = closeWordPad;
-  closeWordPad = function() { _wpClose(); tbRemove('wordpad'); };
-  // Wire WordPad _ button to minimize
-  document.getElementById('wordpad-window').querySelector('.wp-win-btn').onclick = function() { tbMinimize('wordpad'); };
-  document.getElementById('wordpad-window').addEventListener('mousedown', function(){ tbSetActive('wordpad'); }, true);
-
-  // ── Paint taskbar integration ──
-  var _ptOpen = openPaint;
-  openPaint = function(filename, dataUrl) {
-    _ptOpen(filename, dataUrl);
-    tbAdd('paint', '🎨', filename ? filename + ' - Paint' : 'untitled - Paint');
-  };
-  var _ptClose = closePaint;
-  closePaint = function() { _ptClose(); tbRemove('paint'); };
-  // Wire Paint _ button to minimize
-  document.getElementById('paint-window').querySelector('.pt-win-btn').onclick = function() { tbMinimize('paint'); };
-  document.getElementById('paint-window').addEventListener('mousedown', function(){ tbSetActive('paint'); }, true);
-
   window.addEventListener('load', function(){
     showScreen('screen-poweron');
   });
