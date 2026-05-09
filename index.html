@@ -148,7 +148,7 @@
     width: 220px; background: #c0c0c0;
     border: 2px solid; border-color: #fff #808080 #808080 #fff;
     box-shadow: 2px 2px 0 #000;
-    display: none; z-index: 2000;
+    display: none; z-index: 9999;
   }
   #start-menu.open { display: block; }
   .start-menu-header {
@@ -180,7 +180,7 @@
     display: none; position: absolute; left: 100%; top: -2px;
     background: #c0c0c0; border: 2px solid;
     border-color: #fff #808080 #808080 #fff;
-    box-shadow: 2px 2px 0 #000; min-width: 180px; z-index: 2100;
+    box-shadow: 2px 2px 0 #000; min-width: 180px; z-index: 10000;
   }
   .start-menu-item:hover > .smi-submenu { display: block; }
 
@@ -3157,113 +3157,114 @@
       <div style="flex:1;"></div>
       <div id="win95-clock" ondblclick="openClockCalendar()" style="cursor:default;" title="Double-click to adjust date/time">12:00 AM</div>
     </div>
-    <div id="start-menu">
-      <div class="start-menu-header">Windows 95</div>
-      <div class="start-menu-items">
-        <div class="start-menu-item" onclick="launchNetscape()">
-          <span class="smi-icon">🌐</span>
-          <div><span class="smi-label">Netscape Navigator</span><span class="smi-sub">Browse the Web</span></div>
-        </div>
-        <div class="start-menu-item" onclick="launchAOL()">
-          <span class="smi-icon">📡</span>
-          <div><span class="smi-label">America Online</span><span class="smi-sub">AOL 4.0</span></div>
-        </div>
-        <div class="start-menu-divider"></div>
-        <div class="start-menu-item">
-          <span class="smi-icon">📁</span>
-          <div><span class="smi-label">My Documents</span></div>
-          <span class="smi-arrow">▶</span>
-          <div class="smi-submenu" onclick="openMyDocs();toggleStartMenu();" style="min-width:140px;">
-            <div class="start-menu-item" onclick="openMyDocs();toggleStartMenu();" style="border:none;">
-              <span class="smi-icon">📁</span>
-              <div><span class="smi-label">Open My Documents</span></div>
-            </div>
+  </div><!-- end global-taskbar -->
+
+  <!-- Start menu — outside global-taskbar to avoid stacking context clipping -->
+  <div id="start-menu">
+    <div class="start-menu-header">Windows 95</div>
+    <div class="start-menu-items">
+      <div class="start-menu-item" onclick="launchNetscape();toggleStartMenu();">
+        <span class="smi-icon">🌐</span>
+        <div><span class="smi-label">Netscape Navigator</span><span class="smi-sub">Browse the Web</span></div>
+      </div>
+      <div class="start-menu-item" onclick="launchAOL();toggleStartMenu();">
+        <span class="smi-icon">📡</span>
+        <div><span class="smi-label">America Online</span><span class="smi-sub">AOL 4.0</span></div>
+      </div>
+      <div class="start-menu-divider"></div>
+      <div class="start-menu-item">
+        <span class="smi-icon">📁</span>
+        <div><span class="smi-label">My Documents</span></div>
+        <span class="smi-arrow">▶</span>
+        <div class="smi-submenu" onclick="openMyDocs();toggleStartMenu();" style="min-width:140px;">
+          <div class="start-menu-item" onclick="openMyDocs();toggleStartMenu();" style="border:none;">
+            <span class="smi-icon">📁</span>
+            <div><span class="smi-label">Open My Documents</span></div>
           </div>
         </div>
-        <div class="start-menu-item" onclick="openBriefcase();toggleStartMenu();">
-          <span class="smi-icon">💼</span>
-          <div><span class="smi-label">My Briefcase</span></div>
-        </div>
-        <div class="start-menu-item" onclick="openMyComputer();toggleStartMenu();">
-          <span class="smi-icon">🖥️</span>
-          <div><span class="smi-label">My Computer</span></div>
-        </div>
-        <div class="start-menu-item">
-          <span class="smi-icon">🖨️</span>
-          <div><span class="smi-label">Printers</span></div>
-        </div>
-        <!-- Programs with cascade -->
-        <div class="start-menu-item">
-          <span class="smi-icon">📂</span>
-          <div><span class="smi-label">Programs</span></div>
-          <span class="smi-arrow">▶</span>
-          <div class="smi-submenu">
-            <div class="start-menu-item">
-              <span class="smi-icon">📂</span>
-              <div><span class="smi-label">Accessories</span></div>
-              <span class="smi-arrow">▶</span>
-              <div class="smi-submenu">
-                <div class="start-menu-item" onclick="openNotepad();toggleStartMenu();" style="border:none;">
-                  <span class="smi-icon">📝</span>
-                  <div><span class="smi-label">Notepad</span></div>
-                </div>
-                <div class="start-menu-item" onclick="openWordPad();toggleStartMenu();" style="border:none;">
-                  <span class="smi-icon">📄</span>
-                  <div><span class="smi-label">WordPad</span></div>
-                </div>
-                <div class="start-menu-item" onclick="openPaint();toggleStartMenu();" style="border:none;">
-                  <span class="smi-icon">🎨</span>
-                  <div><span class="smi-label">Paint</span></div>
-                </div>
+      </div>
+      <div class="start-menu-item" onclick="openBriefcase();toggleStartMenu();">
+        <span class="smi-icon">💼</span>
+        <div><span class="smi-label">My Briefcase</span></div>
+      </div>
+      <div class="start-menu-item" onclick="openMyComputer();toggleStartMenu();">
+        <span class="smi-icon">🖥️</span>
+        <div><span class="smi-label">My Computer</span></div>
+      </div>
+      <div class="start-menu-item">
+        <span class="smi-icon">🖨️</span>
+        <div><span class="smi-label">Printers</span></div>
+      </div>
+      <div class="start-menu-item">
+        <span class="smi-icon">📂</span>
+        <div><span class="smi-label">Programs</span></div>
+        <span class="smi-arrow">▶</span>
+        <div class="smi-submenu">
+          <div class="start-menu-item">
+            <span class="smi-icon">📂</span>
+            <div><span class="smi-label">Accessories</span></div>
+            <span class="smi-arrow">▶</span>
+            <div class="smi-submenu">
+              <div class="start-menu-item" onclick="openNotepad();toggleStartMenu();" style="border:none;">
+                <span class="smi-icon">📝</span>
+                <div><span class="smi-label">Notepad</span></div>
+              </div>
+              <div class="start-menu-item" onclick="openWordPad();toggleStartMenu();" style="border:none;">
+                <span class="smi-icon">📄</span>
+                <div><span class="smi-label">WordPad</span></div>
+              </div>
+              <div class="start-menu-item" onclick="openPaint();toggleStartMenu();" style="border:none;">
+                <span class="smi-icon">🎨</span>
+                <div><span class="smi-label">Paint</span></div>
               </div>
             </div>
-            <div class="start-menu-item" style="border:none;">
-              <span class="smi-icon">🌐</span>
-              <div><span class="smi-label">Netscape Navigator</span></div>
-            </div>
-            <div class="start-menu-item" onclick="launchAOL();toggleStartMenu();" style="border:none;">
-              <span class="smi-icon">📡</span>
-              <div><span class="smi-label">America Online 4.0</span></div>
-            </div>
+          </div>
+          <div class="start-menu-item" onclick="launchNetscape();toggleStartMenu();" style="border:none;">
+            <span class="smi-icon">🌐</span>
+            <div><span class="smi-label">Netscape Navigator</span></div>
+          </div>
+          <div class="start-menu-item" onclick="launchAOL();toggleStartMenu();" style="border:none;">
+            <span class="smi-icon">📡</span>
+            <div><span class="smi-label">America Online 4.0</span></div>
           </div>
         </div>
-        <div class="start-menu-item">
-          <span class="smi-icon">🎮</span>
-          <div><span class="smi-label">Games</span><span class="smi-sub">Minesweeper, Solitaire</span></div>
-          <span class="smi-arrow">▶</span>
-          <div class="smi-submenu">
-            <div class="start-menu-item" onclick="openMinesweeper();toggleStartMenu();" style="border:none;">
-              <span class="smi-icon">💣</span>
-              <div><span class="smi-label">Minesweeper</span></div>
-            </div>
-            <div class="start-menu-item" style="border:none;">
-              <span class="smi-icon">🃏</span>
-              <div><span class="smi-label">Solitaire</span><span class="smi-sub">Coming soon</span></div>
-            </div>
+      </div>
+      <div class="start-menu-item">
+        <span class="smi-icon">🎮</span>
+        <div><span class="smi-label">Games</span><span class="smi-sub">Minesweeper, Solitaire</span></div>
+        <span class="smi-arrow">▶</span>
+        <div class="smi-submenu">
+          <div class="start-menu-item" onclick="openMinesweeper();toggleStartMenu();" style="border:none;">
+            <span class="smi-icon">💣</span>
+            <div><span class="smi-label">Minesweeper</span></div>
+          </div>
+          <div class="start-menu-item" style="border:none;">
+            <span class="smi-icon">🃏</span>
+            <div><span class="smi-label">Solitaire</span><span class="smi-sub">Coming soon</span></div>
           </div>
         </div>
-        <div class="start-menu-item">
-          <span class="smi-icon">🔊</span>
-          <div><span class="smi-label">Volume Control</span></div>
-        </div>
-        <div class="start-menu-divider"></div>
-        <div class="start-menu-item">
-          <span class="smi-icon">🔍</span>
-          <div><span class="smi-label">Find</span><span class="smi-sub">Files or Folders...</span></div>
-        </div>
-        <div class="start-menu-item">
-          <span class="smi-icon">❓</span>
-          <div><span class="smi-label">Help</span></div>
-        </div>
-        <div class="start-menu-item">
-          <span class="smi-icon">⚙️</span>
-          <div><span class="smi-label">Settings</span><span class="smi-sub">Control Panel, Taskbar...</span></div>
-        </div>
-        <div class="start-menu-divider"></div>
-        <div class="start-menu-item" onclick="toggleStartMenu()">
-          <span class="smi-icon">🔌</span>
-          <div><span class="smi-label">Shut Down...</span></div>
-        </div>
+      </div>
+      <div class="start-menu-item">
+        <span class="smi-icon">🔊</span>
+        <div><span class="smi-label">Volume Control</span></div>
+      </div>
+      <div class="start-menu-divider"></div>
+      <div class="start-menu-item">
+        <span class="smi-icon">🔍</span>
+        <div><span class="smi-label">Find</span><span class="smi-sub">Files or Folders...</span></div>
+      </div>
+      <div class="start-menu-item">
+        <span class="smi-icon">❓</span>
+        <div><span class="smi-label">Help</span></div>
+      </div>
+      <div class="start-menu-item">
+        <span class="smi-icon">⚙️</span>
+        <div><span class="smi-label">Settings</span><span class="smi-sub">Control Panel, Taskbar...</span></div>
+      </div>
+      <div class="start-menu-divider"></div>
+      <div class="start-menu-item" onclick="toggleStartMenu()">
+        <span class="smi-icon">🔌</span>
+        <div><span class="smi-label">Shut Down...</span></div>
       </div>
     </div>
   </div>
