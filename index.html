@@ -145,7 +145,8 @@
   /* Start Menu */
   #start-menu {
     position: absolute; bottom: 28px; left: 0;
-    width: 220px; background: #c0c0c0;
+    width: 220px; max-height: calc(100% - 28px); overflow-y: auto;
+    background: #c0c0c0;
     border: 2px solid; border-color: #fff #808080 #808080 #fff;
     box-shadow: 2px 2px 0 #000;
     display: none; z-index: 9999;
@@ -158,12 +159,12 @@
     padding: 8px 4px; position: absolute; left: 0; top: 0; bottom: 0;
     width: 28px; letter-spacing: 3px;
   }
-  .start-menu-items { margin-left: 28px; }
+  .start-menu-items { margin-left: 28px; width: 192px; box-sizing: border-box; }
   .start-menu-item {
     display: flex; align-items: center; gap: 8px;
     padding: 5px 10px; font-size: 12px; font-family: 'Tahoma', Arial;
     color: #000; cursor: pointer; border-bottom: 1px solid #d0d0d0;
-    position: relative;
+    position: relative; box-sizing: border-box; width: 100%;
   }
   .start-menu-item:hover { background: #000080; color: #fff; }
   .start-menu-item .smi-icon { font-size: 18px; width: 22px; text-align: center; }
