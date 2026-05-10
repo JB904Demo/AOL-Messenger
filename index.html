@@ -711,6 +711,175 @@
   .ms-cell[data-n="7"] { color: #000000; }
   .ms-cell[data-n="8"] { color: #808080; }
 
+  /* ── Solitaire ── */
+  #sol-window {
+    position: absolute; top: 40px; left: 60px;
+    background: #008000;
+    border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    box-shadow: 2px 2px 0 #000;
+    display: none; flex-direction: column; z-index: 500;
+    width: 680px;
+  }
+  #sol-window.open { display: flex; }
+  .sol-titlebar {
+    background: #000080; color: #fff; font-size: 12px; font-weight: bold;
+    padding: 2px 5px; display: flex; align-items: center;
+    justify-content: space-between; height: 20px; cursor: grab; flex-shrink: 0;
+  }
+  .sol-titlebar:active { cursor: grabbing; }
+  .sol-win-btns { display: flex; gap: 2px; }
+  .sol-win-btn {
+    width: 16px; height: 14px; background: #c0c0c0;
+    border: 1px solid; border-color: #fff #808080 #808080 #fff;
+    font-size: 9px; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: #000; font-weight: bold;
+  }
+  .sol-menubar {
+    display: flex; background: #c0c0c0; padding: 1px 2px;
+    border-bottom: 1px solid #808080; flex-shrink: 0;
+  }
+  .sol-menu { font-size: 12px; padding: 2px 6px; cursor: pointer; color: #000; position: relative; }
+  .sol-menu:hover { background: #000080; color: #fff; }
+  .sol-menu-dropdown {
+    display: none; position: absolute; top: 100%; left: 0;
+    background: #c0c0c0; border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    box-shadow: 2px 2px 0 #000; z-index: 600; min-width: 140px;
+  }
+  .sol-menu:hover .sol-menu-dropdown { display: block; }
+  .sol-menu-item { font-size: 12px; padding: 3px 20px; color: #000; cursor: pointer; white-space: nowrap; }
+  .sol-menu-item:hover { background: #000080; color: #fff; }
+  .sol-menu-sep { height: 1px; background: #808080; margin: 2px 0; border-bottom: 1px solid #fff; }
+  .sol-score-bar {
+    background: #c0c0c0; padding: 3px 8px; font-size: 11px; font-weight: bold;
+    border-bottom: 1px solid #808080; display: flex; gap: 20px; flex-shrink: 0;
+  }
+  .sol-play-area {
+    padding: 8px; display: flex; flex-direction: column; gap: 8px; flex: 1;
+    background: #008000; min-height: 500px;
+  }
+  .sol-top-row { display: flex; gap: 8px; align-items: flex-start; }
+  .sol-tableau-row { display: flex; gap: 8px; align-items: flex-start; flex: 1; }
+  .sol-pile {
+    width: 71px; min-height: 96px; position: relative;
+    border-radius: 4px;
+  }
+  .sol-empty-pile {
+    width: 71px; height: 96px;
+    border: 2px dashed #006000; border-radius: 4px;
+    background: rgba(0,0,0,0.1);
+  }
+  .sol-foundation {
+    width: 71px; height: 96px;
+    border: 2px dashed #006000; border-radius: 4px;
+    background: rgba(0,0,0,0.1);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; color: rgba(255,255,255,0.3); font-weight: bold;
+  }
+  .sol-card {
+    width: 71px; height: 96px;
+    background: #fff;
+    border: 1px solid #808080; border-radius: 4px;
+    position: absolute;
+    cursor: pointer; user-select: none;
+    box-shadow: 1px 1px 2px rgba(0,0,0,0.4);
+    display: flex; flex-direction: column;
+    font-family: 'Tahoma', Arial; font-size: 12px; font-weight: bold;
+  }
+  .sol-card.face-down {
+    background: repeating-linear-gradient(
+      45deg, #000080, #000080 3px, #0000aa 3px, #0000aa 6px
+    );
+    cursor: default;
+  }
+  .sol-card.red { color: #cc0000; }
+  .sol-card.black { color: #000; }
+  .sol-card-corner { padding: 2px 4px; line-height: 1.1; }
+  .sol-card-corner.bottom { position: absolute; bottom: 2px; right: 4px; transform: rotate(180deg); }
+  .sol-card-suit-center {
+    flex: 1; display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+  }
+  .sol-card.selected { box-shadow: 0 0 0 2px #ffff00, 1px 1px 2px rgba(0,0,0,0.4); }
+  .sol-stock { cursor: pointer; }
+  .sol-spacer { flex: 1; }
+  /* Win animation */
+  .sol-win-msg {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    background: #c0c0c0; border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    padding: 20px 30px; text-align: center; z-index: 999;
+    box-shadow: 4px 4px 0 #000; font-size: 18px; font-weight: bold;
+    display: none;
+  }
+
+  /* ── Calculator ── */
+  #calc-window {
+    position: absolute; top: 120px; left: 350px;
+    background: #c0c0c0;
+    border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    box-shadow: 2px 2px 0 #000;
+    display: none; flex-direction: column; z-index: 500;
+    width: 212px;
+  }
+  #calc-window.open { display: flex; }
+  .calc-titlebar {
+    background: #000080; color: #fff; font-size: 12px; font-weight: bold;
+    padding: 2px 5px; display: flex; align-items: center;
+    justify-content: space-between; height: 20px; cursor: grab; flex-shrink: 0;
+  }
+  .calc-titlebar:active { cursor: grabbing; }
+  .calc-win-btns { display: flex; gap: 2px; }
+  .calc-win-btn {
+    width: 16px; height: 14px; background: #c0c0c0;
+    border: 1px solid; border-color: #fff #808080 #808080 #fff;
+    font-size: 9px; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: #000; font-weight: bold;
+  }
+  .calc-menubar {
+    display: flex; background: #c0c0c0; padding: 1px 2px;
+    border-bottom: 1px solid #808080; flex-shrink: 0;
+  }
+  .calc-menu { font-size: 12px; padding: 2px 6px; cursor: pointer; color: #000; position: relative; }
+  .calc-menu:hover { background: #000080; color: #fff; }
+  .calc-menu-dropdown {
+    display: none; position: absolute; top: 100%; left: 0;
+    background: #c0c0c0; border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    box-shadow: 2px 2px 0 #000; z-index: 600; min-width: 120px;
+  }
+  .calc-menu:hover .calc-menu-dropdown { display: block; }
+  .calc-menu-item { font-size: 12px; padding: 3px 20px; color: #000; cursor: pointer; white-space: nowrap; }
+  .calc-menu-item:hover { background: #000080; color: #fff; }
+  .calc-menu-item.checked::before { content: '✓ '; }
+  .calc-menu-sep { height: 1px; background: #808080; margin: 2px 0; border-bottom: 1px solid #fff; }
+  .calc-body { padding: 6px; display: flex; flex-direction: column; gap: 4px; }
+  .calc-display {
+    background: #fff; border: 2px solid; border-color: #808080 #fff #fff #808080;
+    text-align: right; padding: 2px 6px; font-size: 20px; font-family: 'Courier New', monospace;
+    font-weight: bold; height: 32px; display: flex; align-items: center; justify-content: flex-end;
+    overflow: hidden; white-space: nowrap;
+  }
+  .calc-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 3px; margin-top: 4px; }
+  .calc-grid-standard { display: grid; grid-template-columns: repeat(4,1fr); gap: 3px; margin-top: 4px; }
+  .calc-btn {
+    height: 28px; background: #c0c0c0;
+    border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    font-size: 11px; font-weight: bold; font-family: 'Tahoma', Arial;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    color: #000; user-select: none; padding: 0;
+  }
+  .calc-btn:active { border-color: #808080 #fff #fff #808080; }
+  .calc-btn.red { color: #cc0000; }
+  .calc-btn.dark { background: #c0c0c0; }
+  .calc-btn.equals { background: #c0c0c0; }
+  .calc-mem-row { display: flex; gap: 3px; }
+  .calc-mem-btn {
+    flex: 1; height: 22px; background: #c0c0c0;
+    border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    font-size: 10px; font-weight: bold; font-family: 'Tahoma', Arial;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    color: #000; user-select: none;
+  }
+  .calc-mem-btn:active { border-color: #808080 #fff #fff #808080; }
+
   /* ── Clock / Calendar ── */
   #clock-window {
     position: absolute; top: 150px; left: 250px;
@@ -3194,6 +3363,10 @@
                   <span class="smi-icon">🎨</span>
                   <div><span class="smi-label">Paint</span></div>
                 </div>
+                <div class="start-menu-item" onclick="openCalculator();toggleStartMenu();" style="border:none;">
+                  <span class="smi-icon">🧮</span>
+                  <div><span class="smi-label">Calculator</span></div>
+                </div>
               </div>
             </div>
             <div class="start-menu-item" style="border:none;">
@@ -3215,15 +3388,19 @@
               <span class="smi-icon">💣</span>
               <div><span class="smi-label">Minesweeper</span></div>
             </div>
-            <div class="start-menu-item" style="border:none;">
+            <div class="start-menu-item" onclick="openSolitaire();toggleStartMenu();" style="border:none;">
               <span class="smi-icon">🃏</span>
-              <div><span class="smi-label">Solitaire</span><span class="smi-sub">Coming soon</span></div>
+              <div><span class="smi-label">Solitaire</span></div>
             </div>
           </div>
         </div>
         <div class="start-menu-item">
           <span class="smi-icon">🔊</span>
           <div><span class="smi-label">Volume Control</span></div>
+        </div>
+        <div class="start-menu-item" onclick="openCalculator();toggleStartMenu();">
+          <span class="smi-icon">🧮</span>
+          <div><span class="smi-label">Calculator</span></div>
         </div>
         <div class="start-menu-divider"></div>
         <div class="start-menu-item">
@@ -3938,6 +4115,131 @@
     </div>
     <div class="ms-grid-wrap">
       <div class="ms-grid" id="ms-grid"></div>
+    </div>
+  </div>
+
+  <!-- Solitaire -->
+  <div id="sol-window">
+    <div class="sol-titlebar" id="sol-titlebar">
+      <div style="display:flex;align-items:center;gap:5px;">
+        <span style="font-size:12px;">🃏</span> Solitaire
+      </div>
+      <div class="sol-win-btns">
+        <div class="sol-win-btn" onclick="closeSolitaire()">_</div>
+        <div class="sol-win-btn">□</div>
+        <div class="sol-win-btn" onclick="closeSolitaire()">✕</div>
+      </div>
+    </div>
+    <div class="sol-menubar">
+      <div class="sol-menu">Game
+        <div class="sol-menu-dropdown">
+          <div class="sol-menu-item" onclick="solNewGame()">Deal</div>
+          <div class="sol-menu-sep"></div>
+          <div class="sol-menu-item" id="sol-draw1" onclick="solSetDraw(1)">✓ Draw One</div>
+          <div class="sol-menu-item" id="sol-draw3" onclick="solSetDraw(3)">Draw Three</div>
+          <div class="sol-menu-sep"></div>
+          <div class="sol-menu-item" onclick="closeSolitaire()">Exit</div>
+        </div>
+      </div>
+      <div class="sol-menu">Help
+        <div class="sol-menu-dropdown">
+          <div class="sol-menu-item" style="color:#808080;">How to Play</div>
+        </div>
+      </div>
+    </div>
+    <div class="sol-score-bar">
+      <span>Score: <span id="sol-score">0</span></span>
+      <span>Time: <span id="sol-time">0</span></span>
+    </div>
+    <div class="sol-play-area" id="sol-play-area">
+      <!-- Top row: stock, waste, spacer, 4 foundations -->
+      <div class="sol-top-row">
+        <div class="sol-pile" id="sol-stock" onclick="solClickStock()" title="Stock"></div>
+        <div class="sol-pile" id="sol-waste" title="Waste"></div>
+        <div class="sol-spacer"></div>
+        <div class="sol-foundation" id="sol-f0" data-f="0">♠</div>
+        <div class="sol-foundation" id="sol-f1" data-f="1">♥</div>
+        <div class="sol-foundation" id="sol-f2" data-f="2">♦</div>
+        <div class="sol-foundation" id="sol-f3" data-f="3">♣</div>
+      </div>
+      <!-- Tableau: 7 columns -->
+      <div class="sol-tableau-row" id="sol-tableau"></div>
+      <!-- Win message -->
+      <div class="sol-win-msg" id="sol-win-msg">
+        🎉 You Win! 🎉<br>
+        <span style="font-size:13px;font-weight:normal;">Score: <span id="sol-final-score">0</span></span><br><br>
+        <button onclick="solNewGame()" style="padding:4px 16px;font-size:12px;background:#c0c0c0;border:2px solid;border-color:#fff #808080 #808080 #fff;cursor:pointer;font-weight:bold;">Deal Again</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Calculator -->
+  <div id="calc-window">
+    <div class="calc-titlebar" id="calc-titlebar">
+      <div style="display:flex;align-items:center;gap:5px;">
+        <span style="font-size:12px;">🧮</span> Calculator
+      </div>
+      <div class="calc-win-btns">
+        <div class="calc-win-btn" onclick="closeCalculator()">_</div>
+        <div class="calc-win-btn">□</div>
+        <div class="calc-win-btn" onclick="closeCalculator()">✕</div>
+      </div>
+    </div>
+    <div class="calc-menubar">
+      <div class="calc-menu">Edit
+        <div class="calc-menu-dropdown">
+          <div class="calc-menu-item" onclick="calcCopy()">Copy</div>
+          <div class="calc-menu-item" onclick="calcPaste()">Paste</div>
+        </div>
+      </div>
+      <div class="calc-menu">View
+        <div class="calc-menu-dropdown">
+          <div class="calc-menu-item checked" id="calc-view-std" onclick="calcSetView('standard')">Standard</div>
+          <div class="calc-menu-item" id="calc-view-sci" onclick="calcSetView('scientific')">Scientific</div>
+        </div>
+      </div>
+      <div class="calc-menu">Help
+        <div class="calc-menu-dropdown">
+          <div class="calc-menu-item" style="color:#808080;">Help Topics</div>
+        </div>
+      </div>
+    </div>
+    <div class="calc-body" id="calc-body">
+      <div class="calc-display" id="calc-display">0</div>
+      <!-- Memory row -->
+      <div class="calc-mem-row">
+        <div class="calc-mem-btn" onclick="calcMem('mc')">MC</div>
+        <div class="calc-mem-btn" onclick="calcMem('mr')">MR</div>
+        <div class="calc-mem-btn" onclick="calcMem('ms')">MS</div>
+        <div class="calc-mem-btn" onclick="calcMem('m+')">M+</div>
+      </div>
+      <!-- Standard button grid -->
+      <div class="calc-grid-standard" id="calc-btn-grid">
+        <div class="calc-btn red" onclick="calcBtn('back')">Back</div>
+        <div class="calc-btn red" onclick="calcBtn('ce')">CE</div>
+        <div class="calc-btn red" onclick="calcBtn('c')">C</div>
+        <div class="calc-btn red" onclick="calcBtn('±')">±</div>
+        <div class="calc-btn" onclick="calcBtn('7')">7</div>
+        <div class="calc-btn" onclick="calcBtn('8')">8</div>
+        <div class="calc-btn" onclick="calcBtn('9')">9</div>
+        <div class="calc-btn red" onclick="calcBtn('/')">÷</div>
+        <div class="calc-btn" onclick="calcBtn('4')">4</div>
+        <div class="calc-btn" onclick="calcBtn('5')">5</div>
+        <div class="calc-btn" onclick="calcBtn('6')">6</div>
+        <div class="calc-btn red" onclick="calcBtn('*')">×</div>
+        <div class="calc-btn" onclick="calcBtn('1')">1</div>
+        <div class="calc-btn" onclick="calcBtn('2')">2</div>
+        <div class="calc-btn" onclick="calcBtn('3')">3</div>
+        <div class="calc-btn red" onclick="calcBtn('-')">−</div>
+        <div class="calc-btn" onclick="calcBtn('0')">0</div>
+        <div class="calc-btn" onclick="calcBtn('+/-')">+/−</div>
+        <div class="calc-btn" onclick="calcBtn('.')">.</div>
+        <div class="calc-btn red" onclick="calcBtn('+')">+</div>
+        <div class="calc-btn" onclick="calcBtn('sqrt')">√</div>
+        <div class="calc-btn" onclick="calcBtn('%')">%</div>
+        <div class="calc-btn" onclick="calcBtn('1/x')">1/x</div>
+        <div class="calc-btn equals" onclick="calcBtn('=')">=</div>
+      </div>
     </div>
   </div>
 
@@ -7371,6 +7673,468 @@
 
   document.getElementById('mines-window').addEventListener('mousedown',function(){ document.getElementById('mines-window').style.zIndex=++chatZBase; });
   makeDraggable(document.getElementById('mines-window'),document.getElementById('ms-titlebar'));
+
+  // ════════════════════════════════════════
+  // CALCULATOR
+  // ════════════════════════════════════════
+  var calcDisplay = '0';
+  var calcOperand = null;
+  var calcOperator = null;
+  var calcNewNum = true;
+  var calcMemory = 0;
+  var calcView = 'standard';
+
+  function openCalculator() {
+    var win = document.getElementById('calc-window');
+    win.classList.add('open');
+    win.style.zIndex = ++chatZBase;
+  }
+  function closeCalculator() {
+    document.getElementById('calc-window').classList.remove('open');
+  }
+  function calcSetView(v) {
+    calcView = v;
+    document.getElementById('calc-view-std').className = 'calc-menu-item' + (v==='standard'?' checked':'');
+    document.getElementById('calc-view-sci').className = 'calc-menu-item' + (v==='scientific'?' checked':'');
+  }
+  function calcUpdateDisplay() {
+    var d = document.getElementById('calc-display');
+    var s = calcDisplay;
+    // Trim to fit — shorten if too long
+    if (s.length > 14) s = parseFloat(s).toExponential(6);
+    d.textContent = s;
+  }
+  function calcBtn(b) {
+    if (b >= '0' && b <= '9') {
+      if (calcNewNum) { calcDisplay = b; calcNewNum = false; }
+      else if (calcDisplay.length < 15) calcDisplay += b;
+    } else if (b === '.') {
+      if (calcNewNum) { calcDisplay = '0.'; calcNewNum = false; }
+      else if (calcDisplay.indexOf('.') === -1) calcDisplay += '.';
+    } else if (b === 'back') {
+      if (!calcNewNum && calcDisplay.length > 1) calcDisplay = calcDisplay.slice(0,-1);
+      else calcDisplay = '0';
+    } else if (b === 'ce') {
+      calcDisplay = '0'; calcNewNum = true;
+    } else if (b === 'c') {
+      calcDisplay = '0'; calcOperand = null; calcOperator = null; calcNewNum = true;
+    } else if (b === '±' || b === '+/-') {
+      calcDisplay = String(-parseFloat(calcDisplay));
+    } else if (b === 'sqrt') {
+      var v = parseFloat(calcDisplay);
+      calcDisplay = v < 0 ? 'Error' : String(Math.sqrt(v));
+      calcNewNum = true;
+    } else if (b === '%') {
+      if (calcOperand !== null) calcDisplay = String(parseFloat(calcOperand) * parseFloat(calcDisplay) / 100);
+      else calcDisplay = String(parseFloat(calcDisplay) / 100);
+      calcNewNum = true;
+    } else if (b === '1/x') {
+      var v = parseFloat(calcDisplay);
+      calcDisplay = v === 0 ? 'Error' : String(1/v);
+      calcNewNum = true;
+    } else if (['+','-','*','/'].indexOf(b) !== -1) {
+      if (calcOperator && !calcNewNum) {
+        // Chain calculation
+        var r = calcApply(parseFloat(calcOperand), parseFloat(calcDisplay), calcOperator);
+        calcDisplay = calcFormat(r);
+      }
+      calcOperand = calcDisplay;
+      calcOperator = b;
+      calcNewNum = true;
+    } else if (b === '=') {
+      if (calcOperator && calcOperand !== null) {
+        var r = calcApply(parseFloat(calcOperand), parseFloat(calcDisplay), calcOperator);
+        calcDisplay = calcFormat(r);
+        calcOperator = null; calcOperand = null; calcNewNum = true;
+      }
+    }
+    calcUpdateDisplay();
+  }
+  function calcApply(a, b, op) {
+    if (op === '+') return a + b;
+    if (op === '-') return a - b;
+    if (op === '*') return a * b;
+    if (op === '/') return b === 0 ? 'ERR' : a / b;
+    return b;
+  }
+  function calcFormat(n) {
+    if (n === 'ERR') return 'Error';
+    var s = String(n);
+    // Remove floating point noise
+    if (s.indexOf('.') !== -1) {
+      s = parseFloat(n.toFixed(10)).toString();
+    }
+    return s;
+  }
+  function calcMem(op) {
+    var v = parseFloat(calcDisplay) || 0;
+    if (op === 'mc') calcMemory = 0;
+    else if (op === 'mr') { calcDisplay = calcFormat(calcMemory); calcNewNum = true; calcUpdateDisplay(); }
+    else if (op === 'ms') calcMemory = v;
+    else if (op === 'm+') calcMemory += v;
+  }
+  function calcCopy() {
+    if (navigator.clipboard) navigator.clipboard.writeText(calcDisplay);
+  }
+  function calcPaste() {
+    if (navigator.clipboard) navigator.clipboard.readText().then(function(t){
+      var n = parseFloat(t);
+      if (!isNaN(n)) { calcDisplay = String(n); calcNewNum = false; calcUpdateDisplay(); }
+    });
+  }
+  // Keyboard support for calculator
+  document.getElementById('calc-window').addEventListener('keydown', function(e) {
+    var k = e.key;
+    if (k >= '0' && k <= '9') calcBtn(k);
+    else if (k === '.') calcBtn('.');
+    else if (k === 'Enter' || k === '=') calcBtn('=');
+    else if (k === 'Backspace') calcBtn('back');
+    else if (k === 'Escape') calcBtn('c');
+    else if (k === '+') calcBtn('+');
+    else if (k === '-') calcBtn('-');
+    else if (k === '*') calcBtn('*');
+    else if (k === '/') { e.preventDefault(); calcBtn('/'); }
+    else if (k === '%') calcBtn('%');
+  });
+  makeDraggable(document.getElementById('calc-window'), document.getElementById('calc-titlebar'));
+  document.getElementById('calc-window').addEventListener('mousedown', function(){ document.getElementById('calc-window').style.zIndex = ++chatZBase; });
+
+  // ════════════════════════════════════════
+  // SOLITAIRE (Klondike)
+  // ════════════════════════════════════════
+  var SOL_SUITS = ['♠','♥','♦','♣'];
+  var SOL_RANKS = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+  var SOL_RED   = {'♥':true,'♦':true};
+  var solDeck = [], solStock = [], solWaste = [];
+  var solFoundations = [[],[],[],[]];
+  var solTableau = [[],[],[],[],[],[],[]];
+  var solSelected = null; // {src, cards, srcIdx}
+  var solDrawCount = 1;
+  var solScore = 0, solTimer = 0, solTimerInterval = null;
+  var solWon = false;
+
+  function openSolitaire() {
+    var win = document.getElementById('sol-window');
+    win.classList.add('open');
+    win.style.zIndex = ++chatZBase;
+    solNewGame();
+  }
+  function closeSolitaire() {
+    document.getElementById('sol-window').classList.remove('open');
+    if (solTimerInterval) { clearInterval(solTimerInterval); solTimerInterval = null; }
+  }
+  function solSetDraw(n) {
+    solDrawCount = n;
+    document.getElementById('sol-draw1').textContent = (n===1?'✓ ':'') + 'Draw One';
+    document.getElementById('sol-draw3').textContent = (n===3?'✓ ':'') + 'Draw Three';
+    solNewGame();
+  }
+
+  function solMakeDeck() {
+    var d = [];
+    SOL_SUITS.forEach(function(s){ SOL_RANKS.forEach(function(r){ d.push({s:s,r:r,face:false}); }); });
+    // Fisher-Yates shuffle
+    for (var i=d.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=d[i]; d[i]=d[j]; d[j]=t; }
+    return d;
+  }
+
+  function solNewGame() {
+    solDeck = solMakeDeck();
+    solStock = []; solWaste = [];
+    solFoundations = [[],[],[],[]];
+    solTableau = [[],[],[],[],[],[],[]];
+    solSelected = null; solScore = 0; solWon = false;
+    if (solTimerInterval) clearInterval(solTimerInterval);
+    solTimer = 0;
+    solTimerInterval = setInterval(function(){ solTimer++; document.getElementById('sol-time').textContent = solTimer; }, 1000);
+    // Deal tableau
+    for (var col=0;col<7;col++) {
+      for (var row=0;row<=col;row++) {
+        var card = solDeck.pop();
+        card.face = (row === col); // only top card face-up
+        solTableau[col].push(card);
+      }
+    }
+    // Rest goes to stock (face down)
+    solStock = solDeck.splice(0).map(function(c){ c.face=false; return c; });
+    document.getElementById('sol-win-msg').style.display = 'none';
+    solRender();
+  }
+
+  function solRender() {
+    document.getElementById('sol-score').textContent = solScore;
+    // Stock
+    var stockEl = document.getElementById('sol-stock');
+    stockEl.innerHTML = '';
+    if (solStock.length > 0) {
+      stockEl.appendChild(solMakeCardEl({s:'?',r:'?',face:false}, 'stock'));
+    } else {
+      var empty = document.createElement('div');
+      empty.className = 'sol-empty-pile';
+      empty.style.cssText = 'border:2px dashed #006000;border-radius:4px;width:71px;height:96px;background:rgba(0,0,0,0.1);cursor:pointer;';
+      empty.title = 'Click to reset stock';
+      stockEl.appendChild(empty);
+    }
+    // Waste
+    var wasteEl = document.getElementById('sol-waste');
+    wasteEl.innerHTML = '';
+    if (solWaste.length > 0) {
+      var wCard = solWaste[solWaste.length-1];
+      var wEl = solMakeCardEl(wCard, 'waste');
+      wasteEl.appendChild(wEl);
+    } else {
+      var we = document.createElement('div');
+      we.className = 'sol-empty-pile';
+      wasteEl.appendChild(we);
+    }
+    // Foundations
+    for (var f=0;f<4;f++) {
+      var fEl = document.getElementById('sol-f'+f);
+      fEl.innerHTML = '';
+      var fPile = solFoundations[f];
+      if (fPile.length > 0) {
+        var fc = fPile[fPile.length-1];
+        var fcEl = solMakeCardEl(fc, 'foundation', f);
+        fEl.appendChild(fcEl);
+        fEl.style.border = 'none';
+        fEl.style.background = 'transparent';
+      } else {
+        fEl.style.cssText = 'width:71px;height:96px;border:2px dashed #006000;border-radius:4px;background:rgba(0,0,0,0.1);display:flex;align-items:center;justify-content:center;font-size:20px;color:rgba(255,255,255,0.3);font-weight:bold;cursor:pointer;';
+        fEl.textContent = SOL_SUITS[f];
+        (function(fi){ fEl.onclick = function(){ solClickFoundation(fi); }; })(f);
+      }
+    }
+    // Tableau
+    var tabEl = document.getElementById('sol-tableau');
+    tabEl.innerHTML = '';
+    for (var col=0;col<7;col++) {
+      var pile = document.createElement('div');
+      pile.className = 'sol-pile';
+      pile.style.cssText = 'width:71px;min-height:120px;position:relative;flex-shrink:0;';
+      (function(ci){
+        pile.addEventListener('click', function(){ solClickTableau(ci, -1); });
+      })(col);
+      if (solTableau[col].length === 0) {
+        var ep = document.createElement('div');
+        ep.style.cssText = 'width:71px;height:96px;border:2px dashed #006000;border-radius:4px;background:rgba(0,0,0,0.1);';
+        pile.appendChild(ep);
+      }
+      var OFFSET = 20; // px per card in tableau
+      var totalH = 96 + (solTableau[col].length > 1 ? (solTableau[col].length-1)*OFFSET : 0);
+      pile.style.height = totalH + 'px';
+      for (var ci2=0;ci2<solTableau[col].length;ci2++) {
+        var card = solTableau[col][ci2];
+        var cardEl = solMakeCardEl(card, 'tableau', col, ci2);
+        cardEl.style.top = (ci2 * OFFSET) + 'px';
+        pile.appendChild(cardEl);
+      }
+      tabEl.appendChild(pile);
+    }
+  }
+
+  function solMakeCardEl(card, src, idx, cardIdx) {
+    var el = document.createElement('div');
+    el.className = 'sol-card' + (card.face ? (SOL_RED[card.s] ? ' red' : ' black') : ' face-down');
+    if (src === 'stock' || src === 'waste' || src === 'foundation' || src === 'tableau') {
+      el.style.position = 'absolute'; el.style.top = '0'; el.style.left = '0';
+    }
+    if (card.face && card.r !== '?') {
+      var top = document.createElement('div');
+      top.className = 'sol-card-corner';
+      top.innerHTML = card.r + '<br>' + card.s;
+      var bot = document.createElement('div');
+      bot.className = 'sol-card-corner bottom';
+      bot.innerHTML = card.r + '<br>' + card.s;
+      var center = document.createElement('div');
+      center.className = 'sol-card-suit-center';
+      center.textContent = card.s;
+      el.appendChild(top); el.appendChild(center); el.appendChild(bot);
+    }
+    // Highlight if selected
+    if (solSelected) {
+      if (src === 'waste' && solSelected.src === 'waste') el.classList.add('selected');
+      if (src === 'tableau' && solSelected.src === 'tableau' && solSelected.srcIdx === idx && solSelected.cardIdx === cardIdx) el.classList.add('selected');
+    }
+    // Click handlers
+    if (src === 'stock') {
+      el.onclick = function(e){ e.stopPropagation(); solClickStock(); };
+    } else if (src === 'waste') {
+      el.onclick = function(e){ e.stopPropagation(); solClickWaste(); };
+    } else if (src === 'foundation') {
+      (function(fi){ el.onclick = function(e){ e.stopPropagation(); solClickFoundation(fi); }; })(idx);
+    } else if (src === 'tableau') {
+      (function(ci, cardi){ el.onclick = function(e){ e.stopPropagation(); solClickTableau(ci, cardi); }; })(idx, cardIdx);
+    }
+    return el;
+  }
+
+  function solClickStock() {
+    solSelected = null;
+    if (solStock.length === 0) {
+      // Reset: flip waste back to stock
+      solStock = solWaste.reverse().map(function(c){ c.face=false; return c; });
+      solWaste = [];
+      solScore = Math.max(0, solScore - 100);
+    } else {
+      for (var i=0;i<solDrawCount && solStock.length>0;i++) {
+        var c = solStock.pop();
+        c.face = true;
+        solWaste.push(c);
+      }
+      solScore += 0; // draw doesn't score
+    }
+    solRender();
+  }
+
+  function solClickWaste() {
+    if (solWaste.length === 0) return;
+    var card = solWaste[solWaste.length-1];
+    if (solSelected && solSelected.src === 'waste') {
+      solSelected = null; solRender(); return;
+    }
+    // Try auto-move to foundation
+    if (solTryFoundation(card, 'waste', 0)) return;
+    solSelected = {src:'waste', cards:[card], srcIdx:0, cardIdx: solWaste.length-1};
+    solRender();
+  }
+
+  function solClickFoundation(fi) {
+    if (solSelected) {
+      // Try to place selected card on this foundation
+      if (solSelected.cards.length === 1) {
+        var card = solSelected.cards[0];
+        if (solCanPlaceFoundation(card, fi)) {
+          solFoundations[fi].push(card);
+          solRemoveSelected();
+          solScore += 10;
+          solRender();
+          solCheckWin();
+          return;
+        }
+      }
+      solSelected = null; solRender();
+    }
+  }
+
+  function solClickTableau(col, cardIdx) {
+    var pile = solTableau[col];
+    if (cardIdx === -1) cardIdx = pile.length - 1;
+    if (pile.length === 0) {
+      // Empty column — try to place selected
+      if (solSelected) {
+        var topCard = solSelected.cards[0];
+        if (topCard.r === 'K') {
+          solPlaceOnTableau(col);
+          return;
+        }
+        solSelected = null; solRender(); return;
+      }
+      return;
+    }
+    var card = pile[cardIdx];
+    if (!card.face) {
+      // Flip face-up if it's the top card
+      if (cardIdx === pile.length-1) { card.face=true; solScore+=5; solRender(); }
+      return;
+    }
+    if (solSelected) {
+      // Try to place
+      var topCard = solSelected.cards[0];
+      var target = pile[pile.length-1];
+      if (solCanPlaceTableau(topCard, target)) {
+        solPlaceOnTableau(col);
+        return;
+      }
+      // Deselect or reselect
+      if (solSelected.src==='tableau' && solSelected.srcIdx===col && solSelected.cardIdx===cardIdx) {
+        solSelected = null; solRender(); return;
+      }
+      solSelected = null;
+    }
+    // Select cards from cardIdx to end of pile
+    var cards = pile.slice(cardIdx);
+    solSelected = {src:'tableau', cards:cards, srcIdx:col, cardIdx:cardIdx};
+    // Try auto-move to foundation if single card
+    if (cards.length === 1) {
+      if (solTryFoundation(cards[0], 'tableau', col)) return;
+    }
+    solRender();
+  }
+
+  function solPlaceOnTableau(col) {
+    var cards = solSelected.cards;
+    if (solSelected.src === 'waste') {
+      solWaste.pop();
+    } else if (solSelected.src === 'tableau') {
+      solTableau[solSelected.srcIdx].splice(solSelected.cardIdx);
+      // Flip new top card
+      var src = solTableau[solSelected.srcIdx];
+      if (src.length > 0 && !src[src.length-1].face) { src[src.length-1].face=true; solScore+=5; }
+    }
+    cards.forEach(function(c){ solTableau[col].push(c); });
+    solScore += 5;
+    solSelected = null;
+    solRender();
+  }
+
+  function solRemoveSelected() {
+    if (solSelected.src === 'waste') solWaste.pop();
+    else if (solSelected.src === 'tableau') {
+      solTableau[solSelected.srcIdx].splice(solSelected.cardIdx);
+      var src = solTableau[solSelected.srcIdx];
+      if (src.length > 0 && !src[src.length-1].face) { src[src.length-1].face=true; solScore+=5; }
+    }
+    solSelected = null;
+  }
+
+  function solTryFoundation(card, src, srcIdx) {
+    for (var f=0;f<4;f++) {
+      if (solCanPlaceFoundation(card, f)) {
+        solFoundations[f].push(card);
+        if (src==='waste') solWaste.pop();
+        else if (src==='tableau') {
+          solTableau[srcIdx].splice(solTableau[srcIdx].length-1);
+          var srcPile = solTableau[srcIdx];
+          if (srcPile.length>0 && !srcPile[srcPile.length-1].face){ srcPile[srcPile.length-1].face=true; solScore+=5; }
+        }
+        solScore += 10;
+        solSelected = null;
+        solRender();
+        solCheckWin();
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function solCanPlaceFoundation(card, f) {
+    var pile = solFoundations[f];
+    if (pile.length === 0) return card.r === 'A';
+    var top = pile[pile.length-1];
+    return top.s === card.s && SOL_RANKS.indexOf(card.r) === SOL_RANKS.indexOf(top.r)+1;
+  }
+
+  function solCanPlaceTableau(card, target) {
+    if (!target) return card.r === 'K';
+    var ri = SOL_RANKS.indexOf(card.r);
+    var ti = SOL_RANKS.indexOf(target.r);
+    return ri === ti-1 && !!SOL_RED[card.s] !== !!SOL_RED[target.s];
+  }
+
+  function solCheckWin() {
+    var total = solFoundations.reduce(function(a,f){ return a+f.length; },0);
+    if (total === 52) {
+      solWon = true;
+      if (solTimerInterval) { clearInterval(solTimerInterval); solTimerInterval=null; }
+      solScore += Math.max(0, Math.floor(700000/Math.max(solTimer,1)));
+      document.getElementById('sol-score').textContent = solScore;
+      document.getElementById('sol-final-score').textContent = solScore;
+      document.getElementById('sol-win-msg').style.display = 'block';
+    }
+  }
+
+  makeDraggable(document.getElementById('sol-window'), document.getElementById('sol-titlebar'));
+  document.getElementById('sol-window').addEventListener('mousedown', function(){ document.getElementById('sol-window').style.zIndex = ++chatZBase; });
 
   // ════════════════════════════════════════
   // CLOCK / CALENDAR
