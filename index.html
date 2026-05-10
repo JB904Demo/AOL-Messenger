@@ -880,6 +880,94 @@
   }
   .calc-mem-btn:active { border-color: #808080 #fff #fff #808080; }
 
+  /* ── Disk Defragmenter ── */
+  #defrag-window {
+    position: absolute; top: 60px; left: 80px;
+    width: 540px;
+    background: #c0c0c0;
+    border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    box-shadow: 2px 2px 0 #000;
+    display: none; flex-direction: column; z-index: 500;
+  }
+  #defrag-window.open { display: flex; }
+  .dfg-titlebar {
+    background: #000080; color: #fff; font-size: 12px; font-weight: bold;
+    padding: 2px 5px; display: flex; align-items: center;
+    justify-content: space-between; height: 20px; cursor: grab; flex-shrink: 0;
+  }
+  .dfg-titlebar:active { cursor: grabbing; }
+  .dfg-win-btns { display: flex; gap: 2px; }
+  .dfg-win-btn {
+    width: 16px; height: 14px; background: #c0c0c0;
+    border: 1px solid; border-color: #fff #808080 #808080 #fff;
+    font-size: 9px; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: #000; font-weight: bold;
+  }
+  .dfg-body { padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+  .dfg-drive-row {
+    display: flex; align-items: center; gap: 10px;
+    background: #fff; border: 2px solid; border-color: #808080 #fff #fff #808080;
+    padding: 6px 10px; font-size: 12px;
+  }
+  .dfg-drive-icon { font-size: 20px; }
+  .dfg-drive-info { flex: 1; }
+  .dfg-drive-label { font-weight: bold; font-size: 12px; }
+  .dfg-drive-sub { font-size: 11px; color: #444; }
+  .dfg-status-box {
+    border: 2px solid; border-color: #808080 #fff #fff #808080;
+    background: #fff; padding: 6px 8px; font-size: 11px; min-height: 36px;
+  }
+  .dfg-status-label { font-weight: bold; margin-bottom: 3px; font-size: 11px; }
+  /* The block grid */
+  .dfg-grid-wrap {
+    border: 2px solid; border-color: #808080 #fff #fff #808080;
+    background: #000; padding: 4px;
+  }
+  .dfg-grid {
+    display: grid;
+    grid-template-columns: repeat(60, 7px);
+    gap: 1px;
+  }
+  .dfg-block {
+    width: 7px; height: 7px;
+  }
+  .dfg-block.used     { background: #000080; }
+  .dfg-block.free     { background: #fff; }
+  .dfg-block.system   { background: #ff0000; }
+  .dfg-block.moving   { background: #ffffff; animation: dfg-flash 0.1s infinite; }
+  .dfg-block.optimized { background: #00aa00; }
+  @keyframes dfg-flash { 0%{background:#fff;} 50%{background:#ffff00;} 100%{background:#fff;} }
+  .dfg-progress-wrap {
+    border: 2px solid; border-color: #808080 #fff #fff #808080;
+    height: 16px; background: #fff; position: relative;
+  }
+  .dfg-progress-bar {
+    height: 100%; background: #000080; width: 0%; transition: width 0.3s;
+  }
+  .dfg-progress-text {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: bold; color: #fff; mix-blend-mode: difference;
+  }
+  .dfg-legend {
+    display: flex; gap: 12px; font-size: 10px; flex-wrap: wrap;
+  }
+  .dfg-legend-item { display: flex; align-items: center; gap: 4px; }
+  .dfg-legend-box { width: 10px; height: 10px; border: 1px solid #808080; }
+  .dfg-btn-row { display: flex; gap: 6px; justify-content: flex-start; }
+  .dfg-btn {
+    padding: 4px 16px; background: #c0c0c0;
+    border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    font-size: 12px; font-weight: bold; font-family: 'Tahoma', Arial;
+    cursor: pointer;
+  }
+  .dfg-btn:active { border-color: #808080 #fff #fff #808080; }
+  .dfg-btn:disabled { color: #808080; cursor: default; }
+  .dfg-complete-msg {
+    background: #000080; color: #fff; text-align: center;
+    padding: 8px; font-size: 12px; font-weight: bold; display: none;
+  }
+
   /* ── Clock / Calendar ── */
   #clock-window {
     position: absolute; top: 150px; left: 250px;
@@ -3367,6 +3455,10 @@
                   <span class="smi-icon">🧮</span>
                   <div><span class="smi-label">Calculator</span></div>
                 </div>
+                <div class="start-menu-item" onclick="openDefrag();toggleStartMenu();" style="border:none;">
+                  <span class="smi-icon">🖥️</span>
+                  <div><span class="smi-label">Disk Defragmenter</span></div>
+                </div>
               </div>
             </div>
             <div class="start-menu-item" style="border:none;">
@@ -4239,6 +4331,65 @@
         <div class="calc-btn" onclick="calcBtn('%')">%</div>
         <div class="calc-btn" onclick="calcBtn('1/x')">1/x</div>
         <div class="calc-btn equals" onclick="calcBtn('=')">=</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Disk Defragmenter -->
+  <div id="defrag-window">
+    <div class="dfg-titlebar" id="dfg-titlebar">
+      <div style="display:flex;align-items:center;gap:5px;">
+        <span style="font-size:12px;">🖥️</span> Disk Defragmenter
+      </div>
+      <div class="dfg-win-btns">
+        <div class="dfg-win-btn" onclick="closeDefrag()">_</div>
+        <div class="dfg-win-btn">□</div>
+        <div class="dfg-win-btn" onclick="closeDefrag()">✕</div>
+      </div>
+    </div>
+    <div class="dfg-body">
+      <!-- Drive selector -->
+      <div class="dfg-drive-row">
+        <div class="dfg-drive-icon">💾</div>
+        <div class="dfg-drive-info">
+          <div class="dfg-drive-label">Drive C: [Local Disk]</div>
+          <div class="dfg-drive-sub" id="dfg-drive-sub">Calculating drive information...</div>
+        </div>
+      </div>
+      <!-- Status -->
+      <div class="dfg-status-box">
+        <div class="dfg-status-label">Status:</div>
+        <div id="dfg-status-text">Ready to defragment. Click Start to begin.</div>
+      </div>
+      <!-- Block visualization -->
+      <div class="dfg-grid-wrap">
+        <div class="dfg-grid" id="dfg-grid"></div>
+      </div>
+      <!-- Legend -->
+      <div class="dfg-legend">
+        <div class="dfg-legend-item"><div class="dfg-legend-box" style="background:#000080;"></div> Used</div>
+        <div class="dfg-legend-item"><div class="dfg-legend-box" style="background:#fff;"></div> Free</div>
+        <div class="dfg-legend-item"><div class="dfg-legend-box" style="background:#ff0000;"></div> System</div>
+        <div class="dfg-legend-item"><div class="dfg-legend-box" style="background:#ffff00;"></div> Reading/Writing</div>
+        <div class="dfg-legend-item"><div class="dfg-legend-box" style="background:#00aa00;"></div> Optimized</div>
+      </div>
+      <!-- Progress -->
+      <div>
+        <div style="font-size:11px;margin-bottom:3px;">Progress: <span id="dfg-pct">0%</span></div>
+        <div class="dfg-progress-wrap">
+          <div class="dfg-progress-bar" id="dfg-progress-bar"></div>
+          <div class="dfg-progress-text" id="dfg-progress-text">0%</div>
+        </div>
+      </div>
+      <!-- Complete message -->
+      <div class="dfg-complete-msg" id="dfg-complete-msg">
+        ✅ Defragmentation Complete — Drive C: Optimized &amp; Backed Up
+      </div>
+      <!-- Buttons -->
+      <div class="dfg-btn-row">
+        <button class="dfg-btn" id="dfg-start-btn" onclick="dfgStart()">Start</button>
+        <button class="dfg-btn" id="dfg-stop-btn" onclick="dfgStop()" disabled>Stop</button>
+        <button class="dfg-btn" onclick="closeDefrag()">Close</button>
       </div>
     </div>
   </div>
@@ -8135,6 +8286,266 @@
 
   makeDraggable(document.getElementById('sol-window'), document.getElementById('sol-titlebar'));
   document.getElementById('sol-window').addEventListener('mousedown', function(){ document.getElementById('sol-window').style.zIndex = ++chatZBase; });
+
+  // ════════════════════════════════════════
+  // DISK DEFRAGMENTER (+ real backup to Mac)
+  // ════════════════════════════════════════
+  var dfgRunning = false;
+  var dfgInterval = null;
+  var dfgBlocks = [];
+  var DFG_TOTAL = 360; // 60 cols × 6 rows
+
+  function openDefrag() {
+    var win = document.getElementById('defrag-window');
+    win.classList.add('open');
+    win.style.zIndex = ++chatZBase;
+    dfgReset();
+    dfgCalcDriveInfo();
+  }
+  function closeDefrag() {
+    dfgStop();
+    document.getElementById('defrag-window').classList.remove('open');
+  }
+
+  function dfgCalcDriveInfo() {
+    // Calculate rough "file size" from localStorage
+    var keys = ['win95_briefcase','win95_mydocs','win95_wpdocs','aim_sent_mail','aim_myprofile','aim_buddies'];
+    var total = 0;
+    keys.forEach(function(k){ var v=localStorage.getItem(k); if(v) total+=v.length; });
+    var kb = Math.round(total/1024*10)/10 || 0.1;
+    var freeStr = (Math.round((512 - kb)*10)/10);
+    document.getElementById('dfg-drive-sub').textContent =
+      'Capacity: 512 MB   Used: ' + kb + ' KB   Free: ' + freeStr + ' MB';
+  }
+
+  function dfgReset() {
+    dfgStop();
+    dfgBlocks = [];
+    document.getElementById('dfg-status-text').textContent = 'Ready to defragment. Click Start to begin.';
+    document.getElementById('dfg-complete-msg').style.display = 'none';
+    document.getElementById('dfg-progress-bar').style.width = '0%';
+    document.getElementById('dfg-progress-text').textContent = '0%';
+    document.getElementById('dfg-pct').textContent = '0%';
+    document.getElementById('dfg-start-btn').disabled = false;
+    document.getElementById('dfg-stop-btn').disabled = true;
+    dfgBuildGrid();
+  }
+
+  function dfgBuildGrid() {
+    var grid = document.getElementById('dfg-grid');
+    grid.innerHTML = '';
+    // Build initial random-looking fragmented state
+    dfgBlocks = [];
+    for (var i=0; i<DFG_TOTAL; i++) {
+      var r = Math.random();
+      var type;
+      if (i < 8) type = 'system';         // system blocks at start
+      else if (r < 0.45) type = 'used';
+      else if (r < 0.55) type = 'free';
+      else if (r < 0.70) type = 'used';
+      else type = 'free';
+      dfgBlocks.push(type);
+      var el = document.createElement('div');
+      el.className = 'dfg-block ' + type;
+      el.id = 'dfg-b-' + i;
+      grid.appendChild(el);
+    }
+  }
+
+  function dfgStart() {
+    if (dfgRunning) return;
+    dfgRunning = true;
+    document.getElementById('dfg-start-btn').disabled = true;
+    document.getElementById('dfg-stop-btn').disabled = false;
+    document.getElementById('dfg-complete-msg').style.display = 'none';
+
+    var progress = 0;
+    var phase = 0; // 0=analyzing, 1=defragging, 2=done
+    var statusMessages = [
+      'Analyzing drive C:...',
+      'Reading file allocation table...',
+      'Checking C:\\WINDOWS\\SYSTEM...',
+      'Checking C:\\PROGRAM FILES...',
+      'Defragmenting C:\\WIN95_DOCS...',
+      'Moving file clusters...',
+      'Consolidating free space...',
+      'Optimizing file placement...',
+      'Writing file allocation table...',
+      'Verifying drive integrity...',
+      'Saving backup to disk...',
+      'Finalizing...'
+    ];
+    var msgIdx = 0;
+    var blockIdx = 8; // start after system blocks
+
+    dfgInterval = setInterval(function() {
+      if (!dfgRunning) return;
+
+      // Update status message periodically
+      if (progress % 8 === 0 && msgIdx < statusMessages.length) {
+        document.getElementById('dfg-status-text').textContent = statusMessages[msgIdx++];
+      }
+
+      // Animate blocks — cycle through them, turning to "moving" then "optimized"
+      var steps = 3;
+      for (var s=0; s<steps; s++) {
+        if (blockIdx >= DFG_TOTAL) break;
+        var el = document.getElementById('dfg-b-' + blockIdx);
+        if (dfgBlocks[blockIdx] !== 'system' && dfgBlocks[blockIdx] !== 'optimized') {
+          // Flash the block
+          if (el) el.className = 'dfg-block moving';
+          // Then optimized after a beat
+          (function(bi){ setTimeout(function(){
+            var e2 = document.getElementById('dfg-b-'+bi);
+            if (e2) e2.className = 'dfg-block optimized';
+            dfgBlocks[bi] = 'optimized';
+          }, 120); })(blockIdx);
+        }
+        blockIdx++;
+      }
+
+      // Also randomly flash a few blocks elsewhere for realism
+      var ri = Math.floor(Math.random()*(blockIdx));
+      var rEl = document.getElementById('dfg-b-'+ri);
+      if (rEl && dfgBlocks[ri]==='used') {
+        rEl.className = 'dfg-block moving';
+        (function(bi){ setTimeout(function(){
+          var e2 = document.getElementById('dfg-b-'+bi);
+          if (e2 && dfgBlocks[bi]==='used') e2.className = 'dfg-block used';
+        }, 80); })(ri);
+      }
+
+      progress = Math.round((blockIdx / DFG_TOTAL) * 100);
+      progress = Math.min(progress, 99);
+      document.getElementById('dfg-progress-bar').style.width = progress + '%';
+      document.getElementById('dfg-progress-text').textContent = progress + '%';
+      document.getElementById('dfg-pct').textContent = progress + '%';
+
+      if (blockIdx >= DFG_TOTAL) {
+        // Done!
+        clearInterval(dfgInterval);
+        dfgRunning = false;
+
+        // Final state
+        document.getElementById('dfg-progress-bar').style.width = '100%';
+        document.getElementById('dfg-progress-text').textContent = '100%';
+        document.getElementById('dfg-pct').textContent = '100%';
+        document.getElementById('dfg-status-text').textContent = 'Defragmentation complete.';
+        document.getElementById('dfg-start-btn').disabled = false;
+        document.getElementById('dfg-stop-btn').disabled = true;
+        document.getElementById('dfg-complete-msg').style.display = 'block';
+
+        // *** THE ACTUAL BACKUP — download all files to Mac ***
+        dfgDoBackup();
+      }
+    }, 60);
+  }
+
+  function dfgStop() {
+    if (dfgInterval) { clearInterval(dfgInterval); dfgInterval = null; }
+    dfgRunning = false;
+    document.getElementById('dfg-start-btn').disabled = false;
+    document.getElementById('dfg-stop-btn').disabled = true;
+    if (document.getElementById('dfg-status-text'))
+      document.getElementById('dfg-status-text').textContent = 'Defragmentation stopped. Click Start to resume.';
+  }
+
+  function dfgDoBackup() {
+    var now = new Date();
+    var stamp = now.getFullYear() + '-' +
+      String(now.getMonth()+1).padStart(2,'0') + '-' +
+      String(now.getDate()).padStart(2,'0') + '_' +
+      String(now.getHours()).padStart(2,'0') +
+      String(now.getMinutes()).padStart(2,'0');
+
+    var backup = {
+      created: now.toISOString(),
+      label: 'Win95 Drive C: Backup — Defrag ' + stamp,
+      files: {}
+    };
+
+    // Notepad files (Briefcase)
+    var briefcase = JSON.parse(localStorage.getItem('win95_briefcase') || '[]');
+    backup.files.notepad = briefcase;
+
+    // WordPad files
+    var wpdocs = JSON.parse(localStorage.getItem('win95_wpdocs') || '[]');
+    backup.files.wordpad = wpdocs;
+
+    // Paint files (base64 images — include filenames only to keep size manageable)
+    var mydocs = JSON.parse(localStorage.getItem('win95_mydocs') || '[]');
+    backup.files.paint = mydocs; // includes full base64 data
+
+    // Sent mail
+    var sentMail = JSON.parse(localStorage.getItem('aim_sent_mail') || '[]');
+    backup.files.sent_mail = sentMail;
+
+    // My profile
+    var profile = JSON.parse(localStorage.getItem('aim_myprofile') || '{}');
+    backup.files.aim_profile = profile;
+
+    // Build human-readable text summary at the top
+    var lines = [];
+    lines.push('═══════════════════════════════════════════════════════');
+    lines.push('  Windows 95 — Drive C: Backup');
+    lines.push('  ' + now.toDateString() + ' ' + now.toLocaleTimeString());
+    lines.push('═══════════════════════════════════════════════════════');
+    lines.push('');
+
+    lines.push('── NOTEPAD FILES (' + briefcase.length + ') ──');
+    briefcase.forEach(function(f){
+      lines.push('');
+      lines.push('  📝 ' + (f.name||'Untitled') + '  [' + (f.date||'') + ']');
+      lines.push('  ' + ('─').repeat(50));
+      (f.content||'').split('\n').forEach(function(l){ lines.push('  ' + l); });
+    });
+    lines.push('');
+
+    lines.push('── WORDPAD FILES (' + wpdocs.length + ') ──');
+    wpdocs.forEach(function(f){
+      lines.push('');
+      lines.push('  📄 ' + (f.name||'Untitled') + '  [' + (f.date||'') + ']');
+      lines.push('  ' + ('─').repeat(50));
+      // Strip HTML tags for readable text
+      var text = (f.html||f.content||'').replace(/<[^>]+>/g,' ').replace(/&nbsp;/g,' ').replace(/\s+/g,' ').trim();
+      lines.push('  ' + text);
+    });
+    lines.push('');
+
+    lines.push('── PAINT FILES (' + mydocs.length + ') ──');
+    mydocs.forEach(function(f){ lines.push('  🎨 ' + (f.name||'Untitled')); });
+    lines.push('');
+
+    lines.push('── SENT MAIL (' + sentMail.length + ') ──');
+    sentMail.forEach(function(m){
+      lines.push('');
+      lines.push('  To: ' + (m.to||'') + '  Subject: ' + (m.subject||''));
+      lines.push('  ' + (m.body||'').replace(/<[^>]+>/g,' ').substring(0,200));
+    });
+    lines.push('');
+    lines.push('── AIM PROFILE ──');
+    Object.keys(profile).forEach(function(k){ lines.push('  ' + k + ': ' + profile[k]); });
+    lines.push('');
+    lines.push('═══════════════════════════════════════════════════════');
+    lines.push('  END OF BACKUP');
+    lines.push('═══════════════════════════════════════════════════════');
+
+    var textContent = lines.join('\n');
+
+    // Download the text file
+    var blob = new Blob([textContent], {type:'text/plain'});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'Win95_Backup_' + stamp + '.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  makeDraggable(document.getElementById('defrag-window'), document.getElementById('dfg-titlebar'));
+  document.getElementById('defrag-window').addEventListener('mousedown', function(){ document.getElementById('defrag-window').style.zIndex = ++chatZBase; });
 
   // ════════════════════════════════════════
   // CLOCK / CALENDAR
