@@ -880,6 +880,145 @@
   }
   .calc-mem-btn:active { border-color: #808080 #fff #fff #808080; }
 
+  /* ── MyJournal ── */
+  #journal-window {
+    position: absolute; top: 30px; left: 100px;
+    width: 680px; height: 680px;
+    background: #c0c0c0;
+    border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    box-shadow: 2px 2px 0 #000;
+    display: none; flex-direction: column; z-index: 500;
+  }
+  #journal-window.open { display: flex; }
+  .jnl-titlebar {
+    background: #000080; color: #fff; font-size: 12px; font-weight: bold;
+    padding: 2px 5px; display: flex; align-items: center;
+    justify-content: space-between; height: 20px; cursor: grab; flex-shrink: 0;
+  }
+  .jnl-titlebar:active { cursor: grabbing; }
+  .jnl-win-btns { display: flex; gap: 2px; }
+  .jnl-win-btn {
+    width: 16px; height: 14px; background: #c0c0c0;
+    border: 1px solid; border-color: #fff #808080 #808080 #fff;
+    font-size: 9px; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: #000; font-weight: bold;
+  }
+  .jnl-menubar {
+    display: flex; background: #c0c0c0; padding: 1px 2px;
+    border-bottom: 1px solid #808080; flex-shrink: 0;
+  }
+  .jnl-menu { font-size: 12px; padding: 2px 8px; cursor: pointer; color: #000; position: relative; }
+  .jnl-menu:hover { background: #000080; color: #fff; }
+  .jnl-menu-dropdown {
+    display: none; position: absolute; top: 100%; left: 0;
+    background: #c0c0c0; border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    box-shadow: 2px 2px 0 #000; z-index: 600; min-width: 160px;
+  }
+  .jnl-menu:hover .jnl-menu-dropdown { display: block; }
+  .jnl-menu-item { font-size: 12px; padding: 4px 20px; color: #000; cursor: pointer; white-space: nowrap; }
+  .jnl-menu-item:hover { background: #000080; color: #fff; }
+  .jnl-menu-sep { height: 1px; background: #808080; margin: 2px 0; border-bottom: 1px solid #fff; }
+  .jnl-toolbar {
+    display: flex; align-items: center; gap: 6px;
+    padding: 3px 6px; background: #c0c0c0;
+    border-bottom: 1px solid #808080; flex-shrink: 0; font-size: 11px;
+  }
+  .jnl-tb-label { font-size: 11px; font-family: 'Tahoma', Arial; color: #000; }
+  .jnl-filename-display {
+    font-size: 11px; font-family: 'Tahoma', Arial; color: #444;
+    border: 1px solid; border-color: #808080 #fff #fff #808080;
+    background: #fff; padding: 1px 6px; min-width: 180px;
+  }
+  .jnl-tb-btn {
+    padding: 2px 10px; background: #c0c0c0;
+    border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    font-size: 11px; font-family: 'Tahoma', Arial;
+    cursor: pointer; font-weight: bold;
+  }
+  .jnl-tb-btn:active { border-color: #808080 #fff #fff #808080; }
+  /* The legal pad writing area */
+  .jnl-pad-wrap {
+    flex: 1; overflow-y: auto; background: #c0c0c0;
+    padding: 4px; display: flex; flex-direction: column;
+  }
+  .jnl-pad {
+    flex: 1;
+    background-color: #fefeb4;
+    background-image:
+      /* Red margin line */
+      linear-gradient(90deg, transparent 64px, #e87070 64px, #e87070 66px, transparent 66px),
+      /* Horizontal ruled lines */
+      repeating-linear-gradient(
+        180deg,
+        transparent,
+        transparent 28px,
+        #b8d4a8 28px,
+        #b8d4a8 29px
+      );
+    background-size: 100% 29px;
+    background-attachment: local;
+    /* Faint left edge binding */
+    border-left: 6px solid #d4a060;
+    border-top: 28px solid #8b4513;
+    border-right: 2px solid #d4a060;
+    border-bottom: 2px solid #d4a060;
+    min-height: 600px;
+    padding: 6px 18px 40px 80px;
+    font-family: 'Lucida Handwriting', 'Bradley Hand', 'Segoe Script', cursive;
+    font-size: 16px;
+    font-weight: bold;
+    color: #111;
+    line-height: 29px;
+    outline: none;
+    resize: none;
+    width: 100%;
+    box-sizing: border-box;
+    overflow-y: visible;
+    /* Subtle paper texture via box shadow */
+    box-shadow: inset 2px 0 8px rgba(180,140,60,0.15);
+  }
+  .jnl-pad::before {
+    content: 'the Legal Pad';
+    display: block; position: absolute; top: 6px; left: 8px;
+    font-family: 'Times New Roman', serif; font-size: 13px;
+    font-style: italic; font-weight: bold; color: #5a2d0c;
+    pointer-events: none;
+  }
+  .jnl-statusbar {
+    height: 18px; background: #c0c0c0; border-top: 1px solid #808080;
+    display: flex; align-items: center; padding: 0 8px;
+    font-size: 10px; font-family: 'Tahoma', Arial; flex-shrink: 0; gap: 12px;
+  }
+  /* Journal folder list window */
+  #journal-folder-window {
+    position: absolute; top: 80px; left: 160px;
+    width: 320px; height: 280px;
+    background: #c0c0c0;
+    border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    box-shadow: 2px 2px 0 #000;
+    display: none; flex-direction: column; z-index: 500;
+  }
+  #journal-folder-window.open { display: flex; }
+  .jf-titlebar {
+    background: #000080; color: #fff; font-size: 12px; font-weight: bold;
+    padding: 2px 5px; display: flex; align-items: center;
+    justify-content: space-between; height: 20px; cursor: grab; flex-shrink: 0;
+  }
+  .jf-win-btns { display: flex; gap: 2px; }
+  .jf-win-btn {
+    width: 16px; height: 14px; background: #c0c0c0;
+    border: 1px solid; border-color: #fff #808080 #808080 #fff;
+    font-size: 9px; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: #000; font-weight: bold;
+  }
+  .jf-list { flex: 1; background: #fff; overflow-y: auto; border: 2px solid; border-color: #808080 #fff #fff #808080; margin: 6px; }
+  .jf-item {
+    display: flex; align-items: center; gap: 8px; padding: 4px 8px;
+    font-size: 12px; font-family: 'Tahoma', Arial; cursor: pointer; border-bottom: 1px solid #eee;
+  }
+  .jf-item:hover { background: #000080; color: #fff; }
+  .jf-statusbar { height: 18px; background: #c0c0c0; border-top: 1px solid #808080; padding: 0 8px; font-size: 10px; font-family: 'Tahoma', Arial; display: flex; align-items: center; flex-shrink: 0; }
+
   /* ── Disk Defragmenter ── */
   #defrag-window {
     position: absolute; top: 60px; left: 80px;
@@ -3469,6 +3608,10 @@
               <span class="smi-icon">📡</span>
               <div><span class="smi-label">America Online 4.0</span></div>
             </div>
+            <div class="start-menu-item" onclick="openJournal();toggleStartMenu();" style="border:none;">
+              <span class="smi-icon">📓</span>
+              <div><span class="smi-label">MyJournal</span></div>
+            </div>
           </div>
         </div>
         <div class="start-menu-item">
@@ -4341,6 +4484,84 @@
         <div class="calc-btn equals" onclick="calcBtn('=')">=</div>
       </div>
     </div>
+  </div>
+
+  <!-- MyJournal -->
+  <div id="journal-window">
+    <div class="jnl-titlebar" id="jnl-titlebar">
+      <div style="display:flex;align-items:center;gap:5px;">
+        <span style="font-size:12px;">📓</span>
+        <span id="jnl-title-text">New Entry - MyJournal</span>
+      </div>
+      <div class="jnl-win-btns">
+        <div class="jnl-win-btn" onclick="closeJournal()">_</div>
+        <div class="jnl-win-btn">□</div>
+        <div class="jnl-win-btn" onclick="closeJournal()">✕</div>
+      </div>
+    </div>
+    <div class="jnl-menubar">
+      <div class="jnl-menu">File
+        <div class="jnl-menu-dropdown">
+          <div class="jnl-menu-item" onclick="jnlNew()">New Entry</div>
+          <div class="jnl-menu-item" onclick="openJournalFolder()">Open...</div>
+          <div class="jnl-menu-sep"></div>
+          <div class="jnl-menu-item" onclick="jnlSave()">Save</div>
+          <div class="jnl-menu-item" onclick="jnlSaveAs()">Save As...</div>
+          <div class="jnl-menu-sep"></div>
+          <div class="jnl-menu-item" onclick="closeJournal()">Exit</div>
+        </div>
+      </div>
+      <div class="jnl-menu">Edit
+        <div class="jnl-menu-dropdown">
+          <div class="jnl-menu-item" onclick="document.getElementById('jnl-editor').focus();document.execCommand('selectAll')">Select All</div>
+          <div class="jnl-menu-sep"></div>
+          <div class="jnl-menu-item" onclick="document.getElementById('jnl-editor').focus();document.execCommand('copy')">Copy</div>
+          <div class="jnl-menu-item" onclick="document.getElementById('jnl-editor').focus();document.execCommand('paste')">Paste</div>
+        </div>
+      </div>
+      <div class="jnl-menu">Insert
+        <div class="jnl-menu-dropdown">
+          <div class="jnl-menu-item" onclick="jnlInsertDate()">Date &amp; Time</div>
+        </div>
+      </div>
+      <div class="jnl-menu">Help
+        <div class="jnl-menu-dropdown">
+          <div class="jnl-menu-item" style="color:#808080;">About MyJournal</div>
+        </div>
+      </div>
+    </div>
+    <div class="jnl-toolbar">
+      <span class="jnl-tb-label">File:</span>
+      <div class="jnl-filename-display" id="jnl-filename-display">New Entry</div>
+      <div class="jnl-tb-btn" onclick="jnlSave()">💾 Save</div>
+      <div class="jnl-tb-btn" onclick="openJournalFolder()">📂 Open</div>
+      <div class="jnl-tb-btn" onclick="jnlNew()">📓 New</div>
+      <div class="jnl-tb-btn" onclick="jnlInsertDate()">📅 Date</div>
+    </div>
+    <div class="jnl-pad-wrap">
+      <textarea id="jnl-editor" class="jnl-pad" spellcheck="false" placeholder="Write here..."></textarea>
+    </div>
+    <div class="jnl-statusbar">
+      <span id="jnl-wordcount">Words: 0</span>
+      <span id="jnl-charcount">Chars: 0</span>
+      <span id="jnl-saved-status" style="margin-left:auto;color:#006000;font-weight:bold;"></span>
+    </div>
+  </div>
+
+  <!-- MyJournal Folder -->
+  <div id="journal-folder-window">
+    <div class="jf-titlebar" id="jf-titlebar">
+      <div style="display:flex;align-items:center;gap:5px;">
+        <span>📁</span> MyJournal
+      </div>
+      <div class="jf-win-btns">
+        <div class="jf-win-btn" onclick="closeJournalFolder()">_</div>
+        <div class="jf-win-btn">□</div>
+        <div class="jf-win-btn" onclick="closeJournalFolder()">✕</div>
+      </div>
+    </div>
+    <div class="jf-list" id="jf-list"></div>
+    <div class="jf-statusbar" id="jf-statusbar">0 entries</div>
   </div>
 
   <!-- Disk Defragmenter -->
@@ -7256,6 +7477,24 @@
     grid.appendChild(wpFolder);
     total++;
 
+    // MyJournal folder
+    var jnlFolder = document.createElement('div');
+    jnlFolder.className = 'md-icon-item';
+    jnlFolder.innerHTML =
+      '<svg class="md-icon-svg" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">'
+      + '<rect x="2" y="10" width="28" height="20" rx="1" fill="#fefeb4" stroke="#8b4513" stroke-width="1.5"/>'
+      + '<rect x="2" y="7" width="12" height="5" rx="1" fill="#fefeb4" stroke="#8b4513" stroke-width="1.5"/>'
+      + '<rect x="6" y="7" width="2" height="20" fill="#e87070" opacity="0.6"/>'
+      + '<rect x="8" y="16" width="16" height="1.5" fill="#b8d4a8"/>'
+      + '<rect x="8" y="20" width="16" height="1.5" fill="#b8d4a8"/>'
+      + '<rect x="8" y="24" width="10" height="1.5" fill="#b8d4a8"/>'
+      + '</svg>'
+      + '<div class="md-icon-label">MyJournal</div>';
+    jnlFolder.addEventListener('click', function(){ document.querySelectorAll('.md-icon-item').forEach(function(i){ i.classList.remove('selected'); }); jnlFolder.classList.add('selected'); });
+    jnlFolder.addEventListener('dblclick', function(){ openJournalFolder(); });
+    grid.appendChild(jnlFolder);
+    total++;
+
     if (!paintFiles.length && !wpFiles.length) {
       grid.innerHTML = '<div style="padding:12px;font-size:11px;color:#808080;font-family:Tahoma,Arial;">No files saved yet.</div>';
       total = 0;
@@ -8322,7 +8561,7 @@
 
   function dfgCalcDriveInfo() {
     // Calculate rough "file size" from localStorage
-    var keys = ['win95_briefcase','win95_mydocs','win95_wpdocs','aim_sent_mail','aim_myprofile','aim_buddies'];
+    var keys = ['win95_briefcase','win95_mydocs','win95_wpdocs','win95_journal','aim_sent_mail','aim_myprofile','aim_buddies'];
     var total = 0;
     keys.forEach(function(k){ var v=localStorage.getItem(k); if(v) total+=v.length; });
     var kb = Math.round(total/1024*10)/10 || 0.1;
@@ -8489,6 +8728,10 @@
     var mydocs = JSON.parse(localStorage.getItem('win95_mydocs') || '[]');
     backup.files.paint = mydocs; // includes full base64 data
 
+    // Journal files
+    var jnlFiles = JSON.parse(localStorage.getItem('win95_journal') || '[]');
+    backup.files.journal = jnlFiles;
+
     // Sent mail
     var sentMail = JSON.parse(localStorage.getItem('aim_sent_mail') || '[]');
     backup.files.sent_mail = sentMail;
@@ -8503,6 +8746,15 @@
     lines.push('  Windows 95 — Drive C: Backup');
     lines.push('  ' + now.toDateString() + ' ' + now.toLocaleTimeString());
     lines.push('═══════════════════════════════════════════════════════');
+    lines.push('');
+
+    lines.push('── MYJOURNAL ENTRIES (' + jnlFiles.length + ') ──');
+    jnlFiles.forEach(function(f){
+      lines.push('');
+      lines.push('  📓 ' + (f.name||'Untitled') + '  [' + (f.date||'') + ']');
+      lines.push('  ' + ('─').repeat(50));
+      (f.content||'').split('\n').forEach(function(l){ lines.push('  ' + l); });
+    });
     lines.push('');
 
     lines.push('── NOTEPAD FILES (' + briefcase.length + ') ──');
@@ -8559,6 +8811,140 @@
 
   makeDraggable(document.getElementById('defrag-window'), document.getElementById('dfg-titlebar'));
   document.getElementById('defrag-window').addEventListener('mousedown', function(){ document.getElementById('defrag-window').style.zIndex = ++chatZBase; });
+
+  // ════════════════════════════════════════
+  // MY JOURNAL
+  // ════════════════════════════════════════
+  var jnlCurrentFile = null; // {name, date} or null for unsaved
+  var jnlDirty = false;
+
+  function loadJournalFiles() { try { return JSON.parse(localStorage.getItem('win95_journal')||'[]'); } catch(e){ return []; } }
+  function saveJournalFiles(arr) { try { localStorage.setItem('win95_journal', JSON.stringify(arr)); } catch(e){} }
+
+  function openJournal(filename, content) {
+    var win = document.getElementById('journal-window');
+    win.classList.add('open');
+    win.style.zIndex = ++chatZBase;
+    if (filename && content !== undefined) {
+      document.getElementById('jnl-editor').value = content;
+      jnlCurrentFile = { name: filename };
+      document.getElementById('jnl-title-text').textContent = filename + ' - MyJournal';
+      document.getElementById('jnl-filename-display').textContent = filename;
+    } else {
+      jnlNew();
+    }
+    jnlUpdateStatus();
+    document.getElementById('jnl-editor').focus();
+  }
+
+  function closeJournal() {
+    document.getElementById('journal-window').classList.remove('open');
+  }
+
+  function jnlNew() {
+    document.getElementById('jnl-editor').value = '';
+    jnlCurrentFile = null;
+    jnlDirty = false;
+    document.getElementById('jnl-title-text').textContent = 'New Entry - MyJournal';
+    document.getElementById('jnl-filename-display').textContent = 'New Entry';
+    document.getElementById('jnl-saved-status').textContent = '';
+    jnlUpdateStatus();
+  }
+
+  function jnlSave() {
+    if (!jnlCurrentFile) { jnlSaveAs(); return; }
+    jnlWriteFile(jnlCurrentFile.name);
+  }
+
+  function jnlSaveAs() {
+    var name = prompt('Save entry as:', jnlCurrentFile ? jnlCurrentFile.name : 'My Entry');
+    if (!name) return;
+    if (!name.toLowerCase().endsWith('.jnl')) name += '.jnl';
+    jnlWriteFile(name);
+  }
+
+  function jnlWriteFile(name) {
+    var content = document.getElementById('jnl-editor').value;
+    var files = loadJournalFiles();
+    var now = new Date();
+    var dateStr = now.toLocaleDateString() + ' ' + now.toLocaleTimeString();
+    var idx = files.findIndex(function(f){ return f.name === name; });
+    var entry = { name: name, content: content, date: dateStr };
+    if (idx >= 0) files[idx] = entry;
+    else files.push(entry);
+    saveJournalFiles(files);
+    jnlCurrentFile = { name: name };
+    jnlDirty = false;
+    document.getElementById('jnl-title-text').textContent = name + ' - MyJournal';
+    document.getElementById('jnl-filename-display').textContent = name;
+    document.getElementById('jnl-saved-status').textContent = '✓ Saved ' + dateStr;
+    // Refresh MyDocs if open
+    if (document.getElementById('mydocs-window').classList.contains('open')) renderMyDocs();
+  }
+
+  function jnlInsertDate() {
+    var now = new Date();
+    var ds = now.toLocaleDateString('en-US', {weekday:'long',year:'numeric',month:'long',day:'numeric'});
+    var ts = now.toLocaleTimeString();
+    var editor = document.getElementById('jnl-editor');
+    var pos = editor.selectionStart;
+    var val = editor.value;
+    var insert = ds + ', ' + ts + '\n';
+    editor.value = val.slice(0, pos) + insert + val.slice(pos);
+    editor.selectionStart = editor.selectionEnd = pos + insert.length;
+    editor.focus();
+    jnlUpdateStatus();
+  }
+
+  function jnlUpdateStatus() {
+    var text = document.getElementById('jnl-editor').value;
+    var words = text.trim() ? text.trim().split(/\s+/).length : 0;
+    document.getElementById('jnl-wordcount').textContent = 'Words: ' + words;
+    document.getElementById('jnl-charcount').textContent = 'Chars: ' + text.length;
+  }
+
+  document.getElementById('jnl-editor').addEventListener('input', function() {
+    jnlDirty = true;
+    jnlUpdateStatus();
+    document.getElementById('jnl-saved-status').textContent = '';
+  });
+
+  // Journal folder window
+  function openJournalFolder() {
+    var win = document.getElementById('journal-folder-window');
+    win.classList.add('open');
+    win.style.zIndex = ++chatZBase;
+    renderJournalFolder();
+  }
+  function closeJournalFolder() {
+    document.getElementById('journal-folder-window').classList.remove('open');
+  }
+  function renderJournalFolder() {
+    var files = loadJournalFiles();
+    var list = document.getElementById('jf-list');
+    list.innerHTML = '';
+    if (!files.length) {
+      list.innerHTML = '<div style="padding:12px;font-size:11px;color:#808080;font-family:Tahoma,Arial;">No journal entries yet.</div>';
+      document.getElementById('jf-statusbar').textContent = '0 entries';
+      return;
+    }
+    files.forEach(function(f) {
+      var item = document.createElement('div');
+      item.className = 'jf-item';
+      item.innerHTML = '<span style="font-size:16px;">📓</span><span style="flex:1;font-family:Tahoma,Arial;font-size:12px;">' + esc(f.name) + '</span><span style="font-size:10px;color:#808080;font-family:Tahoma,Arial;">' + (f.date||'') + '</span>';
+      item.addEventListener('dblclick', function() {
+        closeJournalFolder();
+        openJournal(f.name, f.content);
+      });
+      list.appendChild(item);
+    });
+    document.getElementById('jf-statusbar').textContent = files.length + ' entr' + (files.length===1?'y':'ies');
+  }
+
+  makeDraggable(document.getElementById('journal-window'), document.getElementById('jnl-titlebar'));
+  makeDraggable(document.getElementById('journal-folder-window'), document.getElementById('jf-titlebar'));
+  document.getElementById('journal-window').addEventListener('mousedown', function(){ document.getElementById('journal-window').style.zIndex = ++chatZBase; });
+  document.getElementById('journal-folder-window').addEventListener('mousedown', function(){ document.getElementById('journal-folder-window').style.zIndex = ++chatZBase; });
 
   // ════════════════════════════════════════
   // CLOCK / CALENDAR
