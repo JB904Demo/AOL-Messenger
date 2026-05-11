@@ -9039,7 +9039,7 @@
     var cv=document.getElementById('ss-canvas'), ctx=cv.getContext('2d');
     ctx.fillStyle='rgba(0,0,0,0.25)'; ctx.fillRect(0,0,1024,768);
     for (var i=0;i<ssStars.length;i++) {
-      var s=ssStars[i]; s.pz=s.z; s.z-=6;
+      var s=ssStars[i]; s.pz=s.z; s.z-=4.5;
       if (s.z<=0) { ssStars[i]=ssMake(); ssStars[i].z=1024; ssStars[i].pz=1024; continue; }
       var sx=(s.x/s.z)*512+512, sy=(s.y/s.z)*512+384;
       var spx=(s.x/s.pz)*512+512, spy=(s.y/s.pz)*512+384;
