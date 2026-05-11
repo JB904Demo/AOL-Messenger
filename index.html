@@ -3506,6 +3506,14 @@
         <div class="start-menu-item">
           <span class="smi-icon">⚙️</span>
           <div><span class="smi-label">Settings</span><span class="smi-sub">Control Panel, Taskbar...</span></div>
+
+          <span class="smi-arrow">▶</span>
+          <div class="smi-submenu">
+            <div class="start-menu-item" onclick="startScreenSaver();toggleStartMenu();" style="border:none;">
+              <span class="smi-icon">✨</span>
+              <div><span class="smi-label">Screen Saver</span><span class="smi-sub">Starfield Simulation</span></div>
+            </div>
+          </div>
         </div>
         <div class="start-menu-divider"></div>
         <div class="start-menu-item" onclick="toggleStartMenu()">
@@ -4449,6 +4457,11 @@
       <button class="cw-btn" onclick="closeClockCalendar()">Cancel</button>
       <button class="cw-btn" onclick="closeClockCalendar()">Apply</button>
     </div>
+  </div>
+
+  <!-- Screensaver -->
+  <div id="screensaver" style="display:none;position:absolute;top:0;left:0;width:100%;height:100%;background:#000;z-index:99999;cursor:none;">
+    <canvas id="ss-canvas" width="1024" height="768"></canvas>
   </div>
 
 </div><!-- /#canvas -->
@@ -8621,6 +8634,44 @@
 
   document.getElementById('clock-window').addEventListener('mousedown',function(){ document.getElementById('clock-window').style.zIndex=++chatZBase; });
   makeDraggable(document.getElementById('clock-window'),document.getElementById('cw-titlebar'));
+
+  // ================================================
+  // SCREENSAVER — 3D Starfield Simulation
+  // ================================================
+  var ssActive = false, ssAnimFrame = null, ssStars = [];
+  function startScreenSaver() {
+    document.getElementById('screensaver').style.display = 'block';
+    ssActive = true; ssStars = [];
+    for (var i=0;i<300;i++) ssStars.push(ssMake());
+    ssLoop();
+    document.addEventListener('keydown', ssKill, {once:true});
+    document.addEventListener('mousedown', ssKill, {once:true});
+  }
+  function ssMake() { return {x:(Math.random()-.5)*1024, y:(Math.random()-.5)*768, z:Math.random()*1024, pz:0}; }
+  function ssLoop() {
+    if (!ssActive) return;
+    var cv=document.getElementById('ss-canvas'), ctx=cv.getContext('2d');
+    ctx.fillStyle='rgba(0,0,0,0.25)'; ctx.fillRect(0,0,1024,768);
+    for (var i=0;i<ssStars.length;i++) {
+      var s=ssStars[i]; s.pz=s.z; s.z-=6;
+      if (s.z<=0) { ssStars[i]=ssMake(); ssStars[i].z=1024; ssStars[i].pz=1024; continue; }
+      var sx=(s.x/s.z)*512+512, sy=(s.y/s.z)*512+384;
+      var spx=(s.x/s.pz)*512+512, spy=(s.y/s.pz)*512+384;
+      var b=Math.floor((1-s.z/1024)*255);
+      ctx.beginPath(); ctx.moveTo(spx,spy); ctx.lineTo(sx,sy);
+      ctx.strokeStyle='rgb('+b+','+b+','+Math.min(255,b+40)+')';
+      ctx.lineWidth=Math.max(0.5,(1-s.z/1024)*3.5); ctx.stroke();
+    }
+    ssAnimFrame=requestAnimationFrame(ssLoop);
+  }
+  function ssKill() {
+    ssActive=false;
+    if (ssAnimFrame) { cancelAnimationFrame(ssAnimFrame); ssAnimFrame=null; }
+    document.getElementById('screensaver').style.display='none';
+    document.getElementById('ss-canvas').getContext('2d').clearRect(0,0,1024,768);
+    document.removeEventListener('keydown',ssKill);
+    document.removeEventListener('mousedown',ssKill);
+  }
 
   window.addEventListener('load', function(){
     showScreen('screen-poweron');
