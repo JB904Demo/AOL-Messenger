@@ -2089,6 +2089,22 @@
   .bc-file-row.selected { background: #000080; color: #fff; }
   .bc-file-icon { width: 20px; height: 20px; flex-shrink: 0; margin-right: 5px; image-rendering: pixelated; }
   .bc-file-name { width: 175px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .bc-rename-input {
+    width: 165px; font-size: 11px; font-family: 'Tahoma', Arial;
+    border: 1px solid #000080; outline: none; padding: 0 2px;
+    background: #fff; color: #000;
+  }
+  #bc-context-menu {
+    display: none; position: absolute; z-index: 9000;
+    background: #c0c0c0; border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    box-shadow: 2px 2px 0 #000; min-width: 140px;
+  }
+  .bc-ctx-item {
+    padding: 4px 20px; font-size: 12px; font-family: 'Tahoma', Arial;
+    cursor: pointer; color: #000; white-space: nowrap;
+  }
+  .bc-ctx-item:hover { background: #000080; color: #fff; }
+  .bc-ctx-sep { height: 1px; background: #808080; margin: 2px 0; border-bottom: 1px solid #fff; }
   .bc-file-date { width: 140px; font-size: 11px; }
   .bc-file-size { width: 80px; font-size: 11px; text-align: right; padding-right: 8px; }
   /* Status bar */
@@ -3829,6 +3845,13 @@
     <!-- Status bar -->
     <div class="bc-statusbar">
       <div class="bc-status-panel" id="bc-status">0 object(s)</div>
+    </div>
+    <!-- Right-click context menu -->
+    <div id="bc-context-menu">
+      <div class="bc-ctx-item" id="bc-ctx-open" onclick="bcCtxOpen()">Open</div>
+      <div class="bc-ctx-sep"></div>
+      <div class="bc-ctx-item" id="bc-ctx-rename" onclick="bcCtxRename()">Rename</div>
+      <div class="bc-ctx-item" id="bc-ctx-delete" onclick="bcCtxDelete()">Delete</div>
     </div>
   </div>
   <!-- Paint Save dialog -->
@@ -7136,6 +7159,8 @@
   function closeBriefcase() {
     document.getElementById('briefcase-window').classList.remove('open');
   }
+  var bcSelectedName = null; // tracks which file is right-click selected
+
   function renderBriefcaseFiles() {
     var files = loadBriefcaseFiles();
     var list  = document.getElementById('bc-file-list');
@@ -7148,31 +7173,159 @@
     files.forEach(function(f) {
       var row = document.createElement('div');
       row.className = 'bc-file-row';
-      // Win95 txt file icon as inline SVG
-      row.innerHTML =
-        '<svg class="bc-file-icon" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">'
+      row.dataset.name = f.name;
+
+      var iconSvg = '<svg class="bc-file-icon" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">'
         + '<rect x="2" y="1" width="9" height="13" fill="#fff" stroke="#808080" stroke-width="1"/>'
         + '<polyline points="8,1 8,5 12,5" fill="#c0c0c0" stroke="#808080" stroke-width="1"/>'
         + '<rect x="8" y="1" width="4" height="4" fill="#c0c0c0" stroke="#808080" stroke-width="1"/>'
         + '<line x1="4" y1="6" x2="10" y2="6" stroke="#000" stroke-width="1"/>'
         + '<line x1="4" y1="8" x2="10" y2="8" stroke="#000" stroke-width="1"/>'
         + '<line x1="4" y1="10" x2="8"  y2="10" stroke="#000" stroke-width="1"/>'
-        + '</svg>'
-        + '<span class="bc-file-name">' + esc(f.name) + '</span>'
-        + '<span class="bc-file-date">' + esc(f.date) + '</span>'
-        + '<span class="bc-file-size">' + f.size + ' KB</span>';
+        + '</svg>';
+
+      var nameSpan = document.createElement('span');
+      nameSpan.className = 'bc-file-name';
+      nameSpan.textContent = f.name;
+
+      row.innerHTML = iconSvg;
+      row.appendChild(nameSpan);
+
+      var dateSpan = document.createElement('span');
+      dateSpan.className = 'bc-file-date';
+      dateSpan.textContent = f.date;
+      row.appendChild(dateSpan);
+
+      var sizeSpan = document.createElement('span');
+      sizeSpan.className = 'bc-file-size';
+      sizeSpan.textContent = f.size + ' KB';
+      row.appendChild(sizeSpan);
+
+      // Single click — select
       row.addEventListener('click', function() {
         document.querySelectorAll('.bc-file-row').forEach(function(r){ r.classList.remove('selected'); });
         row.classList.add('selected');
+        bcSelectedName = f.name;
+      });
+
+      // Double-click — open in Notepad
+      var clickTimer = null;
+      row.addEventListener('click', function(e) {
+        if (clickTimer) {
+          // Second click on already-selected row = start rename (slow double-click)
+          clearTimeout(clickTimer);
+          clickTimer = null;
+          if (row.classList.contains('selected')) {
+            bcStartRename(row, nameSpan, f);
+            return;
+          }
+        }
+        clickTimer = setTimeout(function(){ clickTimer = null; }, 500);
       });
       row.addEventListener('dblclick', function() {
-        // Open file in Notepad
+        if (clickTimer) { clearTimeout(clickTimer); clickTimer = null; }
         openNotepad(f.name, f.content);
       });
+
+      // F2 rename when selected
+      row.addEventListener('keydown', function(e) {
+        if (e.key === 'F2') { e.preventDefault(); bcStartRename(row, nameSpan, f); }
+      });
+      row.setAttribute('tabindex', '0');
+
+      // Right-click context menu
+      row.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        document.querySelectorAll('.bc-file-row').forEach(function(r){ r.classList.remove('selected'); });
+        row.classList.add('selected');
+        bcSelectedName = f.name;
+        var menu = document.getElementById('bc-context-menu');
+        var win = document.getElementById('briefcase-window');
+        var winRect = win.getBoundingClientRect();
+        menu.style.left = (e.clientX - winRect.left) + 'px';
+        menu.style.top  = (e.clientY - winRect.top)  + 'px';
+        menu.style.display = 'block';
+      });
+
       list.appendChild(row);
     });
     document.getElementById('bc-status').textContent = files.length + ' object(s)';
   }
+
+  function bcStartRename(row, nameSpan, f) {
+    if (row.querySelector('.bc-rename-input')) return; // already renaming
+    var input = document.createElement('input');
+    input.className = 'bc-rename-input';
+    input.value = f.name;
+    nameSpan.textContent = '';
+    nameSpan.appendChild(input);
+    input.focus();
+    input.select();
+
+    function commitRename() {
+      var newName = input.value.trim();
+      if (!newName) { cancelRename(); return; }
+      if (!newName.toLowerCase().endsWith('.txt')) newName += '.txt';
+      if (newName === f.name) { cancelRename(); return; }
+      // Check for duplicate
+      var files = loadBriefcaseFiles();
+      if (files.find(function(x){ return x.name === newName; })) {
+        alert('A file named "' + newName + '" already exists.');
+        cancelRename(); return;
+      }
+      var idx = files.findIndex(function(x){ return x.name === f.name; });
+      if (idx >= 0) {
+        files[idx].name = newName;
+        saveBriefcaseFiles(files);
+        f.name = newName;
+        bcSelectedName = newName;
+      }
+      renderBriefcaseFiles();
+    }
+    function cancelRename() {
+      nameSpan.textContent = f.name;
+    }
+
+    input.addEventListener('blur', commitRename);
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
+      if (e.key === 'Escape') { input.removeEventListener('blur', commitRename); cancelRename(); }
+    });
+  }
+
+  // Context menu actions
+  function bcCtxOpen() {
+    document.getElementById('bc-context-menu').style.display = 'none';
+    if (!bcSelectedName) return;
+    var files = loadBriefcaseFiles();
+    var f = files.find(function(x){ return x.name === bcSelectedName; });
+    if (f) openNotepad(f.name, f.content);
+  }
+  function bcCtxRename() {
+    document.getElementById('bc-context-menu').style.display = 'none';
+    if (!bcSelectedName) return;
+    var row = document.querySelector('.bc-file-row.selected');
+    if (!row) return;
+    var nameSpan = row.querySelector('.bc-file-name');
+    var files = loadBriefcaseFiles();
+    var f = files.find(function(x){ return x.name === bcSelectedName; });
+    if (f) bcStartRename(row, nameSpan, f);
+  }
+  function bcCtxDelete() {
+    document.getElementById('bc-context-menu').style.display = 'none';
+    if (!bcSelectedName) return;
+    if (!confirm('Are you sure you want to delete "' + bcSelectedName + '"?')) return;
+    var files = loadBriefcaseFiles().filter(function(x){ return x.name !== bcSelectedName; });
+    saveBriefcaseFiles(files);
+    bcSelectedName = null;
+    renderBriefcaseFiles();
+  }
+
+  // Hide context menu on click elsewhere
+  document.addEventListener('click', function(e) {
+    var menu = document.getElementById('bc-context-menu');
+    if (menu && !menu.contains(e.target)) menu.style.display = 'none';
+  });
 
   document.getElementById('briefcase-window').addEventListener('mousedown', function(){
     document.getElementById('briefcase-window').style.zIndex = ++chatZBase;
