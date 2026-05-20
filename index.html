@@ -711,6 +711,77 @@
   .ms-cell[data-n="7"] { color: #000000; }
   .ms-cell[data-n="8"] { color: #808080; }
 
+  /* == Shutdown Screens == */
+  #screen-shutdown-dialog {
+    background: #008080; display: none;
+    align-items: center; justify-content: center;
+  }
+  .sd-dialog {
+    background: #c0c0c0; border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    box-shadow: 4px 4px 0 #000; width: 360px;
+  }
+  .sd-titlebar {
+    background: #000080; color: #fff; font-size: 12px; font-weight: bold;
+    padding: 3px 6px; display: flex; align-items: center; justify-content: space-between;
+  }
+  .sd-close-btn {
+    width: 16px; height: 14px; background: #c0c0c0;
+    border: 1px solid; border-color: #fff #808080 #808080 #fff;
+    font-size: 9px; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: #000; font-weight: bold;
+  }
+  .sd-body { padding: 16px 20px; }
+  .sd-top { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 14px; }
+  .sd-question { font-size: 12px; font-family: 'Tahoma', Arial; line-height: 1.5; }
+  .sd-question strong { display: block; margin-bottom: 8px; }
+  .sd-radio-group { display: flex; flex-direction: column; gap: 6px; margin-top: 4px; }
+  .sd-radio-item { display: flex; align-items: center; gap: 8px; font-size: 12px; font-family: 'Tahoma', Arial; cursor: pointer; }
+  .sd-divider { height: 1px; background: #808080; margin: 12px 0; border-bottom: 1px solid #fff; }
+  .sd-btn-row { display: flex; gap: 8px; justify-content: center; }
+  .sd-btn {
+    padding: 4px 20px; font-size: 12px; font-family: 'Tahoma', Arial;
+    background: #c0c0c0; border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    cursor: pointer; font-weight: bold; min-width: 80px;
+  }
+  .sd-btn:active { border-color: #808080 #fff #fff #808080; }
+  #screen-shutting-down {
+    background: #000080; display: none;
+    align-items: center; justify-content: center; flex-direction: column; gap: 30px;
+  }
+  .sd-shutting-logo { text-align: center; }
+  .sd-shutting-flag {
+    display: inline-grid; grid-template-columns: 1fr 1fr; gap: 3px; margin-bottom: 8px;
+  }
+  .sd-flag-q { width: 22px; height: 22px; }
+  .sd-shutting-msg {
+    color: #fff; font-size: 20px; font-family: 'Tahoma', Arial; font-weight: bold; text-align: center;
+  }
+  .sd-shutting-sub { color: #c0c0c0; font-size: 13px; font-family: 'Tahoma', Arial; text-align: center; }
+  .sd-shutting-bar-wrap {
+    width: 320px; height: 18px; background: #000;
+    border: 2px solid; border-color: #808080 #fff #fff #808080;
+  }
+  .sd-shutting-bar {
+    height: 100%; width: 0%;
+    background: repeating-linear-gradient(90deg,#0044cc 0px,#0066ff 10px,#0044cc 10px,#0044cc 20px);
+  }
+  #screen-safe-to-off {
+    background: #000; display: none;
+    align-items: center; justify-content: center;
+  }
+  .sd-safe-box { border: 4px solid #808080; padding: 30px 50px; text-align: center; }
+  .sd-safe-title {
+    color: #ffff00; font-size: 24px; font-family: 'Tahoma', Arial; font-weight: bold;
+    margin-bottom: 8px;
+  }
+  .sd-safe-sub { color: #c0c0c0; font-size: 14px; font-family: 'Tahoma', Arial; margin-bottom: 20px; }
+  .sd-restart-btn {
+    padding: 5px 24px; background: #c0c0c0;
+    border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    font-size: 12px; font-family: 'Tahoma', Arial; cursor: pointer; font-weight: bold;
+  }
+  .sd-restart-btn:active { border-color: #808080 #fff #fff #808080; }
+
   /* ── Solitaire ── */
   #sol-window {
     position: absolute; top: 40px; left: 60px;
@@ -2643,6 +2714,85 @@
   </div>
 
   <!-- ══════════════════════════════════════
+       SHUT DOWN DIALOG
+  ══════════════════════════════════════ -->
+  <div class="screen" id="screen-shutdown-dialog">
+    <div class="sd-dialog">
+      <div class="sd-titlebar">
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span style="font-size:13px;">🖥️</span> Shut Down Windows
+        </div>
+        <div class="sd-close-btn" onclick="cancelShutDown()">✕</div>
+      </div>
+      <div class="sd-body">
+        <div class="sd-top">
+          <svg width="52" height="52" viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0"  y="0"  width="24" height="24" fill="#ff0000"/>
+            <rect x="28" y="0"  width="24" height="24" fill="#00aa00"/>
+            <rect x="0"  y="28" width="24" height="24" fill="#0000cc"/>
+            <rect x="28" y="28" width="24" height="24" fill="#ffcc00"/>
+          </svg>
+          <div class="sd-question">
+            <strong>Are you sure you want to:</strong>
+            <div class="sd-radio-group">
+              <label class="sd-radio-item">
+                <input type="radio" name="sd-option" value="shutdown" checked> Shut down the computer?
+              </label>
+              <label class="sd-radio-item">
+                <input type="radio" name="sd-option" value="restart"> Restart the computer?
+              </label>
+              <label class="sd-radio-item">
+                <input type="radio" name="sd-option" value="dos"> Restart the computer in MS-DOS mode?
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="sd-divider"></div>
+        <div class="sd-btn-row">
+          <button class="sd-btn" onclick="confirmShutDown()">Yes</button>
+          <button class="sd-btn" onclick="cancelShutDown()">No</button>
+          <button class="sd-btn" onclick="cancelShutDown()">Help</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       SHUTTING DOWN SCREEN
+  ══════════════════════════════════════ -->
+  <div class="screen" id="screen-shutting-down">
+    <div class="sd-shutting-logo">
+      <svg width="56" height="56" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0"  y="0"  width="26" height="26" fill="#ff0000"/>
+        <rect x="30" y="0"  width="26" height="26" fill="#00aa00"/>
+        <rect x="0"  y="30" width="26" height="26" fill="#0000cc"/>
+        <rect x="30" y="30" width="26" height="26" fill="#ffcc00"/>
+      </svg>
+      <div style="color:#fff;font-family:'Times New Roman',serif;font-size:22px;font-style:italic;margin-top:6px;">
+        Microsoft <strong style="font-style:normal;">Windows 95</strong>
+      </div>
+    </div>
+    <div>
+      <div class="sd-shutting-msg">Windows is shutting down...</div>
+      <div class="sd-shutting-sub" style="color:#c0c0c0;font-size:12px;font-family:'Tahoma',Arial;text-align:center;margin-top:6px;">Please wait while your computer shuts down.</div>
+    </div>
+    <div class="sd-shutting-bar-wrap">
+      <div class="sd-shutting-bar" id="sd-shutting-bar"></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       IT IS NOW SAFE TO TURN OFF
+  ══════════════════════════════════════ -->
+  <div class="screen" id="screen-safe-to-off">
+    <div class="sd-safe-box">
+      <div class="sd-safe-title">It is now safe to turn off<br>your computer.</div>
+      <div class="sd-safe-sub">You may also press CTRL+ALT+DELETE to restart your computer.</div>
+      <button class="sd-restart-btn" onclick="doRestart()">🔄 Restart</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
        WINDOWS 95 DESKTOP SCREEN
   ══════════════════════════════════════ -->
   <div class="screen" id="screen-windesktop">
@@ -3675,7 +3825,7 @@
           </div>
         </div>
         <div class="start-menu-divider"></div>
-        <div class="start-menu-item" onclick="toggleStartMenu()">
+        <div class="start-menu-item" onclick="toggleStartMenu();doShutDown()">
           <span class="smi-icon">🔌</span>
           <div><span class="smi-label">Shut Down...</span></div>
         </div>
@@ -4846,7 +4996,7 @@
   }
 
   // Screens that need display:flex to center their content
-  var flexScreens = { 'screen-poweron': true, 'screen-apikey': true, 'screen-loading': true };
+  var flexScreens = { 'screen-poweron': true, 'screen-apikey': true, 'screen-loading': true, 'screen-shutdown-dialog': true, 'screen-shutting-down': true, 'screen-safe-to-off': true };
 
   // ── Power On / Win95 boot ──
   function doPowerOn() {
@@ -9173,6 +9323,72 @@
 
   document.getElementById('clock-window').addEventListener('mousedown',function(){ document.getElementById('clock-window').style.zIndex=++chatZBase; });
   makeDraggable(document.getElementById('clock-window'),document.getElementById('cw-titlebar'));
+
+  // ════════════════════════════════════════
+  // SHUTDOWN SEQUENCE
+  // ════════════════════════════════════════
+  function doShutDown() {
+    // Reset radio to default
+    var radios = document.querySelectorAll('input[name="sd-option"]');
+    if (radios.length) radios[0].checked = true;
+    showScreen('screen-shutdown-dialog');
+  }
+
+  function cancelShutDown() {
+    showScreen('screen-windesktop');
+  }
+
+  function confirmShutDown() {
+    var selected = document.querySelector('input[name="sd-option"]:checked');
+    var val = selected ? selected.value : 'shutdown';
+    if (val === 'restart') {
+      doRestartSequence();
+    } else {
+      doShutDownSequence();
+    }
+  }
+
+  function doShutDownSequence() {
+    showScreen('screen-shutting-down');
+    // Animate the progress bar over ~3 seconds
+    var bar = document.getElementById('sd-shutting-bar');
+    bar.style.transition = 'none';
+    bar.style.width = '0%';
+    // Play aol-close sound if available
+    if (sounds && sounds.close) { try { sounds.close.currentTime=0; sounds.close.play(); } catch(e){} }
+    setTimeout(function() {
+      bar.style.transition = 'width 2.8s linear';
+      bar.style.width = '100%';
+    }, 100);
+    setTimeout(function() {
+      showScreen('screen-safe-to-off');
+    }, 3200);
+  }
+
+  function doRestartSequence() {
+    showScreen('screen-shutting-down');
+    var bar = document.getElementById('sd-shutting-bar');
+    bar.style.transition = 'none';
+    bar.style.width = '0%';
+    if (sounds && sounds.close) { try { sounds.close.currentTime=0; sounds.close.play(); } catch(e){} }
+    setTimeout(function() {
+      bar.style.transition = 'width 2.8s linear';
+      bar.style.width = '100%';
+    }, 100);
+    // After shutting down screen, go back to Win95 boot
+    setTimeout(function() {
+      doRestart();
+    }, 3400);
+  }
+
+  function doRestart() {
+    // Full reboot sequence — back to the very beginning
+    showScreen('screen-win95');
+    if (sounds && sounds.win95) { try { sounds.win95.currentTime=0; sounds.win95.play(); } catch(e){} }
+    setTimeout(function() {
+      showScreen('screen-windesktop');
+    }, 9000);
+  }
 
   // ================================================
   // SCREENSAVER — 3D Starfield Simulation
