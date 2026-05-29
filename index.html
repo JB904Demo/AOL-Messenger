@@ -1959,6 +1959,23 @@
     font-size: 8px; display: flex; align-items: center; justify-content: center;
     cursor: pointer; color: #000; font-weight: bold; flex-shrink: 0; margin-left: 4px;
   }
+  .taskbar-prog-btn {
+    height: 22px; min-width: 130px; max-width: 160px;
+    background: #c0c0c0;
+    border: 2px solid; border-color: #808080 #fff #fff #808080;
+    display: flex; align-items: center; gap: 4px;
+    padding: 0 6px; cursor: pointer; flex-shrink: 0;
+    font-family: 'Tahoma', Arial; font-size: 11px; font-weight: bold;
+    color: #000; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    user-select: none;
+  }
+  .taskbar-prog-btn:hover { background: #d0d0d0; }
+  .taskbar-prog-btn.tb-active {
+    border-color: #808080 #fff #fff #808080;
+    background: #b8b8b8;
+    box-shadow: inset 1px 1px 0 #808080;
+  }
+
   /* ── Win95 Notepad ── */
   #notepad-window {
     position: absolute; top: 80px; left: 200px;
@@ -3695,7 +3712,7 @@
         <img src="windows.png" alt="" style="width:16px;height:16px;object-fit:contain;">
         <span>Start</span>
       </button>
-      <div style="flex:1;"></div>
+      <div id="taskbar-programs" style="display:flex;align-items:center;gap:2px;padding:0 2px;flex:1;overflow:hidden;"></div>
       <div id="win95-clock" ondblclick="openClockCalendar()" style="cursor:default;" title="Double-click to adjust date/time">12:00 AM</div>
     </div>
     <div id="start-menu">
@@ -7216,7 +7233,7 @@
     tl.innerHTML = tl.innerHTML.replace(/.+ - Notepad/, 'Untitled - Notepad');
   }
   function minimizeNotepad() {
-    document.getElementById('notepad-window').classList.remove('open');
+    tbMinimize('notepad-window');
   }
   function npInsertTimestamp() {
     var ta = document.getElementById('np-textarea');
@@ -9389,6 +9406,197 @@
       showScreen('screen-windesktop');
     }, 9000);
   }
+
+  // ════════════════════════════════════════
+  // TASKBAR PROGRAM MANAGER
+  // ════════════════════════════════════════
+  var tbProgs = {}; // id → { btn, label, icon, minimized }
+
+  function tbRegister(winId, icon, label) {
+    // Called when a window opens — adds button, marks as active (not minimized)
+    if (tbProgs[winId]) {
+      // Already registered — just restore & bring to front
+      tbRestore(winId);
+      return;
+    }
+    var btn = document.createElement('div');
+    btn.className = 'taskbar-prog-btn tb-active';
+    btn.innerHTML = '<span style="font-size:12px;flex-shrink:0;">' + icon + '</span><span style="overflow:hidden;text-overflow:ellipsis;">' + label + '</span>';
+    btn.title = label;
+    btn.addEventListener('click', function() { tbToggle(winId); });
+    document.getElementById('taskbar-programs').appendChild(btn);
+    tbProgs[winId] = { btn: btn, label: label, icon: icon, minimized: false };
+  }
+
+  function tbUnregister(winId) {
+    // Called when a window is fully closed (X button)
+    if (!tbProgs[winId]) return;
+    tbProgs[winId].btn.remove();
+    delete tbProgs[winId];
+  }
+
+  function tbMinimize(winId) {
+    var prog = tbProgs[winId];
+    if (!prog) return;
+    var win = document.getElementById(winId);
+    if (!win) return;
+    win.style.display = 'none';
+    prog.minimized = true;
+    prog.btn.classList.remove('tb-active');
+  }
+
+  function tbRestore(winId) {
+    var prog = tbProgs[winId];
+    if (!prog) return;
+    var win = document.getElementById(winId);
+    if (!win) return;
+    win.style.display = 'flex';
+    win.style.zIndex = ++chatZBase;
+    prog.minimized = false;
+    prog.btn.classList.add('tb-active');
+  }
+
+  function tbToggle(winId) {
+    var prog = tbProgs[winId];
+    if (!prog) return;
+    if (prog.minimized) {
+      tbRestore(winId);
+    } else {
+      tbMinimize(winId);
+    }
+  }
+
+  // ── Wire every window's _ button and open/close functions ──
+
+  // Config: [windowId, icon, label, openFn, closeFn, displayType]
+  var tbWindows = [
+    { id: 'notepad-window',        icon: '📝', label: 'Notepad',          displayType: 'flex' },
+    { id: 'wordpad-window',        icon: '📄', label: 'WordPad',          displayType: 'flex' },
+    { id: 'paint-window',          icon: '🎨', label: 'Paint',            displayType: 'flex' },
+    { id: 'briefcase-window',      icon: '💼', label: 'My Briefcase',     displayType: 'flex' },
+    { id: 'mydocs-window',         icon: '📁', label: 'My Documents',     displayType: 'flex' },
+    { id: 'wpdocs-window',         icon: '📁', label: 'WordPad Documents',displayType: 'flex' },
+    { id: 'mycomp-window',         icon: '🖥️', label: 'My Computer',      displayType: 'flex' },
+    { id: 'mines-window',          icon: '💣', label: 'Minesweeper',      displayType: 'flex' },
+    { id: 'sol-window',            icon: '🃏', label: 'Solitaire',        displayType: 'flex' },
+    { id: 'calc-window',           icon: '🧮', label: 'Calculator',       displayType: 'flex' },
+    { id: 'journal-window',        icon: '📓', label: 'MyJournal',        displayType: 'flex' },
+    { id: 'journal-folder-window', icon: '📁', label: 'MyJournal',        displayType: 'flex' },
+    { id: 'defrag-window',         icon: '🖥️', label: 'Disk Defragmenter',displayType: 'flex' },
+    { id: 'clock-window',          icon: '🕐', label: 'Date/Time',        displayType: 'flex' },
+    { id: 'inbox-window',          icon: '📬', label: 'Inbox',            displayType: 'flex' },
+    { id: 'writemail-window',      icon: '✉️', label: 'Write Mail',       displayType: 'flex' },
+    { id: 'chatroom-window',       icon: '💬', label: 'Chat',             displayType: 'flex' },
+  ];
+
+  // Wire _ buttons — find first .xxx-win-btn containing "_" text in each window
+  tbWindows.forEach(function(cfg) {
+    var win = document.getElementById(cfg.id);
+    if (!win) return;
+    // Find the _ minimize button — first btn whose text is "_"
+    var btns = win.querySelectorAll('[class*="win-btn"]');
+    btns.forEach(function(btn) {
+      if (btn.textContent.trim() === '_') {
+        btn.onclick = function() {
+          if (tbProgs[cfg.id]) {
+            tbMinimize(cfg.id);
+          } else {
+            // Window open but not registered — just hide it
+            win.style.display = 'none';
+          }
+        };
+      }
+    });
+
+    // Watch for window becoming visible — auto-register
+    var origOpen = win.style.display;
+    // We'll hook registration into the open functions below
+  });
+
+  // Patch all open functions to register with taskbar
+  var _tbOrigOpen = {};
+
+  function tbPatchOpen(fnName, winId, icon, labelFn) {
+    var orig = window[fnName];
+    if (!orig) return;
+    _tbOrigOpen[fnName] = orig;
+    window[fnName] = function() {
+      orig.apply(this, arguments);
+      var label = typeof labelFn === 'function' ? labelFn(arguments) : labelFn;
+      tbRegister(winId, icon, label);
+    };
+  }
+
+  function tbPatchClose(fnName, winId) {
+    var orig = window[fnName];
+    if (!orig) return;
+    window[fnName] = function() {
+      orig.apply(this, arguments);
+      tbUnregister(winId);
+    };
+  }
+
+  // Notepad
+  tbPatchOpen('openNotepad', 'notepad-window', '📝', function(args){ return (args[0]||'Untitled') + ' - Notepad'; });
+  tbPatchClose('closeNotepad', 'notepad-window');
+  // WordPad
+  tbPatchOpen('openWordPad', 'wordpad-window', '📄', function(args){ return (args[0]||'Document') + ' - WordPad'; });
+  tbPatchClose('closeWordPad', 'wordpad-window');
+  // Paint
+  tbPatchOpen('openPaint', 'paint-window', '🎨', function(args){ return (args[0]||'untitled') + ' - Paint'; });
+  tbPatchClose('closePaint', 'paint-window');
+  // Briefcase
+  tbPatchOpen('openBriefcase', 'briefcase-window', '💼', 'My Briefcase');
+  tbPatchClose('closeBriefcase', 'briefcase-window');
+  // My Docs
+  tbPatchOpen('openMyDocs', 'mydocs-window', '📁', 'My Documents');
+  tbPatchClose('closeMyDocs', 'mydocs-window');
+  // WP Docs folder
+  tbPatchOpen('openWpDocsFolder', 'wpdocs-window', '📁', 'WordPad Documents');
+  tbPatchClose('closeWpDocsFolder', 'wpdocs-window');
+  // My Computer
+  tbPatchOpen('openMyComputer', 'mycomp-window', '🖥️', 'My Computer');
+  tbPatchClose('closeMyComputer', 'mycomp-window');
+  // Minesweeper
+  tbPatchOpen('openMinesweeper', 'mines-window', '💣', 'Minesweeper');
+  tbPatchClose('closeMinesweeper', 'mines-window');
+  // Solitaire
+  tbPatchOpen('openSolitaire', 'sol-window', '🃏', 'Solitaire');
+  tbPatchClose('closeSolitaire', 'sol-window');
+  // Calculator
+  tbPatchOpen('openCalculator', 'calc-window', '🧮', 'Calculator');
+  tbPatchClose('closeCalculator', 'calc-window');
+  // Journal
+  tbPatchOpen('openJournal', 'journal-window', '📓', 'MyJournal');
+  tbPatchClose('closeJournal', 'journal-window');
+  // Journal folder
+  tbPatchOpen('openJournalFolder', 'journal-folder-window', '📁', 'MyJournal');
+  tbPatchClose('closeJournalFolder', 'journal-folder-window');
+  // Defrag
+  tbPatchOpen('openDefrag', 'defrag-window', '🖥️', 'Disk Defragmenter');
+  tbPatchClose('closeDefrag', 'defrag-window');
+  // Clock
+  tbPatchOpen('openClockCalendar', 'clock-window', '🕐', 'Date/Time');
+  tbPatchClose('closeClockCalendar', 'clock-window');
+  // Inbox
+  tbPatchOpen('openInbox', 'inbox-window', '📬', 'Inbox');
+  tbPatchClose('closeInbox', 'inbox-window');
+  // Write Mail
+  tbPatchOpen('openWriteMail', 'writemail-window', '✉️', 'Write Mail');
+  tbPatchClose('closeWriteMail', 'writemail-window');
+  // Chatroom
+  tbPatchOpen('openChatroom', 'chatroom-window', '💬', 'Chat');
+  tbPatchClose('closeChatroom', 'chatroom-window');
+
+  // Also bring window to front on click and mark taskbar btn active
+  tbWindows.forEach(function(cfg) {
+    var win = document.getElementById(cfg.id);
+    if (!win) return;
+    win.addEventListener('mousedown', function() {
+      if (tbProgs[cfg.id]) tbProgs[cfg.id].btn.classList.add('tb-active');
+      win.style.zIndex = ++chatZBase;
+    });
+  });
 
   // ================================================
   // SCREENSAVER — 3D Starfield Simulation
