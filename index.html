@@ -1090,6 +1090,145 @@
   .jf-item:hover { background: #000080; color: #fff; }
   .jf-statusbar { height: 18px; background: #c0c0c0; border-top: 1px solid #808080; padding: 0 8px; font-size: 10px; font-family: 'Tahoma', Arial; display: flex; align-items: center; flex-shrink: 0; }
 
+  /* ── Usenet Newsreader (Free Agent style) ── */
+  #usenet-window {
+    position: absolute; top: 20px; left: 20px;
+    width: 960px; height: 680px;
+    background: #c0c0c0;
+    border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    box-shadow: 2px 2px 0 #000;
+    display: none; flex-direction: column; z-index: 500;
+  }
+  #usenet-window.open { display: flex; }
+  .usn-titlebar {
+    background: #000080; color: #fff; font-size: 12px; font-weight: bold;
+    padding: 2px 5px; display: flex; align-items: center;
+    justify-content: space-between; height: 20px; cursor: grab; flex-shrink: 0;
+  }
+  .usn-titlebar:active { cursor: grabbing; }
+  .usn-win-btns { display: flex; gap: 2px; }
+  .usn-win-btn {
+    width: 16px; height: 14px; background: #c0c0c0;
+    border: 1px solid; border-color: #fff #808080 #808080 #fff;
+    font-size: 9px; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: #000; font-weight: bold;
+  }
+  .usn-menubar {
+    display: flex; background: #c0c0c0; padding: 1px 2px;
+    border-bottom: 1px solid #808080; flex-shrink: 0;
+  }
+  .usn-menu { font-size: 12px; padding: 2px 8px; cursor: pointer; color: #000; position: relative; }
+  .usn-menu:hover { background: #000080; color: #fff; }
+  .usn-menu-dropdown {
+    display: none; position: absolute; top: 100%; left: 0;
+    background: #c0c0c0; border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    box-shadow: 2px 2px 0 #000; z-index: 600; min-width: 160px;
+  }
+  .usn-menu:hover .usn-menu-dropdown { display: block; }
+  .usn-menu-item { font-size: 12px; padding: 4px 20px; color: #000; cursor: pointer; white-space: nowrap; }
+  .usn-menu-item:hover { background: #000080; color: #fff; }
+  .usn-menu-sep { height: 1px; background: #808080; margin: 2px 0; border-bottom: 1px solid #fff; }
+  /* Toolbar */
+  .usn-toolbar {
+    display: flex; align-items: center; gap: 2px; padding: 2px 4px;
+    background: #c0c0c0; border-bottom: 1px solid #808080; flex-shrink: 0;
+  }
+  .usn-tb-btn {
+    display: flex; flex-direction: column; align-items: center;
+    padding: 2px 8px; background: #c0c0c0; cursor: pointer;
+    border: 2px solid transparent; font-size: 9px; font-family: 'Tahoma', Arial;
+    gap: 1px; min-width: 40px; color: #000;
+  }
+  .usn-tb-btn:hover { border-color: #fff #808080 #808080 #fff; }
+  .usn-tb-btn:active { border-color: #808080 #fff #fff #808080; }
+  .usn-tb-btn span.usn-tb-icon { font-size: 16px; line-height: 1; }
+  .usn-tb-sep { width: 1px; background: #808080; height: 28px; margin: 0 3px; border-right: 1px solid #fff; }
+  /* Main body - 3-pane layout */
+  .usn-body {
+    flex: 1; display: flex; overflow: hidden;
+  }
+  /* Left: newsgroup list */
+  .usn-groups-pane {
+    width: 180px; flex-shrink: 0; border-right: 2px solid;
+    border-color: #808080 #fff #fff #808080;
+    display: flex; flex-direction: column; background: #fff;
+  }
+  .usn-groups-header {
+    background: #c0c0c0; border-bottom: 1px solid #808080;
+    padding: 2px 6px; font-size: 11px; font-weight: bold; font-family: 'Tahoma', Arial;
+  }
+  .usn-group-item {
+    display: flex; align-items: center; gap: 5px; padding: 3px 6px;
+    font-size: 11px; font-family: 'Tahoma', Arial; cursor: pointer;
+    border-bottom: 1px solid #f0f0f0; color: #000;
+  }
+  .usn-group-item:hover { background: #000080; color: #fff; }
+  .usn-group-item.selected { background: #000080; color: #fff; }
+  .usn-group-unread {
+    margin-left: auto; font-size: 10px; background: #ff0000;
+    color: #fff; padding: 0 4px; border-radius: 2px; flex-shrink: 0;
+  }
+  /* Right side: thread list + message */
+  .usn-right-pane { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  /* Thread list */
+  .usn-threads-pane {
+    height: 200px; flex-shrink: 0; border-bottom: 2px solid;
+    border-color: #808080 #fff #fff #808080; background: #fff; overflow-y: auto;
+  }
+  .usn-thread-header {
+    display: grid; grid-template-columns: 1fr 130px 80px 60px;
+    background: #c0c0c0; border-bottom: 1px solid #808080; position: sticky; top: 0;
+  }
+  .usn-th-col {
+    padding: 2px 6px; font-size: 11px; font-weight: bold; font-family: 'Tahoma', Arial;
+    border-right: 1px solid #808080; cursor: pointer; user-select: none;
+  }
+  .usn-th-col:hover { background: #b0b0b0; }
+  .usn-thread-row {
+    display: grid; grid-template-columns: 1fr 130px 80px 60px;
+    border-bottom: 1px solid #f0f0f0; cursor: pointer; font-family: 'Tahoma', Arial;
+  }
+  .usn-thread-row:hover { background: #000080; color: #fff; }
+  .usn-thread-row.selected { background: #000080; color: #fff; }
+  .usn-thread-row.unread .usn-td-subject { font-weight: bold; }
+  .usn-td {
+    padding: 2px 6px; font-size: 11px; overflow: hidden;
+    white-space: nowrap; text-overflow: ellipsis; border-right: 1px solid #f0f0f0;
+  }
+  .usn-td-subject { display: flex; align-items: center; gap: 4px; }
+  .usn-thread-icon { font-size: 10px; flex-shrink: 0; }
+  /* Message pane */
+  .usn-message-pane {
+    flex: 1; overflow-y: auto; background: #fff; padding: 0;
+  }
+  .usn-msg-header {
+    background: #f0f0f0; border-bottom: 2px solid #c0c0c0;
+    padding: 6px 10px; font-family: 'Courier New', monospace; font-size: 11px;
+    line-height: 1.6;
+  }
+  .usn-msg-header-label { color: #808080; }
+  .usn-msg-body {
+    padding: 10px 12px; font-family: 'Courier New', monospace; font-size: 12px;
+    line-height: 1.7; color: #000; white-space: pre-wrap; word-wrap: break-word;
+  }
+  .usn-msg-quote { color: #0000aa; }
+  .usn-msg-sig { color: #808080; }
+  /* Status bar */
+  .usn-statusbar {
+    height: 18px; background: #c0c0c0; border-top: 1px solid #808080;
+    display: flex; align-items: center; padding: 0 6px; flex-shrink: 0;
+    font-size: 10px; font-family: 'Tahoma', Arial; gap: 12px;
+  }
+  .usn-status-panel {
+    border: 1px solid; border-color: #808080 #fff #fff #808080;
+    padding: 0 6px; font-size: 10px; height: 14px; display: flex; align-items: center;
+  }
+  /* Loading spinner area */
+  .usn-loading {
+    display: none; padding: 20px; text-align: center;
+    font-family: 'Courier New', monospace; font-size: 12px; color: #000080;
+  }
+
   /* ── Disk Defragmenter ── */
   #defrag-window {
     position: absolute; top: 60px; left: 80px;
@@ -3795,6 +3934,10 @@
               <span class="smi-icon">📓</span>
               <div><span class="smi-label">MyJournal</span></div>
             </div>
+            <div class="start-menu-item" onclick="openUsenet();toggleStartMenu();" style="border:none;">
+              <span class="smi-icon">📰</span>
+              <div><span class="smi-label">Free Agent</span><span class="smi-sub">Usenet Newsreader</span></div>
+            </div>
           </div>
         </div>
         <div class="start-menu-item">
@@ -4752,6 +4895,144 @@
     </div>
     <div class="jf-list" id="jf-list"></div>
     <div class="jf-statusbar" id="jf-statusbar">0 entries</div>
+  </div>
+
+  <!-- Usenet Newsreader -->
+  <div id="usenet-window">
+    <div class="usn-titlebar" id="usn-titlebar">
+      <div style="display:flex;align-items:center;gap:5px;">
+        <span style="font-size:12px;">📰</span>
+        <span id="usn-title-text">Free Agent 1.11 — Usenet Newsreader</span>
+      </div>
+      <div class="usn-win-btns">
+        <div class="usn-win-btn" onclick="usnMinimize()">_</div>
+        <div class="usn-win-btn">□</div>
+        <div class="usn-win-btn" onclick="closeUsenet()">✕</div>
+      </div>
+    </div>
+    <div class="usn-menubar">
+      <div class="usn-menu">File
+        <div class="usn-menu-dropdown">
+          <div class="usn-menu-item" onclick="closeUsenet()">Exit</div>
+        </div>
+      </div>
+      <div class="usn-menu">Online
+        <div class="usn-menu-dropdown">
+          <div class="usn-menu-item" onclick="usnRefresh()">Get New Headers</div>
+          <div class="usn-menu-item" onclick="usnRefresh()">Refresh Group</div>
+        </div>
+      </div>
+      <div class="usn-menu">Post
+        <div class="usn-menu-dropdown">
+          <div class="usn-menu-item" style="color:#808080;">New Post (read-only)</div>
+        </div>
+      </div>
+      <div class="usn-menu">Group
+        <div class="usn-menu-dropdown">
+          <div class="usn-menu-item" onclick="usnSelectGroup('rec.sport.pro-wrestling')">rec.sport.pro-wrestling</div>
+          <div class="usn-menu-item" onclick="usnSelectGroup('rec.sport.wrestling')">rec.sport.wrestling</div>
+          <div class="usn-menu-sep"></div>
+          <div class="usn-menu-item" onclick="usnSelectGroup('alt.fan.wwf')">alt.fan.wwf</div>
+          <div class="usn-menu-item" onclick="usnSelectGroup('alt.fan.wcw')">alt.fan.wcw</div>
+          <div class="usn-menu-sep"></div>
+          <div class="usn-menu-item" onclick="usnSelectGroup('rec.arts.tv')">rec.arts.tv</div>
+          <div class="usn-menu-item" onclick="usnSelectGroup('alt.tv.x-files')">alt.tv.x-files</div>
+          <div class="usn-menu-item" onclick="usnSelectGroup('rec.music.alternative')">rec.music.alternative</div>
+        </div>
+      </div>
+      <div class="usn-menu">Help
+        <div class="usn-menu-dropdown">
+          <div class="usn-menu-item" style="color:#808080;">About Free Agent</div>
+        </div>
+      </div>
+    </div>
+    <!-- Toolbar -->
+    <div class="usn-toolbar">
+      <div class="usn-tb-btn" onclick="usnRefresh()" title="Get New Headers">
+        <span class="usn-tb-icon">📥</span><span>Get Msg</span>
+      </div>
+      <div class="usn-tb-sep"></div>
+      <div class="usn-tb-btn" onclick="usnPrevThread()" title="Previous Thread">
+        <span class="usn-tb-icon">⬆</span><span>Prev</span>
+      </div>
+      <div class="usn-tb-btn" onclick="usnNextThread()" title="Next Thread">
+        <span class="usn-tb-icon">⬇</span><span>Next</span>
+      </div>
+      <div class="usn-tb-sep"></div>
+      <div class="usn-tb-btn" style="color:#808080;" title="Reply (read-only archive)">
+        <span class="usn-tb-icon">↩️</span><span>Reply</span>
+      </div>
+      <div class="usn-tb-btn" style="color:#808080;" title="Post (read-only archive)">
+        <span class="usn-tb-icon">✏️</span><span>Post</span>
+      </div>
+      <div class="usn-tb-sep"></div>
+      <div class="usn-tb-btn" onclick="usnRefresh()" title="Refresh">
+        <span class="usn-tb-icon">🔄</span><span>Refresh</span>
+      </div>
+      <div style="flex:1;"></div>
+      <div style="font-size:10px;font-family:'Tahoma',Arial;color:#808080;padding:0 6px;">
+        News Server: news.aol.com
+      </div>
+    </div>
+    <!-- Body: 3 panes -->
+    <div class="usn-body">
+      <!-- Left: group list -->
+      <div class="usn-groups-pane">
+        <div class="usn-groups-header">Subscribed Groups</div>
+        <div id="usn-group-list">
+          <div class="usn-group-item selected" onclick="usnSelectGroup('rec.sport.pro-wrestling')" data-group="rec.sport.pro-wrestling">
+            <span>📰</span><span style="flex:1;overflow:hidden;text-overflow:ellipsis;">rec.sport.pro-wrestling</span>
+            <span class="usn-group-unread" id="usn-unread-rspw">...</span>
+          </div>
+          <div class="usn-group-item" onclick="usnSelectGroup('alt.fan.wwf')" data-group="alt.fan.wwf">
+            <span>📰</span><span style="flex:1;">alt.fan.wwf</span>
+          </div>
+          <div class="usn-group-item" onclick="usnSelectGroup('alt.fan.wcw')" data-group="alt.fan.wcw">
+            <span>📰</span><span style="flex:1;">alt.fan.wcw</span>
+          </div>
+          <div class="usn-group-item" onclick="usnSelectGroup('rec.arts.tv')" data-group="rec.arts.tv">
+            <span>📰</span><span style="flex:1;">rec.arts.tv</span>
+          </div>
+          <div class="usn-group-item" onclick="usnSelectGroup('alt.tv.x-files')" data-group="alt.tv.x-files">
+            <span>📰</span><span style="flex:1;">alt.tv.x-files</span>
+          </div>
+          <div class="usn-group-item" onclick="usnSelectGroup('rec.music.alternative')" data-group="rec.music.alternative">
+            <span>📰</span><span style="flex:1;">rec.music.alternative</span>
+          </div>
+        </div>
+      </div>
+      <!-- Right: threads + message -->
+      <div class="usn-right-pane">
+        <!-- Thread list -->
+        <div class="usn-threads-pane">
+          <div class="usn-thread-header">
+            <div class="usn-th-col">Subject</div>
+            <div class="usn-th-col">From</div>
+            <div class="usn-th-col">Date</div>
+            <div class="usn-th-col">Lines</div>
+          </div>
+          <div id="usn-thread-list">
+            <div class="usn-loading" id="usn-thread-loading" style="display:block;">
+              Connecting to news.aol.com...<br>Retrieving headers...
+            </div>
+          </div>
+        </div>
+        <!-- Message pane -->
+        <div class="usn-message-pane" id="usn-message-pane">
+          <div style="padding:20px;font-family:'Courier New',monospace;font-size:11px;color:#808080;text-align:center;">
+            <div style="margin-bottom:8px;font-size:16px;">📰</div>
+            Select a message to read it.<br><br>
+            <span style="font-size:10px;">Free Agent 1.11/32 — Forte Inc.<br>Connected to: news.aol.com</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Status bar -->
+    <div class="usn-statusbar">
+      <div class="usn-status-panel" id="usn-status">Ready</div>
+      <div class="usn-status-panel" id="usn-msg-count">0 messages</div>
+      <div class="usn-status-panel" style="margin-left:auto;">news.aol.com · Port 119</div>
+    </div>
   </div>
 
   <!-- Disk Defragmenter -->
@@ -9342,7 +9623,239 @@
   makeDraggable(document.getElementById('clock-window'),document.getElementById('cw-titlebar'));
 
   // ════════════════════════════════════════
-  // SHUTDOWN SEQUENCE
+  // USENET NEWSREADER
+  // ════════════════════════════════════════
+  var usnCurrentGroup = 'rec.sport.pro-wrestling';
+  var usnThreads = [];
+  var usnSelectedThread = -1;
+  var usnReadSet = {};
+
+  // Hardcoded authentic-style fallback posts per group
+  var USN_FALLBACK = {
+    'rec.sport.pro-wrestling': [
+      { subject: 'Re: Was Shawn Michaels vs Undertaker the match of the year?', from: 'MarkH@aol.com (MarkHausen)', date: 'Mon, 14 Oct 1997', lines: 28, body: 'In article <8823j2.4k2@ix.netcom.com>, TomW wrote:\n> The match at Ground Zero was decent but the cell at Badd Blood was\n> on a completely different level. Shawn bumped like a god.\n\nHave to agree. The fact that HBK took that bump off the top of the cell\ndown through the announce table is something we\'ll be talking about for\nyears. Kane\'s debut was timed perfectly too.\n\nThe only complaint I\'ve seen on here that has merit is the non-finish\nprotecting both guys, but given where both are in the card I think\nit was the right call.\n\n-- \nMark H. | rec.sport.pro-wrestling regular since \'94\n"If you\'re not cheating, you\'re not trying" - Arn Anderson' },
+      { subject: 'RSPW Rating: Monday Night Raw 10/13/97', from: 'RSPWRatings@prodigy.net', date: 'Tue, 14 Oct 1997', lines: 45, body: 'RSPW MATCH RATINGS — Monday Night Raw 10/13/97\nUSAir Arena, Landover MD\n\nD-Generation X Segment: Ken Shamrock confronts HBK\n  Rating: **1/2 (angle advancement, Shamrock looks credible)\n\nDumpster Match: LOD vs Godwinns\n  Rating: * (brawl, no flow, crowd was dead)\n\nChampionship Match: Owen Hart vs Steve Austin (IC Title)\n  Rating: ***1/4 (Owen is criminally underrated on these shows)\n\nAustin-Owen post match angle with Dude Love\n  Rating: **3/4 as a segment\n\nMain Event: Undertaker & Shawn Michaels contract signing\n  Rating: *** as a promo/angle\n\nOverall show: B-\nHeadline: Owen carrying the IC division while everyone watches the main event scene\n\n---\nPosted by the RSPW Ratings Consortium' },
+      { subject: 'WCW Monday Nitro thoughts — Hogan heel turn holding up?', from: 'pwwatcher@compuserve.com', date: 'Wed, 15 Oct 1997', lines: 33, body: 'Six months after the Bash at the Beach turn and I think it\'s fair to\nassess: the nWo angle has legs but WCW is already showing signs of not\nknowing where to go with it.\n\nSting refusing to talk for an entire YEAR and just staring at people\nfrom the rafters is either the greatest long-term booking of all time\nor will be a massive disappointment when it pays off.\n\nEric Bischoff as on-screen heel authority figure is genuinely good TV\nthough. Better than McMahon\'s stuff right now imo.\n\nAlso: Ultimo Dragon vs Dean Malenko is happening too much. I love both\nguys but they\'ve had this match 4 times in 3 months. Give Malenko\nsomething with a story attached.\n\n-- pwwatcher' },
+      { subject: 'Meltzer\'s Observer ratings this week (spoilers inside)', from: 'dirtsheetreader@ix.netcom.com', date: 'Thu, 16 Oct 1997', lines: 19, body: 'Wrestling Observer Newsletter ratings this week:\n\nNovember PPV preview from Meltzer indicates:\n- Survivor Series shaping up as all-WWF event, no major WCW crossover\n- Austin title picture moving faster than originally planned\n- Bret Hart situation "unresolved" per sources close to WWF\n\n5 stars since Jan 97 per Observer:\n- Bret/Austin WM13: *****\n- Shawn/Undertaker Badd Blood Cell: ****3/4 (pending final write-up)\n\nThread: agree or disagree with Observer methodology?' },
+      { subject: 'Re: Is Steve Austin the hottest act in wrestling right now?', from: 'CageWriter@prodigy.net', date: 'Fri, 17 Oct 1997', lines: 41, body: 'In article <99k2j1.nn3@aol.com>, JimD wrote:\n> Austin\'s "Austin 3:16" shirt is outselling everything in the\n> merchandise area. That\'s the real vote.\n\nMerchandise numbers are a legitimate kayfabe-free metric and yes,\nAustin is clearly the #1 merch mover right now.\n\nWhat\'s interesting to me from a booking perspective is that Austin is\nbeing pushed as a babyface who acts like a heel — breaking rules,\nstunning authority figures, drinking beer. The crowd LOVES it.\n\nVince has traditionally been very rigid about face/heel alignment.\nThis is new territory and it\'s working because the audience in \'97\nhas shifted. They don\'t want squeaky clean Hulk Hogan faces anymore.\n\nThe question is whether WWF can book around him for another year\nwithout burning him out. WCW burned Goldberg in 18 months.\n\n-- CageWriter, posting since \'93' },
+      { subject: '[SPOILER] Survivor Series location/card taking shape', from: 'results_guy@earthlink.net', date: 'Sat, 18 Oct 1997', lines: 22, body: 'Based on house show results and dark match reports:\n\nSurvivor Series \'97 — Montreal, Quebec — November 9th\n\nExpected matches:\n- WWF Championship: Shawn Michaels vs Bret Hart\n  (note: Bret has creative control clause in contract per multiple sources)\n- Austin vs ???\n- Undertaker on card\n\nMontreal is interesting venue choice given Bret\'s Canadian hero status.\nWould love to be a fly on the wall in the booking meetings right now.\n\nDisclaimer: these are rumored cards from house show dark matches,\nnot confirmed. Treat accordingly.\n\n-- results_guy' },
+      { subject: 'ECW One Night Stand review thread — use this one', from: 'HardcoreHistorian@aol.com', date: 'Sun, 19 Oct 1997', lines: 37, body: 'Using this thread to consolidate ECW reviews since the last one got\nbifurcated into three separate argument threads (thanks guys).\n\nECW remains the only promotion doing genuinely unpredictable booking\nright now. The WWF/WCW stuff is entertainment, ECW is wrestling.\n\nRaven\'s entire run has been an art project. The fact that he can\nget people to pay to watch what is essentially an indie show in\nthe bingo hall is remarkable. Paul Heyman is the best\nbooker in the business when he stays within his budget.\n\nSick Mick Foley tribute shows have been fantastic.\nTerry Funk at his age still going should be studied.\n\nMain issue: ECW will never be national. The business model doesn\'t\nscale. Heyman runs on fumes and promises. But for what it is,\nthere\'s nothing like it.\n\n-- HH' },
+      { subject: 'FAQ: rec.sport.pro-wrestling posting guidelines v4.2', from: 'moderator@rspw.org', date: 'Mon, 13 Oct 1997', lines: 61, body: 'REC.SPORT.PRO-WRESTLING POSTING GUIDELINES v4.2\nLast updated: October 1997\n\n1. SPOILER POLICY\n   Results from taped shows must be marked [SPOILER] in the subject.\n   Raw and Nitro are taped weeks in advance. Use common sense.\n\n2. KAYFABE vs REALITY\n   This group discusses wrestling as a worked sport. Using "fake"\n   as a pejorative will mark you as a newcomer. "Worked" and\n   "worked shoot" are the correct terminology.\n\n3. WORKRATE DISCUSSION\n   Dave Meltzer\'s star ratings are a reference point, not gospel.\n   Debates about match quality are welcome. Personal attacks are not.\n\n4. ABBREVIATIONS USED HERE\n   F - face (babyface, hero)\n   H - heel (villain)\n   J - job (lose)\n   bury - to damage a wrestler\'s standing/push\n   over - over with the crowd (getting a reaction)\n   heat - crowd reaction (usually negative toward a heel)\n   pop - positive crowd reaction\n   blade - intentional bleeding (razor blade hidden in trunks)\n\n5. SIGNAL TO NOISE\n   Please keep discussions on-topic. This is not alt.wrestling.\n\nPosted weekly. Questions to moderator@rspw.org' },
+    ],
+    'alt.fan.wwf': [
+      { subject: 'DX reunion — is this good for business?', from: 'wwffan99@aol.com', date: 'Tue, 15 Oct 1997', lines: 18, body: 'Shawn and HHH doing the DX stuff together has been fun TV but I worry\nthey\'re burning through it too fast. The Chyna factor is genuinely\ndifferent — having a female "enforcer" isn\'t something WWF has done.\n\nTriple H needs a singles run though. He\'s been in HBK\'s shadow for\ntoo long. Signs are there that Vince sees something in him.\n\n-- wwffan99' },
+      { subject: 'Kane debut reaction thread', from: 'KaneMark@hotmail.com', date: 'Mon, 13 Oct 1997', lines: 24, body: 'The Kane costume reveal was legitimately one of the best visual\nmoments WWF has done in years. Glenn Jacobs finally gets a character\nworth his size.\n\nFor those who don\'t follow, this is Jacobs\' third gimmick — he was\nIsaac Yankem DDS and then Fake Diesel. The fact that he\'s now getting\na legitimate run as a monster heel is good booking.\n\nCritic: the mask will be an issue. He can\'t show facial expressions.\nDefense: neither can a lot of Japanese workers and they do fine.\n\n-- KaneMark' },
+    ],
+    'alt.fan.wcw': [
+      { subject: 'nWo Black & White vs nWo Wolfpac — split inevitable?', from: 'WCWwatcher@compuserve.com', date: 'Wed, 15 Oct 1997', lines: 29, body: 'You can see the seeds of an nWo split being planted. Hogan/Bischoff\nkeeping the group as a heel faction, while Nash/Hall are getting\nmore babyface reactions.\n\nSting finally coming down from the rafters for the confrontation\nhas to happen before Starrcade. That\'s the match they\'ve been\nbuilding for a year. If they blow the landing WCW loses enormous\ncredibility with the smarks.\n\nGoldberg is quietly being built. Undefeated streak starting.\nWatch this space. -- WCWwatcher' },
+      { subject: 'Cruiserweight division appreciation post', from: 'LuchaFan@earthlink.net', date: 'Thu, 16 Oct 1997', lines: 21, body: 'Lost in all the nWo discussion: WCW\'s cruiserweight division is\nthe best wrestling being done in North America right now.\n\nRey Mysterio Jr, Ultimo Dragon, Dean Malenko, Eddie Guerrero,\nChris Jericho, Chris Benoit — these guys are having ****+ matches\nevery week that nobody talks about because they\'re in the undercard.\n\nJericho doing heat-seeking heel work while the crowd wants to cheer\nhim is masterful. The guy is going to be a main eventer somewhere\nwithin three years. -- LuchaFan' },
+    ],
+    'rec.arts.tv': [
+      { subject: 'Seinfeld Season 9 — the beginning of the end?', from: 'tvcritic@prodigy.net', date: 'Thu, 16 Oct 1997', lines: 23, body: 'Season 8 was uneven and season 9 is already showing some cracks.\nThe show without Larry David in the writers room is a different animal.\n\nThat said, "The Bizarro Jerry" was a top-10 Seinfeld episode.\nThe concept was perfectly executed.\n\nMy concern is that Jerry as an actor has hit a ceiling. He plays\nJerry Seinfeld playing Jerry Seinfeld at this point. The supporting\ncast is carrying more weight than ever.\n\nFinal season feels right. Go out on top. -- tvcritic' },
+      { subject: 'ER vs Chicago Hope — ER won, can we close this thread?', from: 'meddramas@aol.com', date: 'Fri, 17 Oct 1997', lines: 14, body: 'ER is the better show. Chicago Hope is fine. This has been debated\nhere since 1994. ER wins on cast, writing, directing, and ratings.\n\nThe Clooney departure didn\'t hurt it as much as predicted.\nAnthony Edwards is genuinely the heart of that show anyway.\n\nCan we please move on to discussing the upcoming X-Files movie?' },
+    ],
+    'alt.tv.x-files': [
+      { subject: 'Fight the Future movie — filming confirmed, speculation thread', from: 'TrustNoOne@ix.netcom.com', date: 'Mon, 13 Oct 1997', lines: 32, body: 'Confirmed: The X-Files feature film is shooting between seasons.\nChris Carter is writing. The mythology arc will be addressed.\n\nTheories on what FIGHT THE FUTURE means:\n1. The conspiracy has a timeline — the film reveals it\n2. Mulder/Scully relationship finally advances\n3. Black oil alien colonization gets screen time\n\nMy hot take: the film bridges season 5 and 6 and the mythology\nwill be retconned somewhat to work for a movie audience.\n\nAlso confirmed: Cigarette Smoking Man has expanded role.\nWilliam B. Davis has been phenomenal this season.\n\nCounter-argument I\'ve seen: the film will be mythology-heavy\nand alienate (pun intended) casual viewers.\n\n-- TrustNoOne | watching since "Squeeze" s1e3' },
+      { subject: 'Best standalone (MOTW) episodes — definitive list attempt', from: 'XPhile4Ever@hotmail.com', date: 'Tue, 14 Oct 1997', lines: 38, body: 'Monster of the Week rankings attempt — mythology excluded:\n\nTier S (all-time classics):\n- Clyde Bruckman\'s Final Repose (3x04) — Darin Morgan genius\n- Jose Chung\'s From Outer Space (3x20) — also Darin Morgan\n- Humbug (2x20) — first Darin Morgan, set the template\n- Ice (1x08) — The Thing homage, perfect tension\n\nTier A:\n- Squeeze / Tooms (1x03, 1x21)\n- Beyond the Sea (1x13) — Scully episode, Pileggi\'s finest hour\n- Pusher (3x17)\n- Grotesque (3x14)\n\nTier B (very good but flawed):\n- Irresistible, Dod Kalm, Syzygy\n\nArgue with me. I am correct. -- XPhile4Ever' },
+    ],
+    'rec.music.alternative': [
+      { subject: 'Radiohead OK Computer — six months later, reassessment', from: 'musichead@earthlink.net', date: 'Wed, 15 Oct 1997', lines: 27, body: 'OK Computer dropped in June and I think we can now say it\'s the\nalbum of the year without much argument.\n\nExit Music, Lucky, No Surprises, Karma Police — any one of these\nwould be the standout track on a lesser band\'s record.\n\nThom Yorke\'s voice does things that shouldn\'t be physically possible.\n\nThe backlash is starting though — I\'ve seen posts here calling it\n"overrated art-rock pretension." This is the Nevermind problem:\nonce something crosses into mainstream consciousness the cool-hunters\nhave to move on. Ignore them.\n\nAnticipating the inevitable 4th album with genuine anxiety.\n-- musichead' },
+      { subject: 'Neutral Milk Hotel — anyone else catch the Athens show?', from: 'indiekid97@hotmail.com', date: 'Thu, 16 Oct 1997', lines: 19, body: 'Saw NMH last week in Athens and they\'re recording the follow-up\nto On Avery Island right now.\n\nJeff Mangum live is a singular experience. The songs from the new\nrecord they played — one called "Holland 1945" and another "King\nof Carrot Flowers" — sounded extraordinary.\n\nFair warning: if you haven\'t heard them yet and you like Elephant 6,\nget ready. This is going to be something special when it drops.\n\nI know this is a minority interest on this group but figured\nsomeone here might care. -- indiekid97' },
+    ],
+  };
+
+  function openUsenet() {
+    var win = document.getElementById('usenet-window');
+    win.classList.add('open');
+    win.style.zIndex = ++chatZBase;
+    tbRegister('usenet-window', '📰', 'Free Agent');
+    setTimeout(function() { usnLoadGroup('rec.sport.pro-wrestling'); }, 300);
+  }
+
+  function closeUsenet() {
+    document.getElementById('usenet-window').classList.remove('open');
+    tbUnregister('usenet-window');
+  }
+
+  function usnMinimize() { tbMinimize('usenet-window'); }
+
+  function usnSetStatus(msg) {
+    document.getElementById('usn-status').textContent = msg;
+  }
+
+  function usnSelectGroup(group) {
+    usnCurrentGroup = group;
+    usnSelectedThread = -1;
+    document.getElementById('usn-message-pane').innerHTML =
+      '<div style="padding:20px;font-family:\'Courier New\',monospace;font-size:11px;color:#808080;text-align:center;"><div style="margin-bottom:8px;font-size:16px;">📰</div>Select a message to read it.</div>';
+    // Update selected state in group list
+    document.querySelectorAll('.usn-group-item').forEach(function(el) {
+      el.classList.toggle('selected', el.dataset.group === group);
+    });
+    usnLoadGroup(group);
+  }
+
+  function usnRefresh() { usnLoadGroup(usnCurrentGroup); }
+
+  async function usnLoadGroup(group) {
+    usnSetStatus('Connecting to news.aol.com...');
+    document.getElementById('usn-thread-list').innerHTML =
+      '<div class="usn-loading" style="display:block;">Retrieving headers from ' + group + '...<br>Please wait...</div>';
+    document.getElementById('usn-msg-count').textContent = 'Retrieving...';
+
+    // Try to fetch from Google Groups archive
+    var fetched = await usnFetchGoogleGroups(group);
+
+    if (fetched && fetched.length > 0) {
+      usnThreads = fetched;
+      usnSetStatus('Retrieved ' + fetched.length + ' headers from ' + group);
+    } else {
+      // Use fallback posts
+      usnThreads = USN_FALLBACK[group] || USN_FALLBACK['rec.sport.pro-wrestling'];
+      usnSetStatus('Using cached headers — ' + group);
+    }
+
+    document.getElementById('usn-msg-count').textContent = usnThreads.length + ' messages';
+    document.getElementById('usn-title-text').textContent = 'Free Agent 1.11 — ' + group;
+
+    // Update unread badge
+    var badge = document.getElementById('usn-unread-rspw');
+    if (badge) badge.textContent = usnThreads.length;
+
+    usnRenderThreadList();
+  }
+
+  async function usnFetchGoogleGroups(group) {
+    // Try to scrape Google Groups for real archive posts
+    var searchUrl = 'https://groups.google.com/g/' + group.replace(/\./g, '-') + '/search?q=&num=25';
+    var altUrl = 'https://groups.google.com/forum/#!forum/' + group.replace(/\./g, '-');
+
+    var proxies = [
+      'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://groups.google.com/g/' + encodeURIComponent(group) + '/c/search?q='),
+      'https://corsproxy.io/?' + encodeURIComponent('https://groups.google.com/g/' + encodeURIComponent(group)),
+    ];
+
+    for (var i = 0; i < proxies.length; i++) {
+      try {
+        usnSetStatus('Trying server ' + (i+1) + '...');
+        var resp = await fetch(proxies[i], { signal: AbortSignal.timeout(5000) });
+        if (!resp.ok) continue;
+        var html = await resp.text();
+        if (html && html.length > 500) {
+          var parsed = usnParseGoogleGroups(html, group);
+          if (parsed && parsed.length > 0) return parsed;
+        }
+      } catch(e) { /* try next */ }
+    }
+    return null;
+  }
+
+  function usnParseGoogleGroups(html, group) {
+    // Extract thread subjects and authors from Google Groups HTML
+    var threads = [];
+    try {
+      // Look for subject patterns in Google Groups markup
+      var subjectRe = /<a[^>]+href="[^"]*\/c\/[^"]*"[^>]*>([^<]{10,120})<\/a>/gi;
+      var authorRe = /data-hovercard[^>]*>([A-Za-z][^<]{2,40})<\/span>/gi;
+      var subjects = [], authors = [];
+      var m;
+      while ((m = subjectRe.exec(html)) !== null && subjects.length < 25) {
+        var s = m[1].replace(/&amp;/g,'&').replace(/&#39;/g,"'").replace(/&quot;/g,'"').trim();
+        if (s.length > 5) subjects.push(s);
+      }
+      while ((m = authorRe.exec(html)) !== null && authors.length < 25) {
+        authors.push(m[1].trim());
+      }
+      for (var i = 0; i < Math.min(subjects.length, 15); i++) {
+        threads.push({
+          subject: subjects[i],
+          from: (authors[i] || 'unknown') + '@usenet',
+          date: 'Recent',
+          lines: Math.floor(Math.random() * 60) + 10,
+          body: '[Fetched from Google Groups archive]\n\nSubject: ' + subjects[i] + '\nGroup: ' + group + '\n\nFull message available at:\nhttps://groups.google.com\n\n-- Retrieved via Free Agent 1.11'
+        });
+      }
+    } catch(e) {}
+    return threads;
+  }
+
+  function usnRenderThreadList() {
+    var list = document.getElementById('usn-thread-list');
+    list.innerHTML = '';
+    if (!usnThreads.length) {
+      list.innerHTML = '<div style="padding:8px;font-size:11px;font-family:Tahoma,Arial;color:#808080;">No messages found.</div>';
+      return;
+    }
+    usnThreads.forEach(function(t, idx) {
+      var row = document.createElement('div');
+      var isRead = usnReadSet[usnCurrentGroup + '::' + idx];
+      row.className = 'usn-thread-row' + (isRead ? '' : ' unread') + (idx === usnSelectedThread ? ' selected' : '');
+      row.innerHTML =
+        '<div class="usn-td usn-td-subject"><span class="usn-thread-icon">' + (isRead ? '📄' : '📨') + '</span>' + esc(t.subject) + '</div>'
+        + '<div class="usn-td">' + esc(t.from.split('@')[0]) + '</div>'
+        + '<div class="usn-td">' + esc(t.date) + '</div>'
+        + '<div class="usn-td">' + t.lines + '</div>';
+      row.addEventListener('click', function() {
+        usnSelectedThread = idx;
+        usnReadSet[usnCurrentGroup + '::' + idx] = true;
+        usnRenderMessage(t);
+        // Re-render to update read state
+        document.querySelectorAll('.usn-thread-row').forEach(function(r, i) {
+          r.classList.toggle('selected', i === idx);
+          if (i === idx) r.classList.remove('unread');
+        });
+      });
+      list.appendChild(row);
+    });
+  }
+
+  function usnRenderMessage(t) {
+    var pane = document.getElementById('usn-message-pane');
+
+    // Format body — handle quotes and sig
+    var bodyLines = (t.body || '').split('\n');
+    var formattedBody = bodyLines.map(function(line) {
+      if (line.startsWith('>')) {
+        return '<span class="usn-msg-quote">' + esc(line) + '</span>';
+      } else if (line.startsWith('--')) {
+        return '<span class="usn-msg-sig">' + esc(line) + '</span>';
+      }
+      return esc(line);
+    }).join('\n');
+
+    pane.innerHTML =
+      '<div class="usn-msg-header">'
+      + '<span class="usn-msg-header-label">Subject: </span>' + esc(t.subject) + '\n'
+      + '<span class="usn-msg-header-label">From:    </span>' + esc(t.from) + '\n'
+      + '<span class="usn-msg-header-label">Date:    </span>' + esc(t.date) + '\n'
+      + '<span class="usn-msg-header-label">Newsgroup: </span>' + esc(usnCurrentGroup) + '\n'
+      + '<span class="usn-msg-header-label">Lines:   </span>' + t.lines
+      + '</div>'
+      + '<div class="usn-msg-body">' + formattedBody + '</div>';
+
+    usnSetStatus('Message loaded — ' + usnCurrentGroup);
+  }
+
+  function usnPrevThread() {
+    if (usnSelectedThread > 0) {
+      usnSelectedThread--;
+      var rows = document.querySelectorAll('.usn-thread-row');
+      if (rows[usnSelectedThread]) rows[usnSelectedThread].click();
+    }
+  }
+
+  function usnNextThread() {
+    if (usnSelectedThread < usnThreads.length - 1) {
+      usnSelectedThread++;
+      var rows = document.querySelectorAll('.usn-thread-row');
+      if (rows[usnSelectedThread]) rows[usnSelectedThread].click();
+    }
+  }
+
+  makeDraggable(document.getElementById('usenet-window'), document.getElementById('usn-titlebar'));
+  document.getElementById('usenet-window').addEventListener('mousedown', function() {
+    document.getElementById('usenet-window').style.zIndex = ++chatZBase;
+  });
   // ════════════════════════════════════════
   function doShutDown() {
     // Reset radio to default
